@@ -1,13 +1,13 @@
-﻿namespace Data_Access_Layer.Models
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace Data_Access_Layer.Models
 {
-    public class User
+    public class User : IdentityUser
     {
-        public Guid Id { get; set; }
+        public string FirstName { get; set; }
 
-        public string Email { get; set; }
+        public string LastName { get; set; }
 
-        public string Username { get; set; }
-
-        public string Password { get; set; }
+        public string ClassGroup { get; set; }
     }
 }

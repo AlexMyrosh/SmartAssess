@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Data_Access_Layer.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Presentation_Layer.ViewModels;
 
@@ -6,10 +7,10 @@ namespace Presentation_Layer.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
 
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -27,11 +28,20 @@ namespace Presentation_Layer.Controllers
         {
             if (ModelState.IsValid)
             {
-                var newUser = new IdentityUser { UserName = model.Email, Email = model.Email };
+                var newUser = new User
+                {
+                    UserName = model.Email,
+                    Email = model.Email,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    ClassGroup = model.ClassGroup
+                };
+
                 var result = await _userManager.CreateAsync(newUser, model.Password);
 
                 if (result.Succeeded)
                 {
+                    await _userManager.AddToRoleAsync(newUser, "Student");
                     await _signInManager.SignInAsync(newUser, isPersistent: false);
                     return RedirectToAction("index", "home");
                 }
