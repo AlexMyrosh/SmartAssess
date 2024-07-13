@@ -1,4 +1,4 @@
-namespace SmartAssess.Models
+namespace Presentation_Layer.Models
 {
     public class ErrorViewModel
     {

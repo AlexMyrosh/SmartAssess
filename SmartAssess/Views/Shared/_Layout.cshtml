@@ -26,6 +26,28 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
+                    <ul class="navbar-nav">
+                        @if (User.Identity!.IsAuthenticated)
+                        {
+                            <li class="nav-item nav-link">
+                                <span>Hello, @User.Identity.Name</span>
+                            </li>
+                            <li class="nav-item">
+                                <form asp-area="" asp-controller="Account" asp-action="Logout" method="post">
+                                    <button type="submit" class="nav-link text-dark border-0 bg-transparent">Log out</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a asp-area="" asp-controller="Account" asp-action="Register" class="nav-link text-dark">Register</a>
+                            </li>
+                            <li class="nav-item">
+                                <a asp-area="" asp-controller="Account" asp-action="Login" class="nav-link text-dark">Log in</a>
+                            </li>
+                        }
+                    </ul>
                 </div>
             </div>
         </nav>

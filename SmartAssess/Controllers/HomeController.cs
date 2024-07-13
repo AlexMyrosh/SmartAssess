@@ -1,8 +1,9 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SmartAssess.Models;
 using System.Diagnostics;
+using Presentation_Layer.Models;
 
-namespace SmartAssess.Controllers
+namespace Presentation_Layer.Controllers
 {
     public class HomeController : Controller
     {
@@ -18,6 +19,7 @@ namespace SmartAssess.Controllers
             return View();
         }
 
+        [Authorize]
         public IActionResult Privacy()
         {
             return View();
