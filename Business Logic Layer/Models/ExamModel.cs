@@ -1,0 +1,19 @@
+﻿namespace Business_Logic_Layer.Models
+{
+    public class ExamModel
+    {
+        public Guid Id { get; set; }
+
+        public string Name { get; set; }
+
+        public string Description { get; set; }
+
+        public string Subject { get; set; }
+
+        public DateTime ExamStartDateTime { get; set; }
+
+        public DateTime ExamEndDateTime { get; set; }
+
+        public IEnumerable<ExamQuestionModel> Questions { get; set; }
+    }
+}

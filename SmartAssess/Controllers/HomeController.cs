@@ -1,7 +1,6 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using Presentation_Layer.Models;
+using Presentation_Layer.ViewModels;
 
 namespace Presentation_Layer.Controllers
 {
@@ -14,13 +13,8 @@ namespace Presentation_Layer.Controllers
             _logger = logger;
         }
 
+        [HttpGet]
         public IActionResult Index()
-        {
-            return View();
-        }
-
-        [Authorize]
-        public IActionResult Privacy()
         {
             return View();
         }

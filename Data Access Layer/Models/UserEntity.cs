@@ -2,7 +2,7 @@
 
 namespace Data_Access_Layer.Models
 {
-    public class User : IdentityUser
+    public class UserEntity : IdentityUser
     {
         public string FirstName { get; set; }
 

@@ -1,4 +1,6 @@
-﻿using Data_Access_Layer.Models;
+﻿using AutoMapper;
+using Business_Logic_Layer.Services.Interfaces;
+using Data_Access_Layer.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Presentation_Layer.ViewModels;
@@ -7,16 +9,17 @@ namespace Presentation_Layer.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
+        private readonly SignInManager<UserEntity> _signInManager;
+        private readonly IAccountService _accountService;
+        private readonly IMapper _mapper;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AccountController(IAccountService accountService, SignInManager<UserEntity> signInManager, IMapper mapper)
         {
-            _userManager = userManager;
             _signInManager = signInManager;
+            _mapper = mapper;
+            _accountService = accountService;
         }
 
-        // Register
         [HttpGet]
         public IActionResult Register()
         {
@@ -28,25 +31,14 @@ namespace Presentation_Layer.Controllers
         {
             if (ModelState.IsValid)
             {
-                var newUser = new User
-                {
-                    UserName = model.Email,
-                    Email = model.Email,
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    ClassGroup = model.ClassGroup
-                };
-
-                var result = await _userManager.CreateAsync(newUser, model.Password);
-
+                var userEntity = _mapper.Map<UserEntity>(model);
+                var result = await _accountService.CreateAsync(userEntity, model.Password);
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(newUser, "Student");
-                    await _signInManager.SignInAsync(newUser, isPersistent: false);
-                    return RedirectToAction("index", "home");
+                    await _signInManager.SignInAsync(userEntity, isPersistent: false);
+                    return RedirectToAction("Index", "Home");
                 }
 
-                // Add errors if the registration failed.
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError("", error.Description);
@@ -56,7 +48,6 @@ namespace Presentation_Layer.Controllers
             return View(model);
         }
 
-        // Login
         [HttpGet]
         public IActionResult Login()
         {
@@ -72,11 +63,10 @@ namespace Presentation_Layer.Controllers
 
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("index", "home");
+                    return RedirectToAction("Index", "Home");
                 }
 
-                // Add errors if the login failed.
-                ModelState.AddModelError("", "Invalid login attempt.");
+                ModelState.AddModelError("", "Invalid login attempt");
             }
 
             return View(model);
