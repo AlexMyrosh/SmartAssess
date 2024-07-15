@@ -6,5 +6,9 @@
         public Guid? Id { get; set; }
 
         public string QuestionText { get; set; }
+
+        public ExamViewModel Exam { get; set; }
+
+        public TeacherNoteViewModel TeacherNote { get; set; }
     }
 }

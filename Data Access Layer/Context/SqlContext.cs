@@ -13,5 +13,17 @@ namespace Data_Access_Layer.Context
         public DbSet<ExamEntity> Exams { get; set; }
 
         public DbSet<ExamQuestionEntity> ExamQuestions { get; set; }
+
+        public DbSet<TeacherNoteEntity> TeacherNotes { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<ExamQuestionEntity>()
+                .HasOne(eq => eq.TeacherNote)
+                .WithOne(tn => tn.Question)
+                .HasForeignKey<TeacherNoteEntity>(tn => tn.QuestionId);
+        }
     }
 }

@@ -14,5 +14,7 @@ namespace Data_Access_Layer.Models
         public Guid ExamId { get; set; }
 
         public virtual ExamEntity Exam { get; set; }
+
+        public TeacherNoteEntity TeacherNote { get; set; }
     }
 }
