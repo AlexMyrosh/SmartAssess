@@ -10,7 +10,6 @@ namespace Presentation_Layer.AutoMapperProfiles
         {
             CreateMap<ExamViewModel, ExamModel>().ReverseMap();
             CreateMap<ExamQuestionViewModel, ExamQuestionModel>().ReverseMap();
-            CreateMap<QuestionOptionViewModel, QuestionOptionModel>().ReverseMap();
         }
     }
 }

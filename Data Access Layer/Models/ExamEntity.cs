@@ -24,6 +24,6 @@ namespace Data_Access_Layer.Models
 
         public bool IsDeleted { get; set; }
 
-        public IEnumerable<ExamQuestionEntity> Questions { get; set; }
+        public List<ExamQuestionEntity> Questions { get; set; }
     }
 }

@@ -8,7 +8,7 @@ namespace Data_Access_Layer.UnitOfWork.Implementations
     public class UnitOfWork : IUnitOfWork
     {
         private readonly SqlContext _sqlContext;
-        private IExamRepository _examRepository;
+        private IExamRepository? _examRepository;
 
         public UnitOfWork(SqlContext sqlContext)
         {

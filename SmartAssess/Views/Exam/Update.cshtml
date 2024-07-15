@@ -31,6 +31,22 @@
                 <label asp-for="ExamEndDateTime" class="control-label"></label>
                 <input asp-for="ExamEndDateTime" class="form-control" />
             </div>
+
+            <h5>Questions</h5>
+            <div id="questionsContainer">
+            @for (var i = 0; i < Model.Questions.Count; i++)
+            {
+                <div class="form-group question">
+                    <label asp-for="Questions[i].QuestionText" class="control-label"></label>
+                    <textarea asp-for="Questions[i].QuestionText" class="form-control" rows="5"></textarea>
+                    <span asp-validation-for="Questions[i].QuestionText" class="text-danger"></span>
+                    <input type="hidden" asp-for="Questions[i].Id" />
+                    <a class="btn btn-outline-danger delete-question" type="button">Remove Question</a>
+                </div>
+            }
+            </div>
+            <a class="btn btn-outline-success" id="addQuestion">Add Question</a>
+
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -44,5 +60,55 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function () {
+            var $questionsContainer = $("#questionsContainer");
+            var $addQuestion = $("#addQuestion");
+            var questionIndex = document.querySelectorAll("#questionsContainer div").length;
+
+            function UpdateQuestionIndexes() {
+                $(".question").each(function (index, question) {
+                    console.log(`index is ${index}`);
+                    $(question).find("label").attr('for', function (_, forAttr) {
+                        return forAttr.replace(/Questions_\d+__/, 'Questions_' + index + '__');
+                    });
+                    $(question).find("textarea").attr('id', function (_, idAttr) {
+                        return idAttr.replace(/Questions_\d+__/, 'Questions_' + index + '__');
+                    });
+                    $(question).find("textarea").attr('name', function (_, nameAttr) {
+                        return nameAttr.replace(/Questions\[\d+\]/, 'Questions[' + index + ']');
+                    });
+                    $(question).find("span").attr('data-valmsg-for', function (_, valmsgforAttr) {
+                        return valmsgforAttr.replace(/Questions\[\d+\]/, 'Questions[' + index + ']');
+                    });
+                });
+            }
+
+            $addQuestion.click(function () {
+                var clone = $(".question:first").clone();
+
+                clone.html(
+                    clone.html().replace(/\[0\]/g, '[' + questionIndex + ']').replace(/_0__/g, '_' + questionIndex + '__')
+                );
+
+                clone.find('textarea').val('');
+                clone.find('input[type=hidden]').val('');
+
+                $questionsContainer.append(clone);
+                questionIndex++;
+            });
+
+            $questionsContainer.on("click", ".delete-question", function () {
+                if ($questionsContainer.children().length > 1) {
+                    $(this).closest('.question').remove();
+                    UpdateQuestionIndexes();
+                    questionIndex--;
+                }
+            });
+        });
+    </script>
 }

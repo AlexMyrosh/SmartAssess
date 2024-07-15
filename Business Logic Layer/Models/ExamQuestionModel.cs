@@ -2,14 +2,8 @@
 {
     public class ExamQuestionModel
     {
+        public Guid Id { get; set; }
+
         public string QuestionText { get; set; }
-
-        IEnumerable<QuestionOptionModel> Options { get; set; }
-
-        public QuestionOptionModel CorrectAnswer { get; set; }
-
-        public Guid ExamId { get; set; }
-
-        public virtual ExamModel Exam { get; set; }
     }
 }

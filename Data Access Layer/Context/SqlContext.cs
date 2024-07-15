@@ -13,7 +13,5 @@ namespace Data_Access_Layer.Context
         public DbSet<ExamEntity> Exams { get; set; }
 
         public DbSet<ExamQuestionEntity> ExamQuestions { get; set; }
-
-        public DbSet<QuestionOptionEntity> QuestionOptions { get; set; }
     }
 }

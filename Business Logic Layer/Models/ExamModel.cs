@@ -14,6 +14,6 @@
 
         public DateTime ExamEndDateTime { get; set; }
 
-        public IEnumerable<ExamQuestionModel> Questions { get; set; }
+        public List<ExamQuestionModel> Questions { get; set; }
     }
 }

@@ -55,7 +55,7 @@ namespace Presentation_Layer.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(Guid id)
         {
-            await _examService.DeleteAsync(id);
+            await _examService.SoftDeleteAsync(id);
             return RedirectToAction("GetAll");
         }
 
@@ -79,5 +79,26 @@ namespace Presentation_Layer.Controllers
 
             return View(examViewModel);
         }
+
+        //[HttpGet]
+        //public async Task<IActionResult> Pass(Guid examId)
+        //{
+        //    var examModel = await _examService.GetByIdAsync(examId);
+        //    var examViewModel = _mapper.Map<ExamViewModel>(examModel);
+        //    return View(examViewModel);
+        //}
+
+        //[HttpPost]
+        //public async Task<IActionResult> Pass(ExamViewModel examViewModel)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var examModel = _mapper.Map<ExamModel>(examViewModel);
+        //        var checkedExam = await _examService.CheckExamAnswers(examModel);
+        //        return View("ExamResult", checkedExam);
+        //    }
+
+        //    return View(examViewModel);
+        //}
     }
 }

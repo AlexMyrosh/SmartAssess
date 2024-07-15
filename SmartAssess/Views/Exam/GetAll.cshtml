@@ -27,6 +27,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.ExamEndDateTime)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Questions)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -48,6 +51,9 @@
             <td>
                 @Html.DisplayFor(modelItem => item.ExamEndDateTime)
             </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Questions.Count)
+                </td>
             <td>
                 @Html.ActionLink("Update", "Update", new { id = item.Id }) |
                 @Html.ActionLink("Details", "GetById", new { id = item.Id }) |

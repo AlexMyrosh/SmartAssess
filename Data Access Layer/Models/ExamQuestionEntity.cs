@@ -10,13 +10,6 @@ namespace Data_Access_Layer.Models
         [Required]
         public string QuestionText { get; set; }
 
-        IEnumerable<QuestionOptionEntity> Options { get; set; }
-
-        [Required]
-        public QuestionOptionEntity CorrectAnswer { get; set; }
-
-        public bool IsDeleted { get; set; }
-
         [Required]
         public Guid ExamId { get; set; }
 

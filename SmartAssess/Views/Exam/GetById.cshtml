@@ -40,6 +40,17 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.ExamEndDateTime)
         </dd>
+        
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Questions)
+        </dt>
+        <dd class="col-sm-10">
+            @foreach(var question in Model.Questions)
+            {
+                @Html.DisplayTextFor(_ => question.QuestionText)
+                <br />
+            }
+        </dd>
     </dl>
 </div>
 <div>

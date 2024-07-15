@@ -2,12 +2,7 @@
 {
     public class ExamViewModel
     {
-        public ExamViewModel()
-        {
-            Questions = new List<ExamQuestionViewModel>();
-        }
-
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
 
         public string Name { get; set; }
 
@@ -19,6 +14,6 @@
 
         public DateTime ExamEndDateTime { get; set; }
 
-        public IEnumerable<ExamQuestionViewModel> Questions { get; set; }
+        public List<ExamQuestionViewModel> Questions { get; set; }
     }
 }

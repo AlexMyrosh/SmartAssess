@@ -20,23 +20,22 @@ namespace Data_Access_Layer.Repositories.Implementations
             return result.Entity.Id;
         }
 
-        public async Task<bool> DeleteAsync(Guid id)
-        {
-            var examEntity = await _sqlContext.Set<ExamEntity>().FindAsync(id);
-            if(examEntity != null)
-            {
-                examEntity.IsDeleted = true;
-                return true;
-            }
-
-            return false;
-        }
-
         public async Task<IEnumerable<ExamEntity>> GetAllAsync(bool isDeleted = false)
         {
             var examEntities = await _sqlContext.Set<ExamEntity>()
-                .Where(genre => genre.IsDeleted == false || genre.IsDeleted == isDeleted)
+                .Where(exam => exam.IsDeleted == false || exam.IsDeleted == isDeleted)
                 .ToListAsync();
+
+            return examEntities;
+        }
+
+        public async Task<IEnumerable<ExamEntity>> GetAllWithDetailsAsync(bool isDeleted = false)
+        {
+            var examEntities = await _sqlContext.Set<ExamEntity>()
+                .Include(exam => exam.Questions)
+                .Where(exam => exam.IsDeleted == false || exam.IsDeleted == isDeleted)
+                .ToListAsync();
+
             return examEntities;
         }
 
@@ -44,6 +43,44 @@ namespace Data_Access_Layer.Repositories.Implementations
         {
             var examEntity = await _sqlContext.Set<ExamEntity>().FindAsync(id);
             return examEntity;
+        }
+
+        public async Task<ExamEntity?> GetByIdWithDetailsAsync(Guid id)
+        {
+            var examEntity = await _sqlContext.Set<ExamEntity>()
+                .Include(exam => exam.Questions)
+                .FirstOrDefaultAsync(exam => exam.Id == id);
+
+            return examEntity;
+        }
+
+        public async Task<bool> HardDeleteAsync(Guid id)
+        {
+            var examEntity = await _sqlContext.Set<ExamEntity>().FindAsync(id);
+            if (examEntity != null)
+            {
+                _sqlContext.Set<ExamEntity>().Remove(examEntity);
+                return true;
+            }
+
+            return false;
+        }
+
+        public void HardDelete(ExamEntity entity)
+        {
+            _sqlContext.Set<ExamEntity>().Remove(entity);
+        }
+
+        public async Task<bool> SoftDeleteAsync(Guid id)
+        {
+            var examEntity = await _sqlContext.Set<ExamEntity>().FindAsync(id);
+            if (examEntity != null)
+            {
+                examEntity.IsDeleted = true;
+                return true;
+            }
+
+            return false;
         }
 
         public Guid Update(ExamEntity model)

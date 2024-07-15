@@ -2,10 +2,9 @@
 {
     public class ExamQuestionViewModel
     {
+
+        public Guid? Id { get; set; }
+
         public string QuestionText { get; set; }
-
-        IEnumerable<QuestionOptionViewModel> Options { get; set; }
-
-        public QuestionOptionViewModel CorrectAnswer { get; set; }
     }
 }

@@ -10,7 +10,6 @@ namespace Business_Logic_Layer.AutoMapperProfiles
         {
             CreateMap<ExamModel, ExamEntity>().ReverseMap();
             CreateMap<ExamQuestionModel, ExamQuestionEntity>().ReverseMap();
-            CreateMap<QuestionOptionModel, QuestionOptionEntity>().ReverseMap();
         }
     }
 }
