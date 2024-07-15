@@ -20,7 +20,7 @@ namespace Presentation_Layer.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var examModels = await _examService.GetAllAsync();
+            var examModels = await _examService.GetAllWithDetailsAsync();
             var examViewModels = _mapper.Map<IEnumerable<ExamViewModel>>(examModels);
             return View(examViewModels);
         }
@@ -28,7 +28,7 @@ namespace Presentation_Layer.Controllers
         [HttpGet]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var examModel = await _examService.GetByIdAsync(id);
+            var examModel = await _examService.GetByIdWithDetailsAsync(id);
             var examViewModel = _mapper.Map<ExamViewModel>(examModel);
             return View(examViewModel);
         }
@@ -62,7 +62,7 @@ namespace Presentation_Layer.Controllers
         [HttpGet]
         public async Task<IActionResult> Update(Guid id)
         {
-            var examModel = await _examService.GetByIdAsync(id);
+            var examModel = await _examService.GetByIdWithDetailsAsync(id);
             var examViewModel = _mapper.Map<ExamViewModel>(examModel);
             return View(examViewModel);
         }
