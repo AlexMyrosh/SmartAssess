@@ -8,6 +8,8 @@ namespace Data_Access_Layer.UnitOfWork.Interfaces
 
         IUserExamPassRepository UserExamPassRepository { get; }
 
+        IUserRepository UserRepository { get; }
+
         Task<int> SaveAsync();
     }
 }

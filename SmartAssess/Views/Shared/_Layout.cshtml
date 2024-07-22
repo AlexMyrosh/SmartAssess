@@ -41,7 +41,9 @@
                         @if (User.Identity!.IsAuthenticated)
                         {
                             <li class="nav-item nav-link">
-                                <span>Hello, @user?.FirstName @user?.LastName</span>
+                                <span>Hello,
+                                    <a asp-controller="Account" asp-action="UserProfileDetails">@user?.FirstName @user?.LastName</a>
+                                </span>
                             </li>
                             <li class="nav-item">
                                 <form asp-area="" asp-controller="Account" asp-action="Logout" method="post">

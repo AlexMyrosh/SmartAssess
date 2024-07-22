@@ -78,5 +78,36 @@ namespace Presentation_Layer.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> UserProfileDetails()
+        {
+            var currentUser = await _accountService.GetCurrentUserAsync(User);
+            return View(currentUser);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Update()
+        {
+            var currentUser = await _accountService.GetCurrentUserAsync(User);
+            return View(currentUser);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Update(UserEntity user)
+        {
+            var result = await _accountService.UpdateAsync(user);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("UserProfileDetails");
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+
+            return View(user);
+        }
     }
 }

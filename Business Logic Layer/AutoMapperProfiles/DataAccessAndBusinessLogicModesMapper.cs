@@ -17,6 +17,9 @@ namespace Business_Logic_Layer.AutoMapperProfiles
                 .ForMember(dest => dest.TotalGrade, opt => opt.MapFrom(src => src.UserAnswers.Sum(ua => ua.Grade)));
 
             CreateMap<UserExamPassModel, UserExamPassEntity>();
+            CreateMap<UserEntity, UserEntity>()
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email))
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
         }
     }
 }

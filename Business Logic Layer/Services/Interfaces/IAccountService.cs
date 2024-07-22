@@ -9,5 +9,7 @@ namespace Business_Logic_Layer.Services.Interfaces
         Task<IdentityResult> CreateAsync(UserEntity user, string password);
 
         Task<UserEntity?> GetCurrentUserAsync(ClaimsPrincipal userPrincipal);
+
+        Task<IdentityResult> UpdateAsync(UserEntity user);
     }
 }
