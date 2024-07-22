@@ -10,6 +10,6 @@
 
         public int MaxGrade { get; set; }
 
-        public ExamQuestionViewModel Question { get; set; }
+        public ExamQuestionViewModel? Question { get; set; }
     }
 }

@@ -1,0 +1,95 @@
+﻿@model Presentation_Layer.ViewModels.UserExamPassViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>UserExamPassViewModel</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ExamName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ExamName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ExamDescription)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ExamDescription)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ExamSubject)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ExamSubject)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.User)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.User.FirstName)
+        </dd>
+    </dl>
+
+    <form method="post" asp-action="ExamAssess">
+        <dl class="row">
+            <dt class="col-sm-4">
+                <h4>Questions:</h4>
+            </dt>
+            <dd class="col-sm-8">
+                <h4>Answers:</h4>
+            </dd>
+            @for (var i = 0; i < Model.UserAnswers.Count; i++)
+            {
+                <dt class="col-sm-4">
+                    @Html.DisplayFor(model => model.UserAnswers[i].QuestionText)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.UserAnswers[i].AnswerText)
+                </dd>
+                <dd class="col-sm-2">
+                    @Html.TextBoxFor(model => model.UserAnswers[i].Grade, new { @class = "form-control grade", type = "number", min = 0, max = 5, id = "grade" + i })
+                    @Html.HiddenFor(model => model.UserAnswers[i].Id)
+                </dd>
+                @Html.HiddenFor(model => model.UserAnswers[i].Id)
+            }
+        </dl>
+        
+        <div>
+            <h5>Feedback:</h5>
+            @Html.TextAreaFor(model => model.Feedback, 2, 50, new { @class = "form-control" })
+        </div>
+        
+        <span>Total grade: </span><span id="totalGrade"></span>
+        <br /><br />
+        
+        
+        @Html.HiddenFor(model=>model.Id)
+        <input type="submit" value="Save Grades" class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-warning">Back to List</a>
+    </form>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        function calculateTotalGrade() {
+            let totalGrade = 0;
+            $('.grade').each(function() {
+                let grade = $(this).val();
+                totalGrade += parseInt(grade, 10) || 0;
+            });
+            $('#totalGrade').text(totalGrade);
+        }
+
+        // Call calculateTotalGrade to initialize total grade
+        calculateTotalGrade();
+
+        // On any change to the inputs, recalculate the total grade
+        $('.grade').change(calculateTotalGrade);
+    </script>
+}

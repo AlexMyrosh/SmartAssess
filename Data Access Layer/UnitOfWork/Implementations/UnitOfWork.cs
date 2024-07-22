@@ -9,6 +9,7 @@ namespace Data_Access_Layer.UnitOfWork.Implementations
     {
         private readonly SqlContext _sqlContext;
         private IExamRepository? _examRepository;
+        private IUserExamPassRepository? _userExamPassRepository;
 
         public UnitOfWork(SqlContext sqlContext)
         {
@@ -21,6 +22,16 @@ namespace Data_Access_Layer.UnitOfWork.Implementations
             {
                 _examRepository ??= new ExamRepository(_sqlContext);
                 return _examRepository;
+
+            }
+        }
+
+        public IUserExamPassRepository UserExamPassRepository
+        {
+            get
+            {
+                _userExamPassRepository ??= new UserExamPassRepository(_sqlContext);
+                return _userExamPassRepository;
 
             }
         }

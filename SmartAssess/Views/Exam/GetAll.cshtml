@@ -7,7 +7,7 @@
 <h1>GetAll</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-outline-primary">Create New</a>
 </p>
 <table class="table">
     <thead>
@@ -55,11 +55,12 @@
                     @Html.DisplayFor(modelItem => item.Questions.Count)
                 </td>
             <td>
-                @Html.ActionLink("Update", "Update", new { id = item.Id }) |
-                @Html.ActionLink("Details", "GetById", new { id = item.Id }) |
-                <form asp-area="" asp-controller="Exam" asp-action="Delete" method="post">
-                     <input type="hidden" name="id" value="@item.Id" />
-                    <button type="submit" class="nav-link border-0 bg-transparent">Delete</button>
+                    @Html.ActionLink("Update", "Update", new { id = item.Id }, new { @class = "btn btn-outline-info" })
+                    @Html.ActionLink("Details", "GetById", new { id = item.Id }, new { @class = "btn btn-outline-info" })
+                    @Html.ActionLink("Pass", "Pass", new { examId = item.Id }, new { @class = "btn btn-outline-info" })
+                <form asp-area="" asp-controller="Exam" asp-action="Delete" method="post" style="display: inline-block;">
+                    <input type="hidden" name="id" value="@item.Id" />
+                        <button type="submit" class="btn btn-outline-info">Delete</button>
                 </form>
             </td>
         </tr>

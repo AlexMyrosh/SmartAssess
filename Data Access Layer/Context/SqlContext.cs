@@ -16,6 +16,10 @@ namespace Data_Access_Layer.Context
 
         public DbSet<TeacherNoteEntity> TeacherNotes { get; set; }
 
+        public DbSet<UserAnswerEntity> UserAnswers { get; set; }
+
+        public DbSet<UserExamPassEntity> UserExamPasses { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -24,6 +28,12 @@ namespace Data_Access_Layer.Context
                 .HasOne(eq => eq.TeacherNote)
                 .WithOne(tn => tn.Question)
                 .HasForeignKey<TeacherNoteEntity>(tn => tn.QuestionId);
+
+            modelBuilder.Entity<UserAnswerEntity>()
+                .HasOne<UserExamPassEntity>(s => s.StudentExamPass)
+                .WithMany(g => g.UserAnswers)
+                .HasForeignKey(s => s.StudentExamPassId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

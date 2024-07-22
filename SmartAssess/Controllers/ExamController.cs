@@ -9,11 +9,15 @@ namespace Presentation_Layer.Controllers
     public class ExamController : Controller
     {
         private readonly IExamService _examService;
+        private readonly IUserExamPassService _userExamPassService;
+        private readonly IAccountService _accountService;
         private readonly IMapper _mapper;
 
-        public ExamController(IExamService examService, IMapper mapper)
+        public ExamController(IExamService examService, IUserExamPassService userExamPassService, IAccountService accountService, IMapper mapper)
         {
             _examService = examService;
+            _userExamPassService = userExamPassService;
+            _accountService = accountService;
             _mapper = mapper;
         }
 
@@ -80,25 +84,27 @@ namespace Presentation_Layer.Controllers
             return View(examViewModel);
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> Pass(Guid examId)
-        //{
-        //    var examModel = await _examService.GetByIdAsync(examId);
-        //    var examViewModel = _mapper.Map<ExamViewModel>(examModel);
-        //    return View(examViewModel);
-        //}
+        [HttpGet]
+        public async Task<IActionResult> Pass(Guid examId)
+        {
+            var examModel = await _examService.GetByIdWithDetailsAsync(examId);
+            var viewModel = _mapper.Map<UserExamPassViewModel>(examModel);
+            return View(viewModel);
+        }
 
-        //[HttpPost]
-        //public async Task<IActionResult> Pass(ExamViewModel examViewModel)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var examModel = _mapper.Map<ExamModel>(examViewModel);
-        //        var checkedExam = await _examService.CheckExamAnswers(examModel);
-        //        return View("ExamResult", checkedExam);
-        //    }
+        [HttpPost]
+        public async Task<IActionResult> Pass(UserExamPassViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var model = _mapper.Map<UserExamPassModel>(viewModel);
+                model.User = await _accountService.GetCurrentUserAsync(User);
+                await _userExamPassService.CreateAsync(model);
+                return RedirectToAction("GetAll");
+            }
 
-        //    return View(examViewModel);
-        //}
+
+            return View(viewModel);
+        }
     }
 }

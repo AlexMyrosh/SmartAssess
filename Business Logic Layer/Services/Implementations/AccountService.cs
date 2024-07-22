@@ -1,4 +1,5 @@
-﻿using Business_Logic_Layer.Services.Interfaces;
+﻿using System.Security.Claims;
+using Business_Logic_Layer.Services.Interfaces;
 using Data_Access_Layer.Models;
 using Microsoft.AspNetCore.Identity;
 
@@ -22,6 +23,12 @@ namespace Business_Logic_Layer.Services.Implementations
             }
 
             return result;
+        }
+
+        public async Task<UserEntity?> GetCurrentUserAsync(ClaimsPrincipal userPrincipal)
+        {
+            var currentUser = await _userManager.GetUserAsync(userPrincipal);
+            return currentUser;
         }
     }
 }

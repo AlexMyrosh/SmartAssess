@@ -9,5 +9,7 @@
         public ExamModel Exam { get; set; }
 
         public TeacherNoteModel TeacherNote { get; set; }
+
+        public List<UserAnswerModel> StudentAnswers { get; set; }
     }
 }

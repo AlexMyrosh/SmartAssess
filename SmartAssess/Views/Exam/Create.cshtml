@@ -42,17 +42,16 @@
                 </div>
             </div>
             <a class="btn btn-outline-success" id="addQuestion">Add Question</a>
-
+            
+            <br/>
+            <br />
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-outline-success" />
+                <a asp-action="GetAll" class="btn btn-outline-warning">Back to List</a>
             </div>
             <div asp-validation-summary="All" class="text-danger"></div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="GetAll">Back to List</a>
 </div>
 
 @section Scripts {

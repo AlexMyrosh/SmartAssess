@@ -15,6 +15,10 @@ namespace Data_Access_Layer.Models
 
         public virtual ExamEntity Exam { get; set; }
 
-        public TeacherNoteEntity TeacherNote { get; set; }
+        public Guid? TeacherNoteId { get; set; }
+
+        public virtual TeacherNoteEntity TeacherNote { get; set; }
+
+        public List<UserAnswerEntity> StudentAnswers { get; set; }
     }
 }

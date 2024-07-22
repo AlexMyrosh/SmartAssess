@@ -9,5 +9,7 @@ namespace Data_Access_Layer.Models
         public string LastName { get; set; }
 
         public string ClassGroup { get; set; }
+
+        public List<UserExamPassEntity> UserExamPasses { get; set; }
     }
 }

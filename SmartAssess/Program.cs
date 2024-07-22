@@ -54,7 +54,7 @@ namespace Presentation_Layer
             var sqlConnectionString = configuration.GetConnectionString("SmartAssessConnection");
             services.AddDbContext<SqlContext>(options => options.UseSqlServer(sqlConnectionString));
 
-            services.AddIdentity<UserEntity, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddIdentity<UserEntity, IdentityRole>()
                 .AddEntityFrameworkStores<SqlContext>()
                 .AddDefaultTokenProviders();
 
@@ -66,8 +66,10 @@ namespace Presentation_Layer
 
             services.AddScoped<IExamService, ExamService>();
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IUserExamPassService, UserExamPassService>();
 
             services.AddScoped<IExamRepository, ExamRepository>();
+            services.AddScoped<IUserExamPassRepository, UserExamPassRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddControllersWithViews();

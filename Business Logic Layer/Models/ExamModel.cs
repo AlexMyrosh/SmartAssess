@@ -17,5 +17,7 @@
         public bool IsDeleted { get; set; }
 
         public List<ExamQuestionModel> Questions { get; set; }
+
+        public List<UserExamPassModel> StudentAnswers { get; set; }
     }
 }

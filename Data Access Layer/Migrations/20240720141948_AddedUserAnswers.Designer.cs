@@ -4,6 +4,7 @@ using Data_Access_Layer.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data_Access_Layer.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    partial class SqlContextModelSnapshot : ModelSnapshot
+    [Migration("20240720141948_AddedUserAnswers")]
+    partial class AddedUserAnswers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -87,10 +90,10 @@ namespace Data_Access_Layer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("MaxGrade")
+                    b.Property<int>("MaxGrade")
                         .HasColumnType("int");
 
-                    b.Property<int?>("MinGrade")
+                    b.Property<int>("MinGrade")
                         .HasColumnType("int");
 
                     b.Property<Guid>("QuestionId")
@@ -112,9 +115,6 @@ namespace Data_Access_Layer.Migrations
 
                     b.Property<string>("Answer")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("Grade")
-                        .HasColumnType("int");
 
                     b.Property<Guid>("QuestionId")
                         .HasColumnType("uniqueidentifier");
@@ -217,10 +217,8 @@ namespace Data_Access_Layer.Migrations
                     b.Property<Guid>("ExamId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Feedback")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -416,7 +414,9 @@ namespace Data_Access_Layer.Migrations
 
                     b.HasOne("Data_Access_Layer.Models.UserEntity", "User")
                         .WithMany("UserExamPasses")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Exam");
 

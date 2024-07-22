@@ -33,6 +33,7 @@ namespace Data_Access_Layer.Repositories.Implementations
         {
             var examEntities = await _sqlContext.Set<ExamEntity>()
                 .Include(exam => exam.Questions)
+                .Include(exam => exam.UserExamPasses)
                 .Where(exam => exam.IsDeleted == false || exam.IsDeleted == isDeleted)
                 .ToListAsync();
 
@@ -49,6 +50,7 @@ namespace Data_Access_Layer.Repositories.Implementations
         {
             var examEntity = await _sqlContext.Set<ExamEntity>()
                 .Include(exam => exam.Questions)
+                .Include(exam => exam.UserExamPasses)
                 .FirstOrDefaultAsync(exam => exam.Id == id);
 
             return examEntity;
