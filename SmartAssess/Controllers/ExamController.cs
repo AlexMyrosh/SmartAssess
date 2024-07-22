@@ -24,7 +24,7 @@ namespace Presentation_Layer.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var examModels = await _examService.GetAllWithDetailsAsync();
+            var examModels = await _examService.GetAllAvailableExamsWithDetailsAsync();
             var examViewModels = _mapper.Map<IEnumerable<ExamViewModel>>(examModels);
             return View(examViewModels);
         }

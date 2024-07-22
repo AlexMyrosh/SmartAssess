@@ -1,4 +1,5 @@
 ﻿using Data_Access_Layer.Models;
+using System.Linq.Expressions;
 
 namespace Data_Access_Layer.Repositories.Interfaces
 {
@@ -21,5 +22,7 @@ namespace Data_Access_Layer.Repositories.Interfaces
         void HardDelete(ExamEntity entity);
 
         Guid Update(ExamEntity model);
+
+        public Task<IEnumerable<ExamEntity>> GetAllExamsByFilterWithDetailsAsync(Expression<Func<ExamEntity, bool>> filters);
     }
 }

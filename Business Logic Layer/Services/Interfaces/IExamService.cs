@@ -21,5 +21,7 @@ namespace Business_Logic_Layer.Services.Interfaces
         Task HardDeleteAsync(ExamModel entity);
 
         Task<Guid> UpdateAsync(ExamModel model);
+
+        Task<IEnumerable<ExamModel>> GetAllAvailableExamsWithDetailsAsync();
     }
 }

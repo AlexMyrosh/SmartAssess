@@ -1,4 +1,5 @@
-﻿using Data_Access_Layer.Context;
+﻿using System.Linq.Expressions;
+using Data_Access_Layer.Context;
 using Data_Access_Layer.Models;
 using Data_Access_Layer.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -89,6 +90,17 @@ namespace Data_Access_Layer.Repositories.Implementations
         {
             var result = _sqlContext.Set<ExamEntity>().Update(model);
             return result.Entity.Id;
+        }
+
+        public async Task<IEnumerable<ExamEntity>> GetAllExamsByFilterWithDetailsAsync(Expression<Func<ExamEntity, bool>> filters)
+        {
+            var examEntities = await _sqlContext.Set<ExamEntity>()
+                .Where(filters)
+                .Include(exam => exam.Questions)
+                .Include(exam => exam.UserExamPasses)
+                .ToListAsync();
+
+            return examEntities;
         }
     }
 }
