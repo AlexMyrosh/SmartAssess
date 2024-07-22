@@ -25,6 +25,9 @@ namespace Data_Access_Layer.Models
         [Required]
         public TimeSpan ExamDuration { get; set; }
 
+        [Required]
+        public bool IsAssessedByAi { get; set; }
+
         public bool IsDeleted { get; set; }
 
         public List<ExamQuestionEntity> Questions { get; set; }

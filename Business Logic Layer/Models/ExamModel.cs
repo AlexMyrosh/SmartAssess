@@ -18,6 +18,8 @@ namespace Business_Logic_Layer.Models
 
         public TimeSpan ExamDuration { get; set; }
 
+        public bool IsAssessedByAi { get; set; }
+
         public bool IsDeleted { get; set; }
 
         public List<ExamQuestionModel> Questions { get; set; }

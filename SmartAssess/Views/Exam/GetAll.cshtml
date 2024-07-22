@@ -31,6 +31,9 @@
                 @Html.DisplayNameFor(model => model.ExamDuration)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.IsAssessedByAi)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Questions)
             </th>
             <th></th>
@@ -56,6 +59,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ExamDuration)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsAssessedByAi)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Questions.Count)
