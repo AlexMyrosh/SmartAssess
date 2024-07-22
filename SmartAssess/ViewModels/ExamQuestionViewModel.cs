@@ -6,7 +6,7 @@
 
         public string QuestionText { get; set; }
 
-        public string UserAnswer { get; set; }
+        public string? UserAnswer { get; set; }
 
         public ExamViewModel? Exam { get; set; }
 

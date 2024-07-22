@@ -22,6 +22,9 @@ namespace Data_Access_Layer.Models
         [Required]
         public DateTime ExamEndDateTime { get; set; }
 
+        [Required]
+        public TimeSpan ExamDuration { get; set; }
+
         public bool IsDeleted { get; set; }
 
         public List<ExamQuestionEntity> Questions { get; set; }

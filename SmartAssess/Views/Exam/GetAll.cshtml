@@ -28,14 +28,17 @@
                 @Html.DisplayNameFor(model => model.ExamEndDateTime)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.ExamDuration)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Questions)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
+@foreach (var item in Model) { 
+    <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
@@ -51,9 +54,12 @@
             <td>
                 @Html.DisplayFor(modelItem => item.ExamEndDateTime)
             </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Questions.Count)
-                </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExamDuration)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Questions.Count)
+            </td>
             <td>
                     @Html.ActionLink("Update", "Update", new { id = item.Id }, new { @class = "btn btn-outline-info" })
                     @Html.ActionLink("Details", "GetById", new { id = item.Id }, new { @class = "btn btn-outline-info" })

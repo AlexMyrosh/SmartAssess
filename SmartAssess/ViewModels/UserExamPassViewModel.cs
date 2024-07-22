@@ -16,6 +16,8 @@ namespace Presentation_Layer.ViewModels
 
         public int? TotalGrade { get; set; }
 
+        public TimeSpan ExamDuration { get; set; }
+
         public Guid? ExamId { get; set; }
 
         public UserEntity? User { get; set; }

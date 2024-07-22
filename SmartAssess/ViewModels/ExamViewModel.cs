@@ -14,6 +14,8 @@
 
         public DateTime ExamEndDateTime { get; set; }
 
+        public TimeSpan ExamDuration { get; set; }
+
         public bool IsDeleted { get; set; }
 
         public List<ExamQuestionViewModel> Questions { get; set; }

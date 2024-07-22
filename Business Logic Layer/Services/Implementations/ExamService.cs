@@ -58,6 +58,11 @@ namespace Business_Logic_Layer.Services.Implementations
         {
             var examEntity = await _unitOfWork.ExamRepository.GetByIdWithDetailsAsync(id);
             var examModel = _mapper.Map<ExamModel>(examEntity);
+            if (DateTime.Now + examModel.ExamDuration > examModel.ExamEndDateTime)
+            {
+                examModel.ExamDuration = examModel.ExamEndDateTime - DateTime.Now;
+            }
+
             return examModel;
         }
 

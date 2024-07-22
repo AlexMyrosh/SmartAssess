@@ -1,4 +1,6 @@
-﻿namespace Business_Logic_Layer.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Business_Logic_Layer.Models
 {
     public class ExamModel
     {
@@ -13,6 +15,8 @@
         public DateTime ExamStartDateTime { get; set; }
 
         public DateTime ExamEndDateTime { get; set; }
+
+        public TimeSpan ExamDuration { get; set; }
 
         public bool IsDeleted { get; set; }
 
