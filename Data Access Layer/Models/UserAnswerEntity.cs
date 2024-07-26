@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Data_Access_Layer.Models
 {
@@ -7,18 +8,21 @@ namespace Data_Access_Layer.Models
         [Key]
         public Guid Id { get; set; }
 
-        public string? Answer { get; set; }
+        [MaxLength(1000)]
+        public string? AnswerText { get; set; }
 
         public int? Grade { get; set; }
 
         [Required]
-        public Guid QuestionId { get; set; }
+        [DefaultValue(false)]
+        public bool IsDeleted { get; set; }
 
+        [Required]
+        public Guid QuestionId { get; set; }
         public virtual ExamQuestionEntity Question { get; set; }
 
         [Required]
-        public Guid StudentExamPassId { get; set; }
-
-        public virtual UserExamPassEntity StudentExamPass { get; set; }
+        public Guid UserExamAttemptId { get; set; }
+        public virtual UserExamAttemptEntity UserExamAttempt { get; set; }
     }
 }

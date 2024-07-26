@@ -15,8 +15,8 @@ namespace Data_Access_Layer.Repositories.Implementations
 
         public async Task<UserEntity?> GetByIdAsync(string id)
         {
-            var result = await _sqlContext.Set<UserEntity>().FindAsync(id);
-            return result;
+            var userEntity = await _sqlContext.Set<UserEntity>().FindAsync(id);
+            return userEntity;
         }
     }
 }

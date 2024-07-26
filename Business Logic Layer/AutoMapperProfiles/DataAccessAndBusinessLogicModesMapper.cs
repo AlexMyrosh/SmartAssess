@@ -10,13 +10,12 @@ namespace Business_Logic_Layer.AutoMapperProfiles
         {
             CreateMap<ExamModel, ExamEntity>().ReverseMap();
             CreateMap<ExamQuestionModel, ExamQuestionEntity>().ReverseMap();
-            CreateMap<TeacherNoteModel, TeacherNoteEntity>().ReverseMap();
             CreateMap<UserAnswerEntity, UserAnswerModel>().ReverseMap();
 
-            CreateMap<UserExamPassEntity, UserExamPassModel>()
+            CreateMap<UserExamAttemptEntity, UserExamPassModel>()
                 .ForMember(dest => dest.TotalGrade, opt => opt.MapFrom(src => src.UserAnswers.Sum(ua => ua.Grade)));
 
-            CreateMap<UserExamPassModel, UserExamPassEntity>();
+            CreateMap<UserExamPassModel, UserExamAttemptEntity>();
             CreateMap<UserEntity, UserEntity>()
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email))
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));

@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using Data_Access_Layer.Enum;
+using System.ComponentModel.DataAnnotations;
 
 namespace Data_Access_Layer.Models
 {
@@ -8,13 +10,16 @@ namespace Data_Access_Layer.Models
         public Guid Id { get; set; }
 
         [Required]
+        [MaxLength(100)]
         public string Name { get; set; }
 
         [Required]
+        [MaxLength(1000)]
         public string Description { get; set; }
-
+        
         [Required]
-        public string Subject { get; set; }
+        [DefaultValue(Subject.NotSet)]
+        public Subject Subject { get; set; }
 
         [Required]
         public DateTime ExamStartDateTime { get; set; }
@@ -26,12 +31,15 @@ namespace Data_Access_Layer.Models
         public TimeSpan ExamDuration { get; set; }
 
         [Required]
+        [DefaultValue(false)]
         public bool IsAssessedByAi { get; set; }
 
+        [Required]
+        [DefaultValue(false)]
         public bool IsDeleted { get; set; }
 
-        public List<ExamQuestionEntity> Questions { get; set; }
+        public virtual List<ExamQuestionEntity> Questions { get; set; }
 
-        public List<UserExamPassEntity> UserExamPasses { get; set; }
+        public virtual List<UserExamAttemptEntity> UserExamAttempts { get; set; }
     }
 }

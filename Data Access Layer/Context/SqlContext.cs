@@ -14,26 +14,46 @@ namespace Data_Access_Layer.Context
 
         public DbSet<ExamQuestionEntity> ExamQuestions { get; set; }
 
-        public DbSet<TeacherNoteEntity> TeacherNotes { get; set; }
-
         public DbSet<UserAnswerEntity> UserAnswers { get; set; }
 
-        public DbSet<UserExamPassEntity> UserExamPasses { get; set; }
+        public DbSet<UserExamAttemptEntity> UserExamAttempts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
+            // Configure ExamQuestionEntity
             modelBuilder.Entity<ExamQuestionEntity>()
-                .HasOne(eq => eq.TeacherNote)
-                .WithOne(tn => tn.Question)
-                .HasForeignKey<TeacherNoteEntity>(tn => tn.QuestionId);
+                .HasOne(question => question.Exam)
+                .WithMany(exam => exam.Questions)
+                .HasForeignKey(question => question.ExamId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Configure UserExamAttemptEntity
+            modelBuilder.Entity<UserExamAttemptEntity>()
+                .HasOne(attempt => attempt.User)
+                .WithMany(user => user.UserExamAttempts)
+                .HasForeignKey(attempt => attempt.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<UserExamAttemptEntity>()
+                .HasOne(attempt => attempt.Exam)
+                .WithMany(exam => exam.UserExamAttempts)
+                .HasForeignKey(attempt => attempt.ExamId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Configure UserAnswerEntity
+            modelBuilder.Entity<UserAnswerEntity>()
+                .HasOne(answer => answer.Question)
+                .WithMany(question => question.UserAnswers)
+                .HasForeignKey(answer => answer.QuestionId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<UserAnswerEntity>()
-                .HasOne<UserExamPassEntity>(s => s.StudentExamPass)
-                .WithMany(g => g.UserAnswers)
-                .HasForeignKey(s => s.StudentExamPassId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(answer => answer.UserExamAttempt)
+                .WithMany(pass => pass.UserAnswers)
+                .HasForeignKey(answer => answer.UserExamAttemptId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

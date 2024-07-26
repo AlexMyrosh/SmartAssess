@@ -10,6 +10,6 @@ namespace Data_Access_Layer.UnitOfWork.Interfaces
 
         IUserRepository UserRepository { get; }
 
-        Task<int> SaveAsync();
+        Task SaveAsync();
     }
 }

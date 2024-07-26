@@ -1,15 +1,18 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace Data_Access_Layer.Models
 {
     public class UserEntity : IdentityUser
     {
+        [Required]
+        [MaxLength(100)]
         public string FirstName { get; set; }
 
+        [Required]
+        [MaxLength(100)]
         public string LastName { get; set; }
 
-        public string ClassGroup { get; set; }
-
-        public List<UserExamPassEntity> UserExamPasses { get; set; }
+        public List<UserExamAttemptEntity> UserExamAttempts { get; set; }
     }
 }

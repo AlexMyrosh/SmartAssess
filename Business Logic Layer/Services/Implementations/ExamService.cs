@@ -76,7 +76,7 @@ namespace Business_Logic_Layer.Services.Implementations
         public async Task HardDeleteAsync(ExamModel entity)
         {
             var examEntity = _mapper.Map<ExamEntity>(entity);
-            _unitOfWork.ExamRepository.HardDelete(examEntity);
+            await _unitOfWork.ExamRepository.HardDeleteAsync(examEntity.Id);
             await _unitOfWork.SaveAsync();
         }
 

@@ -19,7 +19,7 @@ namespace Business_Logic_Layer.Services.Implementations
 
         public async Task<Guid> CreateAsync(UserExamPassModel model)
         {
-            var entity = _mapper.Map<UserExamPassEntity>(model);
+            var entity = _mapper.Map<UserExamAttemptEntity>(model);
             var createdItemId = await _unitOfWork.UserExamPassRepository.CreateAsync(entity);
             await _unitOfWork.SaveAsync();
             return createdItemId;

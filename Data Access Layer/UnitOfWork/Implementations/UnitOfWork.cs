@@ -23,7 +23,6 @@ namespace Data_Access_Layer.UnitOfWork.Implementations
             {
                 _examRepository ??= new ExamRepository(_sqlContext);
                 return _examRepository;
-
             }
         }
 
@@ -31,9 +30,8 @@ namespace Data_Access_Layer.UnitOfWork.Implementations
         {
             get
             {
-                _userExamPassRepository ??= new UserExamPassRepository(_sqlContext);
+                _userExamPassRepository ??= new UserExamAttemptRepository(_sqlContext);
                 return _userExamPassRepository;
-
             }
         }
 
@@ -43,13 +41,12 @@ namespace Data_Access_Layer.UnitOfWork.Implementations
             {
                 _userRepository ??= new UserRepository(_sqlContext);
                 return _userRepository;
-
             }
         }
 
-        public async Task<int> SaveAsync()
+        public async Task SaveAsync()
         {
-            return await _sqlContext.SaveChangesAsync();
+            await _sqlContext.SaveChangesAsync();
         }
     }
 }
