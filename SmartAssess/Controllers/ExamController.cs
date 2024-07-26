@@ -88,12 +88,12 @@ namespace Presentation_Layer.Controllers
         public async Task<IActionResult> Pass(Guid examId)
         {
             var examModel = await _examService.GetByIdWithDetailsAsync(examId);
-            var viewModel = _mapper.Map<UserExamPassViewModel>(examModel);
+            var viewModel = _mapper.Map<UserExamAttemptViewModel>(examModel);
             return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Pass(UserExamPassViewModel viewModel)
+        public async Task<IActionResult> Pass(UserExamAttemptViewModel viewModel)
         {
             if (ModelState.IsValid)
             {

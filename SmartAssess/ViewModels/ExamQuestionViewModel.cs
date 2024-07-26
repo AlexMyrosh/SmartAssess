@@ -4,14 +4,16 @@
     {
         public Guid? Id { get; set; }
 
-        public string QuestionText { get; set; }
+        public string? QuestionText { get; set; }
 
-        public string? UserAnswer { get; set; }
+        public int? MaxGrade { get; set; }
+
+        public string? TeacherNoteForAssessment { get; set; }
+
+        public bool? IsDeleted { get; set; }
 
         public ExamViewModel? Exam { get; set; }
 
-        public TeacherNoteViewModel? TeacherNote { get; set; }
-
-        public List<UserAnswerViewModel>? StudentAnswers { get; set; }
+        public List<UserAnswerViewModel>? UserAnswers { get; set; }
     }
 }

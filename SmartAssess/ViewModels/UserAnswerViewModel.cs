@@ -2,14 +2,14 @@
 {
     public class UserAnswerViewModel
     {
-        public Guid Id { get; set; }
-
-        public string? QuestionText { get; set; }
+        public Guid? Id { get; set; }
 
         public string? AnswerText { get; set; }
 
         public int? Grade { get; set; }
 
-        public Guid QuestionId { get; set; }
+        public bool? IsDeleted { get; set; }
+
+        public ExamQuestionViewModel? Question { get; set; }
     }
 }

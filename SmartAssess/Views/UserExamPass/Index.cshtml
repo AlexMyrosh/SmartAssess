@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Presentation_Layer.ViewModels.UserExamPassViewModel>
+﻿@model IEnumerable<Presentation_Layer.ViewModels.UserExamAttemptViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -10,13 +10,13 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.ExamName)
+                @Html.DisplayNameFor(model => model.Exam.Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ExamDescription)
+                @Html.DisplayNameFor(model => model.Exam.Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ExamSubject)
+                @Html.DisplayNameFor(model => model.Exam.Subject)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.User)
@@ -31,13 +31,13 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.ExamName)
+                    @Html.DisplayFor(modelItem => item.Exam.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ExamDescription)
+                    @Html.DisplayFor(modelItem => item.Exam.Description)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ExamSubject)
+                    @Html.DisplayFor(modelItem => item.Exam.Subject)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.User.FirstName)

@@ -1,8 +1,8 @@
 ﻿using Data_Access_Layer.Models;
 
-namespace Business_Logic_Layer.Models
+namespace Presentation_Layer.ViewModels
 {
-    public class UserExamAttemptModel
+    public class UserExamAttemptViewModel
     {
         public Guid? Id { get; set; }
 
@@ -14,8 +14,8 @@ namespace Business_Logic_Layer.Models
 
         public UserEntity? User { get; set; }
 
-        public ExamModel? Exam { get; set; }
+        public ExamViewModel? Exam { get; set; }
 
-        public List<UserAnswerModel>? UserAnswers { get; set; }
+        public List<UserAnswerViewModel>? UserAnswers { get; set; }
     }
 }

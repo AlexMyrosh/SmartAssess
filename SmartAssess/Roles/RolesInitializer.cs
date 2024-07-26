@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace Presentation_Layer.Models
+namespace Presentation_Layer.Roles
 {
     public class RolesInitializer
     {

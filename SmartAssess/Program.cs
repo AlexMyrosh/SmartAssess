@@ -11,7 +11,7 @@ using Data_Access_Layer.UnitOfWork.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Presentation_Layer.AutoMapperProfiles;
-using Presentation_Layer.Extentions;
+using Presentation_Layer.Extensions;
 
 namespace Presentation_Layer
 {

@@ -55,7 +55,17 @@ namespace Business_Logic_Layer.Services.Implementations
 
         public async Task<Guid> UpdateAsync(UserExamAttemptModel model)
         {
-            var examEntityFromDb = await _unitOfWork.UserExamPassRepository.GetByIdWithDetailsAsync(model.Id);
+            if (model.Id is null)
+            {
+                throw new ArgumentException("UserExamAttemptModel id is null", nameof(model.Id));
+            }
+
+            if (model.UserAnswers is null)
+            {
+                throw new ArgumentException("UserExamAttemptModel UserAnswers is null", nameof(model.UserAnswers));
+            }
+
+            var examEntityFromDb = await _unitOfWork.UserExamPassRepository.GetByIdWithDetailsAsync(model.Id.Value);
             if (examEntityFromDb is null)
             {
                 throw new ArgumentException("Unable to get UserExamAttemptEntity by id", nameof(model.Id));
@@ -69,7 +79,7 @@ namespace Business_Logic_Layer.Services.Implementations
             }
 
             await _unitOfWork.SaveAsync();
-            return model.Id;
+            return model.Id.Value;
         }
     }
 }

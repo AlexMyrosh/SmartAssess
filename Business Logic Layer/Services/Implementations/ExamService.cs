@@ -77,10 +77,15 @@ namespace Business_Logic_Layer.Services.Implementations
 
         public async Task<Guid> UpdateAsync(ExamModel model)
         {
-            var examEntityFromDb = await _unitOfWork.ExamRepository.GetByIdAsync(model.Id);
+            if (model.Id is null)
+            {
+                throw new ArgumentException("ExamModel id is null", nameof(model.Id));
+            }
+
+            var examEntityFromDb = await _unitOfWork.ExamRepository.GetByIdAsync(model.Id.Value);
             _mapper.Map(model, examEntityFromDb);
             await _unitOfWork.SaveAsync();
-            return model.Id;
+            return model.Id.Value;
         }
     }
 }

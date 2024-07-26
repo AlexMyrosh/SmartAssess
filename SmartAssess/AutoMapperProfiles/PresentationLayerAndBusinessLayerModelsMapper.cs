@@ -18,33 +18,33 @@ namespace Presentation_Layer.AutoMapperProfiles
 
             CreateMap<LoginViewModel, UserEntity>().ReverseMap();
 
-            CreateMap<ExamModel, UserExamPassViewModel>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.ExamName, opt => opt.MapFrom(src => src.Name))
-                .ForMember(dest => dest.ExamDescription, opt => opt.MapFrom(src => src.Description))
-                .ForMember(dest => dest.ExamSubject, opt => opt.MapFrom(src => src.Subject))
-                .ForMember(dest => dest.ExamId, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.UserAnswers, opt => opt.MapFrom(src => src.Questions.Select(q => new UserAnswerViewModel
-                {
-                    QuestionText = q.QuestionText,
-                    QuestionId = q.Id
-                })));
+            CreateMap<ExamModel, UserExamAttemptViewModel>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+                //.ForMember(dest => dest.ExamName, opt => opt.MapFrom(src => src.Name))
+                //.ForMember(dest => dest.ExamDescription, opt => opt.MapFrom(src => src.Description))
+                //.ForMember(dest => dest.ExamSubject, opt => opt.MapFrom(src => src.Subject))
+                //.ForMember(dest => dest.ExamId, opt => opt.MapFrom(src => src.Id))
+                //.ForMember(dest => dest.UserAnswers, opt => opt.MapFrom(src => src.Questions.Select(q => new UserAnswerViewModel
+                //{
+                //    QuestionText = q.QuestionText,
+                //    QuestionId = q.Id
+                //})));
 
-            CreateMap<UserExamPassViewModel, UserExamAttemptModel>()
+            CreateMap<UserExamAttemptViewModel, UserExamAttemptModel>()
                 .ForMember(dest => dest.UserAnswers, opt => opt.MapFrom(src => src.UserAnswers.Select(sa => new UserAnswerModel
                 {
                     Id = sa.Id,
                     AnswerText = sa.AnswerText,
-                    QuestionId = sa.QuestionId,
+                    //QuestionId = sa.QuestionId,
                     Grade = sa.Grade ?? 0
                 }).ToList()));
 
-            CreateMap<UserExamAttemptModel, UserExamPassViewModel>()
+            CreateMap<UserExamAttemptModel, UserExamAttemptViewModel>()
                 .ForMember(dest => dest.UserAnswers, opt => opt.MapFrom(src => src.UserAnswers.Select(ua => new UserAnswerViewModel
                 {
                     Id = ua.Id,
                     AnswerText = ua.AnswerText,
-                    QuestionText = ua.Question.QuestionText,
+                    //QuestionText = ua.Question.QuestionText,
                     Grade = ua.Grade
                 })));
         }

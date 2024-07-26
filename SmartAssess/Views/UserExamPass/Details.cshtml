@@ -1,4 +1,4 @@
-﻿@model Presentation_Layer.ViewModels.UserExamPassViewModel
+﻿@model Presentation_Layer.ViewModels.UserExamAttemptViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -11,22 +11,22 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ExamName)
+            @Html.DisplayNameFor(model => model.Exam.Name)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ExamName)
+            @Html.DisplayFor(model => model.Exam.Name)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ExamDescription)
+            @Html.DisplayNameFor(model => model.Exam.Description)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ExamDescription)
+            @Html.DisplayFor(model => model.Exam.Description)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ExamSubject)
+            @Html.DisplayNameFor(model => model.Exam.Subject)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ExamSubject)
+            @Html.DisplayFor(model => model.Exam.Subject)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.User)
@@ -55,7 +55,7 @@
         @for (var i = 0; i < Model.UserAnswers.Count; i++)
         {
             <dt class="col-sm-4">
-                @Html.DisplayFor(model => model.UserAnswers[i].QuestionText)
+                @Html.DisplayFor(model => model.UserAnswers[i].Question.QuestionText)
             </dt>
             <dd class="col-sm-4">
                 @Html.DisplayFor(model => model.UserAnswers[i].AnswerText)

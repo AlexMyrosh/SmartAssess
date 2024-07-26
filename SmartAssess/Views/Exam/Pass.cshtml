@@ -1,28 +1,28 @@
-﻿@model UserExamPassViewModel
+﻿@model UserExamAttemptViewModel
 
 <h2>Exam</h2>
 <hr />
 <dl class="row">
     <dt class = "col-sm-2">
-        @Html.DisplayNameFor(model => model.ExamName)
+        @Html.DisplayNameFor(model => model.Exam.Name)
     </dt>
     <dd class = "col-sm-10">
-        @Html.DisplayFor(model => model.ExamName)
+        @Html.DisplayFor(model => model.Exam.Name)
     </dd>
     <dt class = "col-sm-2">
-        @Html.DisplayNameFor(model => model.ExamDescription)
+        @Html.DisplayNameFor(model => model.Exam.Description)
     </dt>
     <dd class = "col-sm-10">
-        @Html.DisplayFor(model => model.ExamDescription)
+        @Html.DisplayFor(model => model.Exam.Description)
     </dd>
     <dt class = "col-sm-2">
-        @Html.DisplayNameFor(model => model.ExamSubject)
+        @Html.DisplayNameFor(model => model.Exam.Subject)
     </dt>
     <dd class = "col-sm-10">
-        @Html.DisplayFor(model => model.ExamSubject)
+        @Html.DisplayFor(model => model.Exam.Subject)
     </dd>
     <dt class = "col-sm-2">
-        @Html.DisplayNameFor(model => model.ExamDuration)
+        @Html.DisplayNameFor(model => model.Exam.ExamDuration)
     </dt>
     <dd class = "col-sm-10">
         <div id="countdown"></div>
@@ -32,13 +32,13 @@
 <form method="post" asp-controller="Exam" asp-action="Pass">
     @for (var i = 0; i < Model.UserAnswers.Count; i++)
     {
-        <h5>@Model.UserAnswers[i].QuestionText</h5>
+        <h5>@Model.UserAnswers[i].Question.QuestionText</h5>
         <textarea asp-for="UserAnswers[i].AnswerText" class="form-control"></textarea>
         <span asp-validation-for="UserAnswers[i].AnswerText" class="text-danger"></span>
-        @Html.HiddenFor(model => model.UserAnswers[i].QuestionId)
+        @Html.HiddenFor(model => model.UserAnswers[i].Question.Id)
     }
 
-    @Html.HiddenFor(model => model.ExamId)
+    @Html.HiddenFor(model => model.Exam.Id)
     <br/>
     <button id="completeExamButton" type="submit" class="btn btn-outline-success">Submit</button>
     <a asp-action="GetAll" class="btn btn-outline-warning">Back to List</a>
@@ -47,7 +47,7 @@
 @section Scripts {
 
     <script>
-        var duration = @Model.ExamDuration.TotalSeconds; // get duration in seconds.
+        var duration = @Model.Exam.ExamDuration.Value.TotalSeconds; // get duration in seconds.
         var timerId = setInterval(countdown, 1000);
 
         function countdown() {

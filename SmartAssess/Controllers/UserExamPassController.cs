@@ -25,7 +25,7 @@ namespace Presentation_Layer.Controllers
         public async Task<IActionResult> Index()
         {
             var examPassModels = await _userExamPassService.GetAllWithDetailsAsync();
-            var viewModel = _mapper.Map<IEnumerable<UserExamPassViewModel>>(examPassModels);
+            var viewModel = _mapper.Map<IEnumerable<UserExamAttemptViewModel>>(examPassModels);
             return View(viewModel);
         }
 
@@ -33,7 +33,7 @@ namespace Presentation_Layer.Controllers
         public async Task<IActionResult> Details(Guid id)
         {
             var examPassModel = await _userExamPassService.GetByIdWithDetailsAsync(id);
-            var viewModel = _mapper.Map<UserExamPassViewModel>(examPassModel);
+            var viewModel = _mapper.Map<UserExamAttemptViewModel>(examPassModel);
             return View(viewModel);
         }
 
@@ -41,12 +41,12 @@ namespace Presentation_Layer.Controllers
         public async Task<IActionResult> ExamAssess(Guid examId)
         {
             var examPassModel = await _userExamPassService.GetByIdWithDetailsAsync(examId);
-            var viewModel = _mapper.Map<UserExamPassViewModel>(examPassModel);
+            var viewModel = _mapper.Map<UserExamAttemptViewModel>(examPassModel);
             return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> ExamAssess(UserExamPassViewModel viewModel)
+        public async Task<IActionResult> ExamAssess(UserExamAttemptViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
