@@ -6,10 +6,14 @@
 
         public string QuestionText { get; set; }
 
+        public int MaxGrade { get; set; }
+
+        public string TeacherNoteForAssessment { get; set; }
+
+        public bool IsDeleted { get; set; }
+
         public ExamModel Exam { get; set; }
 
-        public TeacherNoteModel TeacherNote { get; set; }
-
-        public List<UserAnswerModel> StudentAnswers { get; set; }
+        public List<UserAnswerModel> UserAnswers { get; set; }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel;
-using Data_Access_Layer.Enum;
+using Data_Access_Layer.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace Data_Access_Layer.Models
@@ -18,8 +18,8 @@ namespace Data_Access_Layer.Models
         public string Description { get; set; }
         
         [Required]
-        [DefaultValue(Subject.NotSet)]
-        public Subject Subject { get; set; }
+        [DefaultValue(SubjectEntity.NotSet)]
+        public SubjectEntity Subject { get; set; }
 
         [Required]
         public DateTime ExamStartDateTime { get; set; }

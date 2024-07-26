@@ -4,9 +4,9 @@ namespace Business_Logic_Layer.Services.Interfaces
 {
     public interface IExamService
     {
-        Task<IEnumerable<ExamModel>> GetAllAsync(bool isDeleted = false);
+        Task<IEnumerable<ExamModel>> GetAllAsync(bool includeDeleted = false);
 
-        Task<IEnumerable<ExamModel>> GetAllWithDetailsAsync(bool isDeleted = false);
+        Task<IEnumerable<ExamModel>> GetAllWithDetailsAsync(bool includeDeleted = false);
 
         Task<ExamModel?> GetByIdAsync(Guid id);
 
@@ -18,10 +18,8 @@ namespace Business_Logic_Layer.Services.Interfaces
 
         Task<bool> HardDeleteAsync(Guid id);
 
-        Task HardDeleteAsync(ExamModel entity);
-
         Task<Guid> UpdateAsync(ExamModel model);
 
-        Task<IEnumerable<ExamModel>> GetAllAvailableExamsWithDetailsAsync();
+        Task<IEnumerable<ExamModel>> GetAllAvailableExamsWithDetailsAsync(bool includeDeleted = false);
     }
 }

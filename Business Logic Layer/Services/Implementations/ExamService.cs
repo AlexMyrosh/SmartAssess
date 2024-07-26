@@ -17,37 +17,37 @@ namespace Business_Logic_Layer.Services.Implementations
             _mapper = mapper;
         }
 
-        public async Task<Guid> CreateAsync(ExamModel examModel)
+        public async Task<Guid> CreateAsync(ExamModel model)
         {
-            var examEntity = _mapper.Map<ExamEntity>(examModel);
+            var examEntity = _mapper.Map<ExamEntity>(model);
             var createdExamId = await _unitOfWork.ExamRepository.CreateAsync(examEntity);
             await _unitOfWork.SaveAsync();
             return createdExamId;
         }
 
-        public async Task<IEnumerable<ExamModel>> GetAllAsync(bool isDeleted = false)
+        public async Task<IEnumerable<ExamModel>> GetAllAsync(bool includeDeleted = false)
         {
-            var examEntities = await _unitOfWork.ExamRepository.GetAllAsync(isDeleted);
+            var examEntities = await _unitOfWork.ExamRepository.GetAllAsync(includeDeleted);
             var examModels = _mapper.Map<IEnumerable<ExamModel>>(examEntities);
             return examModels;
         }
 
-        public async Task<IEnumerable<ExamModel>> GetAllAvailableExamsWithDetailsAsync()
+        public async Task<IEnumerable<ExamModel>> GetAllAvailableExamsWithDetailsAsync(bool includeDeleted = false)
         {
             var currentDateTime = DateTime.Now;
-            var examEntities = await _unitOfWork.ExamRepository.GetAllExamsByFilterWithDetailsAsync(exam => exam.ExamStartDateTime <= currentDateTime && exam.ExamEndDateTime > currentDateTime);
+            var examEntities = await _unitOfWork.ExamRepository.GetAllExamsByFilterWithDetailsAsync(exam => exam.ExamStartDateTime <= currentDateTime && exam.ExamEndDateTime > currentDateTime, includeDeleted);
             var examModels = _mapper.Map<IEnumerable<ExamModel>>(examEntities);
             return examModels;
         }
 
-        public async Task<IEnumerable<ExamModel>> GetAllWithDetailsAsync(bool isDeleted = false)
+        public async Task<IEnumerable<ExamModel>> GetAllWithDetailsAsync(bool includeDeleted = false)
         {
-            var examEntities = await _unitOfWork.ExamRepository.GetAllWithDetailsAsync(isDeleted);
+            var examEntities = await _unitOfWork.ExamRepository.GetAllWithDetailsAsync(includeDeleted);
             var examModels = _mapper.Map<IEnumerable<ExamModel>>(examEntities);
             return examModels;
         }
 
-        public async Task<ExamModel> GetByIdAsync(Guid id)
+        public async Task<ExamModel?> GetByIdAsync(Guid id)
         {
             var examEntity = await _unitOfWork.ExamRepository.GetByIdAsync(id);
             var examModel = _mapper.Map<ExamModel>(examEntity);
@@ -58,11 +58,6 @@ namespace Business_Logic_Layer.Services.Implementations
         {
             var examEntity = await _unitOfWork.ExamRepository.GetByIdWithDetailsAsync(id);
             var examModel = _mapper.Map<ExamModel>(examEntity);
-            if (DateTime.Now + examModel.ExamDuration > examModel.ExamEndDateTime)
-            {
-                examModel.ExamDuration = examModel.ExamEndDateTime - DateTime.Now;
-            }
-
             return examModel;
         }
 
@@ -73,13 +68,6 @@ namespace Business_Logic_Layer.Services.Implementations
             return result;
         }
 
-        public async Task HardDeleteAsync(ExamModel entity)
-        {
-            var examEntity = _mapper.Map<ExamEntity>(entity);
-            await _unitOfWork.ExamRepository.HardDeleteAsync(examEntity.Id);
-            await _unitOfWork.SaveAsync();
-        }
-
         public async Task<bool> SoftDeleteAsync(Guid id)
         {
             var result = await _unitOfWork.ExamRepository.SoftDeleteAsync(id);
@@ -87,12 +75,12 @@ namespace Business_Logic_Layer.Services.Implementations
             return result;
         }
 
-        public async Task<Guid> UpdateAsync(ExamModel examModel)
+        public async Task<Guid> UpdateAsync(ExamModel model)
         {
-            var examEntityFromDb = await _unitOfWork.ExamRepository.GetByIdAsync(examModel.Id);
-            _mapper.Map(examModel, examEntityFromDb);
+            var examEntityFromDb = await _unitOfWork.ExamRepository.GetByIdAsync(model.Id);
+            _mapper.Map(model, examEntityFromDb);
             await _unitOfWork.SaveAsync();
-            return examModel.Id;
+            return model.Id;
         }
     }
 }

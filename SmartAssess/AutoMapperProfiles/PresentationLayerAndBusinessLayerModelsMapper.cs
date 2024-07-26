@@ -11,7 +11,6 @@ namespace Presentation_Layer.AutoMapperProfiles
         {
             CreateMap<ExamViewModel, ExamModel>().ReverseMap();
             CreateMap<ExamQuestionViewModel, ExamQuestionModel>().ReverseMap();
-            CreateMap<TeacherNoteViewModel, TeacherNoteModel>().ReverseMap();
             CreateMap<UserAnswerViewModel, UserAnswerModel>().ReverseMap();
 
             CreateMap<RegisterViewModel, UserEntity>()
@@ -31,21 +30,20 @@ namespace Presentation_Layer.AutoMapperProfiles
                     QuestionId = q.Id
                 })));
 
-            CreateMap<UserExamPassViewModel, UserExamPassModel>()
-                .ForMember(dest => dest.ExamId, opt => opt.MapFrom(src => src.ExamId))
+            CreateMap<UserExamPassViewModel, UserExamAttemptModel>()
                 .ForMember(dest => dest.UserAnswers, opt => opt.MapFrom(src => src.UserAnswers.Select(sa => new UserAnswerModel
                 {
                     Id = sa.Id,
-                    Answer = sa.AnswerText,
+                    AnswerText = sa.AnswerText,
                     QuestionId = sa.QuestionId,
                     Grade = sa.Grade ?? 0
                 }).ToList()));
 
-            CreateMap<UserExamPassModel, UserExamPassViewModel>()
+            CreateMap<UserExamAttemptModel, UserExamPassViewModel>()
                 .ForMember(dest => dest.UserAnswers, opt => opt.MapFrom(src => src.UserAnswers.Select(ua => new UserAnswerViewModel
                 {
                     Id = ua.Id,
-                    AnswerText = ua.Answer,
+                    AnswerText = ua.AnswerText,
                     QuestionText = ua.Question.QuestionText,
                     Grade = ua.Grade
                 })));

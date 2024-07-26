@@ -4,16 +4,16 @@ namespace Business_Logic_Layer.Services.Interfaces
 {
     public interface IUserExamPassService
     {
-        Task<Guid> CreateAsync(UserExamPassModel model);
+        Task<Guid> CreateAsync(UserExamAttemptModel model);
 
-        Task<IEnumerable<UserExamPassModel>> GetAllAsync(bool isDeleted = false);
+        Task<IEnumerable<UserExamAttemptModel>> GetAllAsync(bool includeDeleted = false);
 
-        Task<IEnumerable<UserExamPassModel>> GetAllWithDetailsAsync(bool isDeleted = false);
+        Task<IEnumerable<UserExamAttemptModel>> GetAllWithDetailsAsync(bool includeDeleted = false);
 
-        Task<UserExamPassModel?> GetByIdAsync(Guid id);
+        Task<UserExamAttemptModel?> GetByIdAsync(Guid id);
 
-        Task<UserExamPassModel?> GetByIdWithDetailsAsync(Guid id);
+        Task<UserExamAttemptModel?> GetByIdWithDetailsAsync(Guid id);
 
-        Task<Guid> UpdateAsync(UserExamPassModel model);
+        Task<Guid> UpdateAsync(UserExamAttemptModel model);
     }
 }

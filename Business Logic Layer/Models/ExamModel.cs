@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Business_Logic_Layer.Enums;
 
 namespace Business_Logic_Layer.Models
 {
@@ -10,7 +10,7 @@ namespace Business_Logic_Layer.Models
 
         public string Description { get; set; }
 
-        public string Subject { get; set; }
+        public SubjectModel Subject { get; set; }
 
         public DateTime ExamStartDateTime { get; set; }
 
@@ -24,6 +24,6 @@ namespace Business_Logic_Layer.Models
 
         public List<ExamQuestionModel> Questions { get; set; }
 
-        public List<UserExamPassModel> StudentAnswers { get; set; }
+        public List<UserExamAttemptModel> UserExamAttempts { get; set; }
     }
 }

@@ -20,28 +20,35 @@ namespace Business_Logic_Layer.Services.Implementations
             _mapper = mapper;
         }
 
-        public async Task<IdentityResult> CreateAsync(UserEntity user, string password)
+        public async Task<IdentityResult?> CreateAsync(UserEntity user, string password)
         {
-            var result = await _userManager.CreateAsync(user, password);
-            if(result.Succeeded)
+            var identityResult = await _userManager.CreateAsync(user, password);
+            if(identityResult.Succeeded)
             {
+                // TODO: Replace "Student" by enum or const value
                 await _userManager.AddToRoleAsync(user, "Student");
             }
 
-            return result;
+            return identityResult;
         }
 
-        public async Task<UserEntity?> GetCurrentUserAsync(ClaimsPrincipal userPrincipal)
+        public async Task<UserEntity?> GetUserAsync(ClaimsPrincipal userPrincipal)
         {
-            var currentUser = await _userManager.GetUserAsync(userPrincipal);
-            return currentUser;
+            var user = await _userManager.GetUserAsync(userPrincipal);
+            return user;
         }
 
-        public async Task<IdentityResult> UpdateAsync(UserEntity? user)
+        public async Task<IdentityResult?> UpdateAsync(UserEntity? user)
         {
-            var currentUserBeforeUpdate = await _unitOfWork.UserRepository.GetByIdAsync(user!.Id);
-            _mapper.Map(user, currentUserBeforeUpdate);
-            return await _userManager.UpdateAsync(currentUserBeforeUpdate);
+            var userFromDb = await _unitOfWork.UserRepository.GetByIdAsync(user!.Id);
+            if (userFromDb is null)
+            {
+                throw new ArgumentException("Unable to get user by id", nameof(user.Id));
+            }
+
+            _mapper.Map(user, userFromDb);
+            var identityResult = await _userManager.UpdateAsync(userFromDb);
+            return identityResult;
         }
     }
 }

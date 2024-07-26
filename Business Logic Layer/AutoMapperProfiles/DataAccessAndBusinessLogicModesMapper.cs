@@ -8,17 +8,23 @@ namespace Business_Logic_Layer.AutoMapperProfiles
     {
         public DataAccessAndBusinessLogicModesMapper()
         {
-            CreateMap<ExamModel, ExamEntity>().ReverseMap();
             CreateMap<ExamQuestionModel, ExamQuestionEntity>().ReverseMap();
             CreateMap<UserAnswerEntity, UserAnswerModel>().ReverseMap();
 
-            CreateMap<UserExamAttemptEntity, UserExamPassModel>()
+            CreateMap<UserExamAttemptModel, UserExamAttemptEntity>();
+            CreateMap<UserExamAttemptEntity, UserExamAttemptModel>()
                 .ForMember(dest => dest.TotalGrade, opt => opt.MapFrom(src => src.UserAnswers.Sum(ua => ua.Grade)));
 
-            CreateMap<UserExamPassModel, UserExamAttemptEntity>();
             CreateMap<UserEntity, UserEntity>()
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email))
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+            CreateMap<ExamModel, ExamEntity>();
+            CreateMap<ExamEntity, ExamModel>()
+                .ForMember(dest => dest.ExamDuration,
+                    opt => opt.MapFrom(src => DateTime.Now + src.ExamDuration > src.ExamEndDateTime
+                        ? src.ExamEndDateTime - DateTime.Now
+                        : src.ExamDuration));
         }
     }
 }

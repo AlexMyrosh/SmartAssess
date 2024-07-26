@@ -6,10 +6,10 @@ namespace Business_Logic_Layer.Services.Interfaces
 {
     public interface IAccountService
     {
-        Task<IdentityResult> CreateAsync(UserEntity user, string password);
+        Task<IdentityResult?> CreateAsync(UserEntity user, string password);
 
-        Task<UserEntity?> GetCurrentUserAsync(ClaimsPrincipal userPrincipal);
+        Task<UserEntity?> GetUserAsync(ClaimsPrincipal userPrincipal);
 
-        Task<IdentityResult> UpdateAsync(UserEntity user);
+        Task<IdentityResult?> UpdateAsync(UserEntity user);
     }
 }

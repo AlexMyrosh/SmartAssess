@@ -97,8 +97,8 @@ namespace Presentation_Layer.Controllers
         {
             if (ModelState.IsValid)
             {
-                var model = _mapper.Map<UserExamPassModel>(viewModel);
-                model.User = await _accountService.GetCurrentUserAsync(User);
+                var model = _mapper.Map<UserExamAttemptModel>(viewModel);
+                model.User = await _accountService.GetUserAsync(User);
                 await _userExamPassService.CreateAsync(model);
                 return RedirectToAction("GetAll");
             }

@@ -17,46 +17,52 @@ namespace Business_Logic_Layer.Services.Implementations
             _mapper = mapper;
         }
 
-        public async Task<Guid> CreateAsync(UserExamPassModel model)
+        public async Task<Guid> CreateAsync(UserExamAttemptModel model)
         {
-            var entity = _mapper.Map<UserExamAttemptEntity>(model);
-            var createdItemId = await _unitOfWork.UserExamPassRepository.CreateAsync(entity);
+            var userExamAttemptEntity = _mapper.Map<UserExamAttemptEntity>(model);
+            var createdEntityId = await _unitOfWork.UserExamPassRepository.CreateAsync(userExamAttemptEntity);
             await _unitOfWork.SaveAsync();
-            return createdItemId;
+            return createdEntityId;
         }
 
-        public async Task<IEnumerable<UserExamPassModel>> GetAllAsync(bool isDeleted = false)
+        public async Task<IEnumerable<UserExamAttemptModel>> GetAllAsync(bool includeDeleted = false)
         {
-            var entities = await _unitOfWork.UserExamPassRepository.GetAllAsync(isDeleted);
-            var models = _mapper.Map<IEnumerable<UserExamPassModel>>(entities);
-            return models;
+            var userExamAttemptEntities = await _unitOfWork.UserExamPassRepository.GetAllAsync(includeDeleted);
+            var userExamAttemptModels = _mapper.Map<IEnumerable<UserExamAttemptModel>>(userExamAttemptEntities);
+            return userExamAttemptModels;
         }
 
-        public async Task<IEnumerable<UserExamPassModel>> GetAllWithDetailsAsync(bool isDeleted = false)
+        public async Task<IEnumerable<UserExamAttemptModel>> GetAllWithDetailsAsync(bool includeDeleted = false)
         {
-            var entities = await _unitOfWork.UserExamPassRepository.GetAllWithDetailsAsync(isDeleted);
-            var models = _mapper.Map<IEnumerable<UserExamPassModel>>(entities);
-            return models;
+            var userExamAttemptEntities = await _unitOfWork.UserExamPassRepository.GetAllWithDetailsAsync(includeDeleted);
+            var userExamAttemptModels = _mapper.Map<IEnumerable<UserExamAttemptModel>>(userExamAttemptEntities);
+            return userExamAttemptModels;
         }
 
-        public async Task<UserExamPassModel?> GetByIdAsync(Guid id)
+        public async Task<UserExamAttemptModel?> GetByIdAsync(Guid id)
         {
-            var entity = await _unitOfWork.UserExamPassRepository.GetByIdAsync(id);
-            var model = _mapper.Map<UserExamPassModel>(entity);
-            return model;
+            var userExamAttemptEntity = await _unitOfWork.UserExamPassRepository.GetByIdAsync(id);
+            var userExamAttemptModel = _mapper.Map<UserExamAttemptModel>(userExamAttemptEntity);
+            return userExamAttemptModel;
         }
 
-        public async Task<UserExamPassModel?> GetByIdWithDetailsAsync(Guid id)
+        public async Task<UserExamAttemptModel?> GetByIdWithDetailsAsync(Guid id)
         {
             var entity = await _unitOfWork.UserExamPassRepository.GetByIdWithDetailsAsync(id);
-            var model = _mapper.Map<UserExamPassModel>(entity);
+            var model = _mapper.Map<UserExamAttemptModel>(entity);
             return model;
         }
 
-        public async Task<Guid> UpdateAsync(UserExamPassModel model)
+        public async Task<Guid> UpdateAsync(UserExamAttemptModel model)
         {
             var examEntityFromDb = await _unitOfWork.UserExamPassRepository.GetByIdWithDetailsAsync(model.Id);
-            examEntityFromDb!.Feedback = model.Feedback;
+            if (examEntityFromDb is null)
+            {
+                throw new ArgumentException("Unable to get UserExamAttemptEntity by id", nameof(model.Id));
+            }
+
+            // TODO: doesn't work with automapper, try again
+            examEntityFromDb.Feedback = model.Feedback;
             for (var i = 0; i < model.UserAnswers.Count; i++)
             {
                 examEntityFromDb.UserAnswers[i].Grade = model.UserAnswers[i].Grade;

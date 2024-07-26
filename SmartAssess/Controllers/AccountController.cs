@@ -82,14 +82,14 @@ namespace Presentation_Layer.Controllers
         [HttpGet]
         public async Task<IActionResult> UserProfileDetails()
         {
-            var currentUser = await _accountService.GetCurrentUserAsync(User);
+            var currentUser = await _accountService.GetUserAsync(User);
             return View(currentUser);
         }
 
         [HttpGet]
         public async Task<IActionResult> Update()
         {
-            var currentUser = await _accountService.GetCurrentUserAsync(User);
+            var currentUser = await _accountService.GetUserAsync(User);
             return View(currentUser);
         }
 

@@ -1,6 +1,6 @@
-﻿namespace Data_Access_Layer.Enum
+﻿namespace Data_Access_Layer.Enums
 {
-    public enum Subject
+    public enum SubjectEntity
     {
         NotSet,
         Biology,
