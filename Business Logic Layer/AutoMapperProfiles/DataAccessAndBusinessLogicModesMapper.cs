@@ -9,9 +9,13 @@ namespace Business_Logic_Layer.AutoMapperProfiles
         public DataAccessAndBusinessLogicModesMapper()
         {
             CreateMap<ExamQuestionModel, ExamQuestionEntity>().ReverseMap();
-            CreateMap<UserAnswerEntity, UserAnswerModel>().ReverseMap();
+            CreateMap<UserAnswerModel, UserAnswerEntity>().ReverseMap();
+            CreateMap<UserModel, UserEntity>().ReverseMap();
 
-            CreateMap<UserExamAttemptModel, UserExamAttemptEntity>();
+            CreateMap<UserExamAttemptModel, UserExamAttemptEntity>()
+                .ForMember(dest => dest.Exam, opt => opt.Ignore())
+                .ForMember(dest => dest.User, opt => opt.Ignore());
+
             CreateMap<UserExamAttemptEntity, UserExamAttemptModel>()
                 .ForMember(dest => dest.TotalGrade, opt => opt.MapFrom(src => src.UserAnswers.Sum(ua => ua.Grade)));
 

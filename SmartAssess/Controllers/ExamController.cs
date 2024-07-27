@@ -22,7 +22,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> Index()
         {
             var examModels = await _examService.GetAllAvailableExamsWithDetailsAsync();
             var examViewModels = _mapper.Map<IEnumerable<ExamViewModel>>(examModels);
@@ -30,7 +30,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetById(Guid id)
+        public async Task<IActionResult> Details(Guid id)
         {
             var examModel = await _examService.GetByIdWithDetailsAsync(id);
             var examViewModel = _mapper.Map<ExamViewModel>(examModel);
@@ -40,7 +40,15 @@ namespace Presentation_Layer.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return View();
+            var examViewModel = new ExamViewModel
+            {
+                Questions = new List<ExamQuestionViewModel>
+                {
+                    new()
+                }
+            };
+
+            return View(examViewModel);
         }
 
         [HttpPost]
@@ -50,7 +58,7 @@ namespace Presentation_Layer.Controllers
             {
                 var examModel = _mapper.Map<ExamModel>(examViewModel);
                 var createdExamId = await _examService.CreateAsync(examModel);
-                return RedirectToAction("GetById", new { id = createdExamId });
+                return RedirectToAction("Index", new { id = createdExamId });
             }
 
             return View(examViewModel);
@@ -60,7 +68,7 @@ namespace Presentation_Layer.Controllers
         public async Task<IActionResult> Delete(Guid id)
         {
             await _examService.SoftDeleteAsync(id);
-            return RedirectToAction("GetAll");
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
@@ -78,33 +86,10 @@ namespace Presentation_Layer.Controllers
             {
                 var examModel = _mapper.Map<ExamModel>(examViewModel);
                 var updatedExamId = await _examService.UpdateAsync(examModel);
-                return RedirectToAction("GetById", new { id = updatedExamId });
+                return RedirectToAction("Details", new { id = updatedExamId });
             }
 
             return View(examViewModel);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Pass(Guid examId)
-        {
-            var examModel = await _examService.GetByIdWithDetailsAsync(examId);
-            var viewModel = _mapper.Map<UserExamAttemptViewModel>(examModel);
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Pass(UserExamAttemptViewModel viewModel)
-        {
-            if (ModelState.IsValid)
-            {
-                var model = _mapper.Map<UserExamAttemptModel>(viewModel);
-                model.User = await _accountService.GetUserAsync(User);
-                await _userExamPassService.CreateAsync(model);
-                return RedirectToAction("GetAll");
-            }
-
-
-            return View(viewModel);
         }
     }
 }

@@ -29,7 +29,7 @@
     </dd>
 </dl>
 
-<form method="post" asp-controller="Exam" asp-action="Pass">
+<form method="post" asp-controller="UserExamPass" asp-action="Assessment">
     @for (var i = 0; i < Model.UserAnswers.Count; i++)
     {
         <h5>@Model.UserAnswers[i].Question.QuestionText</h5>
@@ -41,7 +41,7 @@
     @Html.HiddenFor(model => model.Exam.Id)
     <br/>
     <button id="completeExamButton" type="submit" class="btn btn-outline-success">Submit</button>
-    <a asp-action="GetAll" class="btn btn-outline-warning">Back to List</a>
+    <a asp-action="Index" asp-controller="Exam" class="btn btn-outline-warning">Back to List</a>
 </form>
 
 @section Scripts {

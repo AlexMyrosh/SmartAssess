@@ -4,6 +4,7 @@ using Data_Access_Layer.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data_Access_Layer.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    partial class SqlContextModelSnapshot : ModelSnapshot
+    [Migration("20240727110538_AddedMinPassGradeToExam")]
+    partial class AddedMinPassGradeToExam
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,7 +64,7 @@ namespace Data_Access_Layer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Exams", (string)null);
+                    b.ToTable("Exams");
                 });
 
             modelBuilder.Entity("Data_Access_Layer.Models.ExamQuestionEntity", b =>
@@ -92,7 +95,7 @@ namespace Data_Access_Layer.Migrations
 
                     b.HasIndex("ExamId");
 
-                    b.ToTable("ExamQuestions", (string)null);
+                    b.ToTable("ExamQuestions");
                 });
 
             modelBuilder.Entity("Data_Access_Layer.Models.UserAnswerEntity", b =>
@@ -123,7 +126,7 @@ namespace Data_Access_Layer.Migrations
 
                     b.HasIndex("UserExamAttemptId");
 
-                    b.ToTable("UserAnswers", (string)null);
+                    b.ToTable("UserAnswers");
                 });
 
             modelBuilder.Entity("Data_Access_Layer.Models.UserEntity", b =>
@@ -227,7 +230,7 @@ namespace Data_Access_Layer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserExamAttempts", (string)null);
+                    b.ToTable("UserExamAttempts");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

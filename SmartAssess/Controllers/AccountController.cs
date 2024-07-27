@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Business_Logic_Layer.Models;
 using Business_Logic_Layer.Services.Interfaces;
 using Data_Access_Layer.Models;
 using Microsoft.AspNetCore.Identity;
@@ -59,7 +60,7 @@ namespace Presentation_Layer.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
+                var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, false);
 
                 if (result.Succeeded)
                 {
@@ -80,26 +81,29 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> UserProfileDetails()
+        public async Task<IActionResult> Details()
         {
             var currentUser = await _accountService.GetUserAsync(User);
-            return View(currentUser);
+            var viewModel = _mapper.Map<UserViewModel>(currentUser);
+            return View(viewModel);
         }
 
         [HttpGet]
         public async Task<IActionResult> Update()
         {
             var currentUser = await _accountService.GetUserAsync(User);
-            return View(currentUser);
+            var viewModel = _mapper.Map<UserViewModel>(currentUser);
+            return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update(UserEntity user)
+        public async Task<IActionResult> Update(UserViewModel user)
         {
-            var result = await _accountService.UpdateAsync(user);
+            var userModel = _mapper.Map<UserModel>(user);
+            var result = await _accountService.UpdateAsync(userModel);
             if (result.Succeeded)
             {
-                return RedirectToAction("UserProfileDetails");
+                return RedirectToAction("Details");
             }
 
             foreach (var error in result.Errors)

@@ -15,9 +15,8 @@ namespace Data_Access_Layer.Models
         [Required]
         public int MaxGrade { get; set; }
 
-        [Required]
         [MaxLength(500)]
-        public string TeacherNoteForAssessment { get; set; }
+        public string? TeacherNoteForAssessment { get; set; }
 
         [Required]
         [DefaultValue(false)]

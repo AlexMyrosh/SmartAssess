@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using AutoMapper;
+using Business_Logic_Layer.Models;
 using Business_Logic_Layer.Services.Interfaces;
 using Data_Access_Layer.Models;
 using Data_Access_Layer.UnitOfWork.Interfaces;
@@ -20,9 +21,14 @@ namespace Business_Logic_Layer.Services.Implementations
             _mapper = mapper;
         }
 
-        public async Task<IdentityResult?> CreateAsync(UserEntity user, string password)
+        public async Task<IdentityResult> CreateAsync(UserEntity user, string password)
         {
             var identityResult = await _userManager.CreateAsync(user, password);
+            if (identityResult is null)
+            {
+                throw new NullReferenceException("identityResult is null");
+            }
+
             if(identityResult.Succeeded)
             {
                 // TODO: Replace "Student" by enum or const value
@@ -34,13 +40,13 @@ namespace Business_Logic_Layer.Services.Implementations
 
         public async Task<UserEntity?> GetUserAsync(ClaimsPrincipal userPrincipal)
         {
-            var user = await _userManager.GetUserAsync(userPrincipal);
-            return user;
+            var userEntity = await _userManager.GetUserAsync(userPrincipal);
+            return userEntity;
         }
 
-        public async Task<IdentityResult?> UpdateAsync(UserEntity? user)
+        public async Task<IdentityResult?> UpdateAsync(UserModel user)
         {
-            var userFromDb = await _unitOfWork.UserRepository.GetByIdAsync(user!.Id);
+            var userFromDb = await _unitOfWork.UserRepository.GetByIdAsync(user.Id);
             if (userFromDb is null)
             {
                 throw new ArgumentException("Unable to get user by id", nameof(user.Id));

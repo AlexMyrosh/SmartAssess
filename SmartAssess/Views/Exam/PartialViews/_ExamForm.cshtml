@@ -1,0 +1,54 @@
+﻿@using Presentation_Layer.Enums
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Presentation_Layer.ViewModels.ExamViewModel
+
+<div class="form-group">
+    <label asp-for="Name" class="control-label"></label>
+    <input asp-for="Name" class="form-control" />
+</div>
+<div class="form-group">
+    <label asp-for="Description" class="control-label"></label>
+    <input asp-for="Description" class="form-control" />
+</div>
+<div class="form-group">
+    <label asp-for="Subject" class="control-label"></label>
+    <select asp-for="Subject" asp-items="Html.GetEnumSelectList<SubjectViewModel>()" class="form-control">
+        <option selected="selected" value="">Please select</option>
+    </select>
+</div>
+<div class="form-group">
+    <label asp-for="ExamStartDateTime" class="control-label"></label>
+    <input asp-for="ExamStartDateTime" class="form-control" />
+</div>
+<div class="form-group">
+    <label asp-for="ExamEndDateTime" class="control-label"></label>
+    <input asp-for="ExamEndDateTime" class="form-control" />
+</div>
+<div class="form-group">
+    <label asp-for="ExamDuration" class="control-label"></label>
+    <input asp-for="ExamDuration" type="time" class="form-control" />
+</div>
+<div class="form-group">
+    <label asp-for="MinimumPassGrade" class="control-label"></label>
+    <input asp-for="MinimumPassGrade" type="number" class="form-control" />
+</div>
+<br />
+<div class="form-group">
+    <input asp-for="IsAssessedByAi" class="form-check-input" />
+    <label asp-for="IsAssessedByAi" class="control-label"></label>
+</div>
+
+<h5>Questions</h5>
+<div id="questionsContainer">
+    @for (var i = 0; i < Model.Questions?.Count; i++)
+    {
+        <div class="form-group question">
+            <label asp-for="Questions[i].QuestionText" class="control-label"></label>
+            <textarea asp-for="Questions[i].QuestionText" class="form-control" rows="5"></textarea>
+            <span asp-validation-for="Questions[i].QuestionText" class="text-danger"></span>
+            <input type="hidden" asp-for="Questions[i].Id" />
+            <a class="btn btn-outline-danger delete-question" type="button">Remove Question</a>
+        </div>
+    }
+</div>
+<a class="btn btn-outline-success" id="addQuestion">Add Question</a>

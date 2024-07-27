@@ -68,8 +68,8 @@
             </td>
             <td>
                     @Html.ActionLink("Update", "Update", new { id = item.Id }, new { @class = "btn btn-outline-info" })
-                    @Html.ActionLink("Details", "GetById", new { id = item.Id }, new { @class = "btn btn-outline-info" })
-                    @Html.ActionLink("Pass", "Pass", new { examId = item.Id }, new { @class = "btn btn-outline-info" })
+                    @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-outline-info" })
+                    @Html.ActionLink("Pass", "Assessment", "UserExamPass", new { examId = item.Id }, new { @class = "btn btn-outline-info" })
                 <form asp-area="" asp-controller="Exam" asp-action="Delete" method="post" style="display: inline-block;">
                     <input type="hidden" name="id" value="@item.Id" />
                         <button type="submit" class="btn btn-outline-info">Delete</button>

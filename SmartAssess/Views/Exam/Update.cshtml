@@ -6,61 +6,13 @@
 
 <h1>Update</h1>
 
-<h4>ExamViewModel</h4>
-<hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Update">
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label asp-for="Subject" class="control-label"></label>
-                <input asp-for="Subject" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label asp-for="ExamStartDateTime" class="control-label"></label>
-                <input asp-for="ExamStartDateTime" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label asp-for="ExamEndDateTime" class="control-label"></label>
-                <input asp-for="ExamEndDateTime" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label asp-for="ExamDuration" class="control-label"></label>
-                <input asp-for="ExamDuration" type="time" class="form-control" />
-            </div>
-            <br/>
-            <div class="form-group">
-                <input asp-for="IsAssessedByAi" class="form-check-input" />
-                <label asp-for="IsAssessedByAi" class="control-label"></label>
-            </div>
-
-            <h5>Questions</h5>
-            <div id="questionsContainer">
-            @for (var i = 0; i < Model.Questions.Count; i++)
-            {
-                <div class="form-group question">
-                    <label asp-for="Questions[i].QuestionText" class="control-label"></label>
-                    <textarea asp-for="Questions[i].QuestionText" class="form-control" rows="5"></textarea>
-                    <span asp-validation-for="Questions[i].QuestionText" class="text-danger"></span>
-                    <input type="hidden" asp-for="Questions[i].Id" />
-                    <a class="btn btn-outline-danger delete-question" type="button">Remove Question</a>
-                </div>
-            }
-            </div>
-            <a class="btn btn-outline-success" id="addQuestion">Add Question</a>
-            
-            <br/>
-            <br />
+            @await Html.PartialAsync("PartialViews/_ExamForm", Model)
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-outline-success" />
-                <a asp-action="GetAll" class="btn btn-outline-warning">Back to List</a>
+                <a asp-action="Index" class="btn btn-outline-warning">Back to List</a>
             </div>
             <div asp-validation-summary="All" class="text-danger"></div>
         </form>
@@ -72,51 +24,5 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 
-    <script>
-        $(document).ready(function () {
-            var $questionsContainer = $("#questionsContainer");
-            var $addQuestion = $("#addQuestion");
-            var questionIndex = document.querySelectorAll("#questionsContainer div").length;
-
-            function UpdateQuestionIndexes() {
-                $(".question").each(function (index, question) {
-                    console.log(`index is ${index}`);
-                    $(question).find("label").attr('for', function (_, forAttr) {
-                        return forAttr.replace(/Questions_\d+__/, 'Questions_' + index + '__');
-                    });
-                    $(question).find("textarea").attr('id', function (_, idAttr) {
-                        return idAttr.replace(/Questions_\d+__/, 'Questions_' + index + '__');
-                    });
-                    $(question).find("textarea").attr('name', function (_, nameAttr) {
-                        return nameAttr.replace(/Questions\[\d+\]/, 'Questions[' + index + ']');
-                    });
-                    $(question).find("span").attr('data-valmsg-for', function (_, valmsgforAttr) {
-                        return valmsgforAttr.replace(/Questions\[\d+\]/, 'Questions[' + index + ']');
-                    });
-                });
-            }
-
-            $addQuestion.click(function () {
-                var clone = $(".question:first").clone();
-
-                clone.html(
-                    clone.html().replace(/\[0\]/g, '[' + questionIndex + ']').replace(/_0__/g, '_' + questionIndex + '__')
-                );
-
-                clone.find('textarea').val('');
-                clone.find('input[type=hidden]').val('');
-
-                $questionsContainer.append(clone);
-                questionIndex++;
-            });
-
-            $questionsContainer.on("click", ".delete-question", function () {
-                if ($questionsContainer.children().length > 1) {
-                    $(this).closest('.question').remove();
-                    UpdateQuestionIndexes();
-                    questionIndex--;
-                }
-            });
-        });
-    </script>
+    <script src="~/js/Exam.js"></script>
 }

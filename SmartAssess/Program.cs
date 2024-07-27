@@ -8,10 +8,15 @@ using Data_Access_Layer.Repositories.Implementations;
 using Data_Access_Layer.Repositories.Interfaces;
 using Data_Access_Layer.UnitOfWork.Implementations;
 using Data_Access_Layer.UnitOfWork.Interfaces;
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Presentation_Layer.AutoMapperProfiles;
 using Presentation_Layer.Extensions;
+using Presentation_Layer.FluentValidator;
+using Presentation_Layer.ViewModels;
+using System;
+using FluentValidation.AspNetCore;
 
 namespace Presentation_Layer
 {
@@ -46,6 +51,7 @@ namespace Presentation_Layer
             await app.RunAsync();
         }
 
+        [Obsolete("Obsolete")]
         private static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
             // Configure connection to sql server
@@ -62,6 +68,12 @@ namespace Presentation_Layer
                 mc.AddProfile(new DataAccessAndBusinessLogicModesMapper());
             }).CreateMapper());
 
+            services.AddScoped<IValidator<ExamQuestionViewModel>, ExamQuestionViewModelValidator>();
+            services.AddScoped<IValidator<ExamViewModel>, ExamViewModelValidator>();
+            services.AddScoped<IValidator<LoginViewModel>, LoginViewModelValidator>();
+            services.AddScoped<IValidator<RegisterViewModel>, RegisterViewModelValidator>();
+            services.AddScoped<IValidator<UserViewModel>, UserViewModelValidator>();
+
             services.AddScoped<IExamService, ExamService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IUserExamPassService, UserExamPassService>();
@@ -71,7 +83,7 @@ namespace Presentation_Layer
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddFluentValidation();
             services.AddRazorPages();
         }
     }

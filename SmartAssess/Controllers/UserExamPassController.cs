@@ -38,7 +38,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ExamAssess(Guid examId)
+        public async Task<IActionResult> Evaluation(Guid examId)
         {
             var examPassModel = await _userExamPassService.GetByIdWithDetailsAsync(examId);
             var viewModel = _mapper.Map<UserExamAttemptViewModel>(examPassModel);
@@ -46,13 +46,35 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ExamAssess(UserExamAttemptViewModel viewModel)
+        public async Task<IActionResult> Evaluation(UserExamAttemptViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
                 var model = _mapper.Map<UserExamAttemptModel>(viewModel);
                 var updateEntityId = await _userExamPassService.UpdateAsync(model);
                 return RedirectToAction("Details", new { id = updateEntityId });
+            }
+
+            return View(viewModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Assessment(Guid examId)
+        {
+            var examModel = await _examService.GetByIdWithDetailsAsync(examId);
+            var viewModel = _mapper.Map<UserExamAttemptViewModel>(examModel);
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Assessment(UserExamAttemptViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var model = _mapper.Map<UserExamAttemptModel>(viewModel);
+                model.User = await _accountService.GetUserAsync(User);
+                var createdItemId = await _userExamPassService.CreateAsync(model);
+                return RedirectToAction("Details", new { id = createdItemId });
             }
 
             return View(viewModel);

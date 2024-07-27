@@ -18,7 +18,9 @@ namespace Presentation_Layer.ViewModels
 
         public TimeSpan? ExamDuration { get; set; }
 
-        public bool? IsAssessedByAi { get; set; }
+        public bool IsAssessedByAi { get; set; }
+
+        public int MinimumPassGrade { get; set; }
 
         public bool? IsDeleted { get; set; }
 

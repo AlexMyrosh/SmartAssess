@@ -35,6 +35,9 @@ namespace Data_Access_Layer.Models
         public bool IsAssessedByAi { get; set; }
 
         [Required]
+        public int MinimumPassGrade { get; set; }
+
+        [Required]
         [DefaultValue(false)]
         public bool IsDeleted { get; set; }
 

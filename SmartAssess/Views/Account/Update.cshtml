@@ -1,4 +1,4 @@
-﻿@model Data_Access_Layer.Models.UserEntity
+﻿@model Presentation_Layer.ViewModels.UserViewModel
 
 @{
     ViewData["Title"] = "Update";
@@ -6,8 +6,6 @@
 
 <h1>Update</h1>
 
-<h4>RegisterViewModel</h4>
-<hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Update">
@@ -20,10 +18,6 @@
                 <input asp-for="LastName" class="form-control" />
             </div>
             <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-            </div>
-            <div class="form-group">
                 @Html.HiddenFor(model=>model.Id)
                 <input type="submit" value="Save" class="btn btn-primary"/>
                 <div asp-validation-summary="All" class="text-danger"></div>
@@ -33,7 +27,7 @@
 </div>
 
 <div>
-    <a asp-action="UserProfileDetails">Back</a>
+    <a asp-action="Details">Back</a>
 </div>
 
 @section Scripts {

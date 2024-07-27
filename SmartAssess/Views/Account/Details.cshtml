@@ -1,14 +1,10 @@
-﻿@model Data_Access_Layer.Models.UserEntity
+﻿@model Presentation_Layer.ViewModels.UserViewModel
 
 @{
     ViewData["Title"] = "UserProfileDetails";
 }
 
-<h1>UserProfileDetails</h1>
-
 <div>
-    <h4>RegisterViewModel</h4>
-    <hr />
     <dl class="row">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.FirstName)
@@ -21,12 +17,6 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.LastName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
         </dd>
     </dl>
 </div>

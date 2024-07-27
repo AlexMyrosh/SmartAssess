@@ -61,7 +61,11 @@
                 @Html.DisplayFor(model => model.UserAnswers[i].AnswerText)
             </dd>
             <dd class="col-sm-4">
-                @Html.DisplayFor(model => model.UserAnswers[i].Grade)
+                @{
+                    var grade = Model.UserAnswers[i].Grade;
+                    var displayGrade = grade != null ? grade.ToString() : "-";
+                }
+                @displayGrade
             </dd>
         }
     </dl>

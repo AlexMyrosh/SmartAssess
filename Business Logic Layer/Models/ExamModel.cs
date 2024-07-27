@@ -20,6 +20,8 @@ namespace Business_Logic_Layer.Models
 
         public bool? IsAssessedByAi { get; set; }
 
+        public int? MinimumPassGrade { get; set; }
+
         public bool? IsDeleted { get; set; }
 
         public List<ExamQuestionModel>? Questions { get; set; }
