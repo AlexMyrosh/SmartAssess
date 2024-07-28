@@ -7,8 +7,6 @@
 <h1>Details</h1>
 
 <div>
-    <h4>UserExamPassViewModel</h4>
-    <hr />
     <dl class="row">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Exam.Name)
@@ -43,29 +41,35 @@
     </dl>
 
     <dl class="row">
-        <dt class="col-sm-4">
+        <dt class="col-sm-3">
             <h4>Questions:</h4>
         </dt>
-        <dd class="col-sm-4">
+        <dd class="col-sm-3">
             <h4>Answers:</h4>
         </dd>
-        <dd class="col-sm-4">
+        <dd class="col-sm-3">
             <h4>Grade:</h4>
+        </dd>
+        <dd class="col-sm-3">
+            <h4>Feedback:</h4>
         </dd>
         @for (var i = 0; i < Model.UserAnswers.Count; i++)
         {
-            <dt class="col-sm-4">
+            <dt class="col-sm-3">
                 @Html.DisplayFor(model => model.UserAnswers[i].Question.QuestionText)
             </dt>
-            <dd class="col-sm-4">
+            <dd class="col-sm-3">
                 @Html.DisplayFor(model => model.UserAnswers[i].AnswerText)
             </dd>
-            <dd class="col-sm-4">
+            <dd class="col-sm-3">
                 @{
                     var grade = Model.UserAnswers[i].Grade;
                     var displayGrade = grade != null ? grade.ToString() : "-";
                 }
                 @displayGrade
+            </dd>
+            <dd class="col-sm-3">
+                @Html.DisplayFor(model => model.UserAnswers[i].Feedback)
             </dd>
         }
     </dl>

@@ -13,6 +13,8 @@ namespace Data_Access_Layer.Models
 
         public int? Grade { get; set; }
 
+        public string? Feedback { get; set; }
+
         [Required]
         [DefaultValue(false)]
         public bool IsDeleted { get; set; }

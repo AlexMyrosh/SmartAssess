@@ -8,6 +8,8 @@
 
         public int? Grade { get; set; }
 
+        public string? Feedback { get; set; }
+
         public bool? IsDeleted { get; set; }
 
         public Guid? QuestionId { get; set; }

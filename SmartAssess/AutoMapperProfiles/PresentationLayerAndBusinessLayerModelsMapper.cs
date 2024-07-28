@@ -40,6 +40,7 @@ namespace Presentation_Layer.AutoMapperProfiles
                     Id = ua.Id,
                     AnswerText = ua.AnswerText,
                     Grade = ua.Grade,
+                    Feedback = ua.Feedback,
                     Question = new ExamQuestionViewModel
                     {
                         QuestionText = ua.Question.QuestionText

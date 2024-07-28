@@ -17,6 +17,8 @@ using Presentation_Layer.FluentValidator;
 using Presentation_Layer.ViewModels;
 using System;
 using FluentValidation.AspNetCore;
+using System.Configuration;
+using Business_Logic_Layer.Models;
 
 namespace Presentation_Layer
 {
@@ -68,6 +70,8 @@ namespace Presentation_Layer
                 mc.AddProfile(new DataAccessAndBusinessLogicModesMapper());
             }).CreateMapper());
 
+            services.Configure<OpenAiConfig>(configuration.GetSection("OpenAiConfig"));
+
             services.AddScoped<IValidator<ExamQuestionViewModel>, ExamQuestionViewModelValidator>();
             services.AddScoped<IValidator<ExamViewModel>, ExamViewModelValidator>();
             services.AddScoped<IValidator<LoginViewModel>, LoginViewModelValidator>();
@@ -77,6 +81,7 @@ namespace Presentation_Layer
             services.AddScoped<IExamService, ExamService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IUserExamPassService, UserExamPassService>();
+            services.AddScoped<IOpenAiService, OpenAiService>();
 
             services.AddScoped<IExamRepository, ExamRepository>();
             services.AddScoped<IUserExamPassRepository, UserExamAttemptRepository>();

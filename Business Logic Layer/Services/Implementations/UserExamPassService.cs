@@ -65,17 +65,18 @@ namespace Business_Logic_Layer.Services.Implementations
                 throw new ArgumentException("UserExamAttemptModel UserAnswers is null", nameof(model.UserAnswers));
             }
 
-            var examEntityFromDb = await _unitOfWork.UserExamPassRepository.GetByIdWithDetailsAsync(model.Id.Value);
-            if (examEntityFromDb is null)
+            var userAttemptEntityFromDb = await _unitOfWork.UserExamPassRepository.GetByIdWithDetailsAsync(model.Id.Value);
+            if (userAttemptEntityFromDb is null)
             {
                 throw new ArgumentException("Unable to get UserExamAttemptEntity by id", nameof(model.Id));
             }
 
             // TODO: doesn't work with automapper, try again
-            examEntityFromDb.Feedback = model.Feedback;
+            userAttemptEntityFromDb.Feedback = model.Feedback;
             for (var i = 0; i < model.UserAnswers.Count; i++)
             {
-                examEntityFromDb.UserAnswers[i].Grade = model.UserAnswers[i].Grade;
+                userAttemptEntityFromDb.UserAnswers[i].Grade = model.UserAnswers[i].Grade;
+                userAttemptEntityFromDb.UserAnswers[i].Feedback = model.UserAnswers[i].Feedback;
             }
 
             await _unitOfWork.SaveAsync();

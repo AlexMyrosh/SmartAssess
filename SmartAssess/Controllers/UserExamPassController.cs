@@ -10,13 +10,15 @@ namespace Presentation_Layer.Controllers
     {
         private readonly IExamService _examService;
         private readonly IUserExamPassService _userExamPassService;
+        private readonly IOpenAiService _openAiService;
         private readonly IAccountService _accountService;
         private readonly IMapper _mapper;
 
-        public UserExamPassController(IExamService examService, IUserExamPassService userExamPassService, IAccountService accountService, IMapper mapper)
+        public UserExamPassController(IExamService examService, IUserExamPassService userExamPassService, IOpenAiService openAiService, IAccountService accountService, IMapper mapper)
         {
             _examService = examService;
             _userExamPassService = userExamPassService;
+            _openAiService = openAiService;
             _accountService = accountService;
             _mapper = mapper;
         }
@@ -78,6 +80,13 @@ namespace Presentation_Layer.Controllers
             }
 
             return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AiEvaluation(UserExamAttemptViewModel viewModel)
+        {
+            await _openAiService.ExamEvaluationAsync(viewModel.Id.Value);
+            return RedirectToAction("Details", new { id = viewModel.Id.Value });
         }
     }
 }

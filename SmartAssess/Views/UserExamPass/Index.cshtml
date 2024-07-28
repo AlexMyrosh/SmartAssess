@@ -48,6 +48,10 @@
             <td>
                     @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-outline-info" })
                     @Html.ActionLink("Manual Assess", "Evaluation", new { examId = item.Id }, new { @class = "btn btn-outline-info" })
+                    <form asp-area="" asp-action="AiEvaluation" method="post" style="display: inline-block;">
+                        <input type="hidden" name="id" value="@item.Id" />
+                        <button type="submit" class="btn btn-outline-info">AI Check</button>
+                    </form>
             </td>
         </tr>
 }
