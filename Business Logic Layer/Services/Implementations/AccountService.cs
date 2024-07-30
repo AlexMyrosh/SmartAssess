@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using System.Text.Encodings.Web;
 using AutoMapper;
 using Business_Logic_Layer.Models;
 using Business_Logic_Layer.Services.Interfaces;
@@ -11,12 +12,14 @@ namespace Business_Logic_Layer.Services.Implementations
     public class AccountService : IAccountService
     {
         private readonly UserManager<UserEntity> _userManager;
+        private readonly IEmailSender _emailSender;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public AccountService(UserManager<UserEntity> userManager, IUnitOfWork unitOfWork, IMapper mapper)
+        public AccountService(UserManager<UserEntity> userManager, IEmailSender emailSender, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _userManager = userManager;
+            _emailSender = emailSender;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
@@ -55,6 +58,49 @@ namespace Business_Logic_Layer.Services.Implementations
             _mapper.Map(user, userFromDb);
             var identityResult = await _userManager.UpdateAsync(userFromDb);
             return identityResult;
+        }
+
+        public async Task<bool> ResetPasswordEmailAsync(string email, string callbackUrl)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null || !await _userManager.IsEmailConfirmedAsync(user))
+            {
+                return false;
+            }
+
+            var htmlMessage = $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.";
+            await _emailSender.SendEmailAsync(email, "Password reset", htmlMessage);
+            return true;
+        }
+
+        public async Task<string> GenerateResetTokenAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user is null)
+            {
+                throw new ArgumentException("Unable to get user by email", nameof(email));
+            }
+
+            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+            return code;
+        }
+
+        public async Task<IdentityResult> ResetPasswordAsync(string email, string code, string newPassword)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user is null)
+            {
+                throw new ArgumentException("Unable to get user by email", nameof(email));
+            }
+
+            var result = await _userManager.ResetPasswordAsync(user, code, newPassword);
+            return result;
+        }
+
+        public async Task<bool> IsUserExistAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            return user != null;
         }
     }
 }

@@ -4,25 +4,38 @@
 
 <form method="post">
     <div>
-        <label asp-for="FirstName"></label>
-        <input asp-for="FirstName" />
+        <label class="control-label" asp-for="FirstName"></label>
+        <input class="form-control" asp-for="FirstName" />
     </div>
     <div>
-        <label asp-for="LastName"></label>
-        <input asp-for="LastName" />
+        <label class="control-label" asp-for="LastName"></label>
+        <input class="form-control" asp-for="LastName" />
     </div>
     <div>
-        <label asp-for="UserName"></label>
-        <input asp-for="UserName" />
+        <label class="control-label" asp-for="UserName"></label>
+        <input class="form-control" asp-for="UserName" />
     </div>
     <div>
-        <label asp-for="Password"></label>
-        <input asp-for="Password"/>
+        <label class="control-label" asp-for="Password"></label>
+        <input class="form-control" asp-for="Password" />
     </div>
     <div>
-        <label asp-for="ConfirmPassword"></label>
-        <input asp-for="ConfirmPassword"/>
+        <label class="control-label" asp-for="ConfirmPassword"></label>
+        <input class="form-control" asp-for="ConfirmPassword" />
     </div>
-    <button type="submit">Register</button>
+    <br/>
+    <div class="container">
+        <div class="row">
+            <div class="col text-center">
+                <button class="btn btn-outline-success" type="submit">Register</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-center">
+                <span>Already have an account?</span>
+                @Html.ActionLink("Login", "Login")
+            </div>
+        </div>
+    </div>
     <div asp-validation-summary="All" class="text-danger"></div>
 </form>

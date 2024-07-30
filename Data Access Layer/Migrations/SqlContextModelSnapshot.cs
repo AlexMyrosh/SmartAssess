@@ -61,7 +61,7 @@ namespace Data_Access_Layer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Exams");
+                    b.ToTable("Exams", (string)null);
                 });
 
             modelBuilder.Entity("Data_Access_Layer.Models.ExamQuestionEntity", b =>
@@ -92,7 +92,7 @@ namespace Data_Access_Layer.Migrations
 
                     b.HasIndex("ExamId");
 
-                    b.ToTable("ExamQuestions");
+                    b.ToTable("ExamQuestions", (string)null);
                 });
 
             modelBuilder.Entity("Data_Access_Layer.Models.UserAnswerEntity", b =>
@@ -126,7 +126,7 @@ namespace Data_Access_Layer.Migrations
 
                     b.HasIndex("UserExamAttemptId");
 
-                    b.ToTable("UserAnswers");
+                    b.ToTable("UserAnswers", (string)null);
                 });
 
             modelBuilder.Entity("Data_Access_Layer.Models.UserEntity", b =>
@@ -230,7 +230,7 @@ namespace Data_Access_Layer.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserExamAttempts");
+                    b.ToTable("UserExamAttempts", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

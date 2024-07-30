@@ -113,5 +113,75 @@ namespace Presentation_Layer.Controllers
 
             return View(user);
         }
+
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var isUserExist = await _accountService.IsUserExistAsync(model.Email);
+                if (!isUserExist)
+                {
+                    ModelState.AddModelError("", "User with this email is not found, please check email or try later");
+                    return View(model);
+                }
+
+                var resetToken = await _accountService.GenerateResetTokenAsync(model.Email);
+                var callbackUrl = Url.Action("ResetPassword", "Account", new { userEmail = model.Email, code = resetToken }, protocol: Request.Scheme);
+                var result = await _accountService.ResetPasswordEmailAsync(model.Email, callbackUrl);
+                if (result)
+                {
+                    var notification = "Email for password reset it sent, please check your email";
+                    return View("_SuccessfulNotification", notification);
+                }
+                else
+                {
+                    var notification = "Something went wrong, please check that email is correct or wait and try later";
+                    return View("_FailedNotification", notification);
+                }
+            }
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult ResetPassword(string userEmail, string code)
+        {
+            var viewModel = new ResetPasswordViewModel
+            {
+                Email = userEmail,
+                Code = code
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var result = await _accountService.ResetPasswordAsync(model.Email, model.Code, model.NewPassword);
+            if (result.Succeeded)
+            {
+                TempData["Notification"] = "Password updated";
+                return RedirectToAction("Login");
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+            return View();
+        }
     }
 }

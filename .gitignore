@@ -364,3 +364,4 @@ FodyWeavers.xsd
 
 # API keys and other sensitive info
 appsettings.json
+./SmartAssess/appsettings.Development.json

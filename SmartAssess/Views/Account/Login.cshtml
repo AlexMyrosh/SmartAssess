@@ -4,17 +4,42 @@
 
 <form method="post">
     <div>
-        <label asp-for="UserName"></label>
-        <input asp-for="UserName" />
+        <label class="control-label" asp-for="UserName"></label>
+        <input class="form-control" asp-for="UserName" />
     </div>
     <div>
-        <label asp-for="Password"></label>
-        <input asp-for="Password" />
+        <label class="control-label" asp-for="Password"></label>
+        <input class="form-control" asp-for="Password" />
     </div>
     <div>
-        <input asp-for="RememberMe" />
-        <label asp-for="RememberMe"></label>
+        <input class="form-check-input" asp-for="RememberMe" />
+        <label class="control-label" asp-for="RememberMe"></label>
     </div>
-    <button type="submit">Login</button>
+    <br/>
+    <div class="container">
+        <div class="row">
+            <div class="col text-center">
+                <button class="btn btn-outline-success" type="submit">Login</button>
+                @Html.ActionLink("Forget password?", "ForgotPassword", "Account", null, new { @class = "btn btn-outline-warning" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-center">
+                <span>Don't have an account?</span>
+                @Html.ActionLink("Register", "Register")
+            </div>
+        </div>
+    </div>
+    @if (TempData["Notification"] != null)
+    {
+        <div class="alert alert-success" role="alert">
+            <div class="row-fluid">
+                <div class="span12 text-center">
+                    @TempData["Notification"]
+                </div>
+            </div>
+        </div>
+    }
+    
     <div asp-validation-summary="All" class="text-danger"></div>
 </form>

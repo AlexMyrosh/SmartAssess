@@ -19,6 +19,7 @@ using System;
 using FluentValidation.AspNetCore;
 using System.Configuration;
 using Business_Logic_Layer.Models;
+using Microsoft.Extensions.Options;
 
 namespace Presentation_Layer
 {
@@ -60,7 +61,25 @@ namespace Presentation_Layer
             var sqlConnectionString = configuration.GetConnectionString("SmartAssessConnection");
             services.AddDbContext<SqlContext>(options => options.UseSqlServer(sqlConnectionString));
 
-            services.AddIdentity<UserEntity, IdentityRole>()
+            services.AddIdentity<UserEntity, IdentityRole>(options =>
+            {
+                // Password settings (if not already configured)
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = true;
+
+                // Lockout settings
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
+                options.Lockout.MaxFailedAccessAttempts = 10;
+
+                // User settings
+                options.User.RequireUniqueEmail = true;
+
+                // Add this to enable password reset
+                options.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultEmailProvider;
+            })
                 .AddEntityFrameworkStores<SqlContext>()
                 .AddDefaultTokenProviders();
 
@@ -71,17 +90,21 @@ namespace Presentation_Layer
             }).CreateMapper());
 
             services.Configure<OpenAiConfig>(configuration.GetSection("OpenAiConfig"));
+            services.Configure<EmailConfig>(configuration.GetSection("EmailSettings"));
 
             services.AddScoped<IValidator<ExamQuestionViewModel>, ExamQuestionViewModelValidator>();
             services.AddScoped<IValidator<ExamViewModel>, ExamViewModelValidator>();
             services.AddScoped<IValidator<LoginViewModel>, LoginViewModelValidator>();
             services.AddScoped<IValidator<RegisterViewModel>, RegisterViewModelValidator>();
             services.AddScoped<IValidator<UserViewModel>, UserViewModelValidator>();
+            services.AddScoped<IValidator<ForgotPasswordViewModel>, ForgotPasswordViewModelValidator>();
+            services.AddScoped<IValidator<ResetPasswordViewModel>, ResetPasswordViewModelValidator>();
 
             services.AddScoped<IExamService, ExamService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IUserExamPassService, UserExamPassService>();
             services.AddScoped<IOpenAiService, OpenAiService>();
+            services.AddScoped<IEmailSender, EmailSender>();
 
             services.AddScoped<IExamRepository, ExamRepository>();
             services.AddScoped<IUserExamPassRepository, UserExamAttemptRepository>();
