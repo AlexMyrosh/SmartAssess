@@ -79,9 +79,13 @@ namespace Presentation_Layer
 
                 // Add this to enable password reset
                 options.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultEmailProvider;
+                options.Tokens.EmailConfirmationTokenProvider = "Default";
             })
                 .AddEntityFrameworkStores<SqlContext>()
                 .AddDefaultTokenProviders();
+
+            services.Configure<DataProtectionTokenProviderOptions>(opt =>
+                opt.TokenLifespan = TimeSpan.FromHours(3));
 
             services.AddSingleton(new MapperConfiguration(mc =>
             {

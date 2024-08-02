@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
 using Business_Logic_Layer.Models;
+using Business_Logic_Layer.Services.Implementations;
 using Business_Logic_Layer.Services.Interfaces;
 using Data_Access_Layer.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Presentation_Layer.ViewModels;
+using System.Text;
 
 namespace Presentation_Layer.Controllers
 {
@@ -36,6 +39,9 @@ namespace Presentation_Layer.Controllers
                 var result = await _accountService.CreateAsync(userEntity, model.Password);
                 if (result.Succeeded)
                 {
+                    var confirmationToken = await _accountService.GenerateEmailConfirmationTokenAsync(userEntity);
+                    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = userEntity.Id, code = confirmationToken }, protocol: HttpContext.Request.Scheme);
+                    await _accountService.SendConfirmationEmailAsync(userEntity.Email, callbackUrl);
                     await _signInManager.SignInAsync(userEntity, isPersistent: false);
                     return RedirectToAction("Index", "Home");
                 }
@@ -125,7 +131,7 @@ namespace Presentation_Layer.Controllers
         {
             if (ModelState.IsValid)
             {
-                var isUserExist = await _accountService.IsUserExistAsync(model.Email);
+                var isUserExist = await _accountService.IsUserExistByEmailAsync(model.Email);
                 if (!isUserExist)
                 {
                     ModelState.AddModelError("", "User with this email is not found, please check email or try later");
@@ -183,5 +189,38 @@ namespace Presentation_Layer.Controllers
             }
             return View();
         }
+
+        public async Task<IActionResult> ConfirmEmail(string userId, string code)
+        {
+            var result = await _accountService.ConfirmEmailAsync(userId, code);
+            if (result.Succeeded)
+            {
+                var successNotification = "Email confirmed successfully";
+                return View("_SuccessfulNotification", successNotification);
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+
+            var failedNotification = "Email confirmation failed";
+            return View("_FailedNotification", failedNotification);
+        }
+
+        [HttpGet("validation/username")]
+        public async Task<JsonResult> ValidateUsername(string username)
+        {
+            var exist = await _accountService.IsUserExistByUsernameAsync(username);
+            return !exist ? Json(true) : Json($"User with \"{username}\" username is already exist");
+        }
+
+        [HttpGet("validation/email")]
+        public async Task<JsonResult> ValidateEmail(string email)
+        {
+            var exist = await _accountService.IsUserExistByEmailAsync(email);
+            return !exist ? Json(true) : Json($"User with \"{email}\" email is already exist");
+        }
+
     }
 }

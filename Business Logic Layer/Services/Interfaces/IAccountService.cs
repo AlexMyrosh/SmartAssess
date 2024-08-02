@@ -19,6 +19,14 @@ namespace Business_Logic_Layer.Services.Interfaces
 
         Task<IdentityResult> ResetPasswordAsync(string email, string code, string newPassword);
 
-        Task<bool> IsUserExistAsync(string email);
+        Task<bool> IsUserExistByUsernameAsync(string username);
+
+        Task<bool> IsUserExistByEmailAsync(string email);
+
+        Task<string> GenerateEmailConfirmationTokenAsync(UserEntity user);
+
+        Task<IdentityResult> ConfirmEmailAsync(string userId, string code);
+
+        Task SendConfirmationEmailAsync(string email, string callbackUrl);
     }
 }

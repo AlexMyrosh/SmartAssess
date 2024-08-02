@@ -20,7 +20,8 @@ namespace Business_Logic_Layer.Services.Implementations
             var client = new SmtpClient(_emailConfig.SMTPServer, _emailConfig.SMTPPort)
             {
                 Credentials = new NetworkCredential(_emailConfig.FromEmail, _emailConfig.FromPassword),
-                EnableSsl = true
+                EnableSsl = true,
+                Port = 587
             };
 
             var mailMessage = new MailMessage

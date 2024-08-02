@@ -1,4 +1,6 @@
-﻿using System.Security.Claims;
+﻿using System.Net.Http;
+using System;
+using System.Security.Claims;
 using System.Text.Encodings.Web;
 using AutoMapper;
 using Business_Logic_Layer.Models;
@@ -32,7 +34,7 @@ namespace Business_Logic_Layer.Services.Implementations
                 throw new NullReferenceException("identityResult is null");
             }
 
-            if(identityResult.Succeeded)
+            if (identityResult.Succeeded)
             {
                 // TODO: Replace "Student" by enum or const value
                 await _userManager.AddToRoleAsync(user, "Student");
@@ -85,6 +87,12 @@ namespace Business_Logic_Layer.Services.Implementations
             return code;
         }
 
+        public async Task<string> GenerateEmailConfirmationTokenAsync(UserEntity user)
+        {
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            return code;
+        }
+
         public async Task<IdentityResult> ResetPasswordAsync(string email, string code, string newPassword)
         {
             var user = await _userManager.FindByEmailAsync(email);
@@ -97,10 +105,34 @@ namespace Business_Logic_Layer.Services.Implementations
             return result;
         }
 
-        public async Task<bool> IsUserExistAsync(string email)
+        public async Task<bool> IsUserExistByUsernameAsync(string username)
+        {
+            var user = await _userManager.FindByNameAsync(username);
+            return user != null;
+        }
+
+        public async Task<bool> IsUserExistByEmailAsync(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
             return user != null;
+        }
+
+        public async Task<IdentityResult> ConfirmEmailAsync(string userId, string code)
+        {
+            var userEntity = await _userManager.FindByIdAsync(userId);
+            if (userEntity is null)
+            {
+                throw new ArgumentException("Unable to get user by id", nameof(userId));
+            }
+
+            var identityResult = await _userManager.ConfirmEmailAsync(userEntity, code);
+            return identityResult;
+        }
+
+        public async Task SendConfirmationEmailAsync(string email, string callbackUrl)
+        {
+            await _emailSender.SendEmailAsync(email, "Confirm your email",
+                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
         }
     }
 }
