@@ -28,5 +28,7 @@ namespace Business_Logic_Layer.Services.Interfaces
         Task<IdentityResult> ConfirmEmailAsync(string userId, string code);
 
         Task SendConfirmationEmailAsync(string email, string callbackUrl);
+
+        Task<IdentityResult> ChangePasswordAsync(UserEntity user, string currentPassword, string newPassword);
     }
 }

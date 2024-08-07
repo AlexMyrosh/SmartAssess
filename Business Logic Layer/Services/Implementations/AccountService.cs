@@ -134,5 +134,11 @@ namespace Business_Logic_Layer.Services.Implementations
             await _emailSender.SendEmailAsync(email, "Confirm your email",
                 $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
         }
+
+        public async Task<IdentityResult> ChangePasswordAsync(UserEntity user, string currentPassword, string newPassword)
+        {
+            var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+            return result;
+        }
     }
 }

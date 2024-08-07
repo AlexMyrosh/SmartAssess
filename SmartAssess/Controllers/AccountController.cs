@@ -208,6 +208,41 @@ namespace Presentation_Layer.Controllers
             return View("_FailedNotification", failedNotification);
         }
 
+        [HttpGet]
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _accountService.GetUserAsync(User);
+            if (user == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            var result = await _accountService.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+            if (result.Succeeded)
+            {
+                var successMessage = "Password successfully updated";
+                return View("_SuccessfulNotification", successMessage);
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return View(model);
+        }
+
         [HttpGet("validation/username")]
         public async Task<JsonResult> ValidateUsername(string username)
         {

@@ -17,17 +17,15 @@
                 <label asp-for="LastName" class="control-label"></label>
                 <input asp-for="LastName" class="form-control" />
             </div>
+            <br/>
             <div class="form-group">
                 @Html.HiddenFor(model=>model.Id)
-                <input type="submit" value="Save" class="btn btn-primary"/>
                 <div asp-validation-summary="All" class="text-danger"></div>
+                <button type="submit" class="btn btn-primary">Save</button>
+                @Html.ActionLink("Back", "Details", "Account", null, new { @class = "btn btn-outline-warning" })
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Details">Back</a>
 </div>
 
 @section Scripts {

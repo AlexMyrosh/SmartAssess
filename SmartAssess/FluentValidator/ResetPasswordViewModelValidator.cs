@@ -3,13 +3,14 @@ using Presentation_Layer.ViewModels;
 
 namespace Presentation_Layer.FluentValidator
 {
-    public class ResetPasswordViewModelValidator : AbstractValidator<ResetPasswordViewModel>
+    public class ChangePasswordViewModelValidator : AbstractValidator<ChangePasswordViewModel>
     {
-        public ResetPasswordViewModelValidator()
+        public ChangePasswordViewModelValidator()
         {
-            RuleFor(x => x.NewPassword).NotEmpty().WithMessage("Password is required");
+            RuleFor(x => x.CurrentPassword).NotEmpty().WithMessage("Current password is required");
+            RuleFor(x => x.NewPassword).NotEmpty().WithMessage("New password is required");
             RuleFor(x => x.ConfirmNewPassword).NotEmpty().WithMessage("Please confirm the password")
-                .Equal(x=>x.NewPassword).WithMessage("Passwords do not match");
+                .Equal(x=>x.NewPassword).WithMessage("The new password and confirmation password do not match");
         }
     }
 }
