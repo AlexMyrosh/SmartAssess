@@ -104,6 +104,7 @@ namespace Presentation_Layer
             services.AddScoped<IValidator<ForgotPasswordViewModel>, ForgotPasswordViewModelValidator>();
             services.AddScoped<IValidator<ResetPasswordViewModel>, ResetPasswordViewModelValidator>();
             services.AddScoped<IValidator<ChangePasswordViewModel>, ChangePasswordViewModelValidator>();
+            services.AddScoped<IValidator<ChangeEmailViewModel>, ChangeEmailViewModelValidator>();
 
             services.AddScoped<IExamService, ExamService>();
             services.AddScoped<IAccountService, AccountService>();

@@ -1,13 +1,10 @@
 ﻿using AutoMapper;
 using Business_Logic_Layer.Models;
-using Business_Logic_Layer.Services.Implementations;
 using Business_Logic_Layer.Services.Interfaces;
 using Data_Access_Layer.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
 using Presentation_Layer.ViewModels;
-using System.Text;
 
 namespace Presentation_Layer.Controllers
 {
@@ -241,6 +238,63 @@ namespace Presentation_Layer.Controllers
             }
 
             return View(model);
+        }
+
+        public IActionResult ChangeEmail()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeEmail(ChangeEmailViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _accountService.GetUserAsync(User);
+            if (user == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            var confirmationToken = await _accountService.GenerateChangeEmailTokenAsync(user, model.NewEmail);
+            var callbackUrl = Url.Action("ConfirmEmailChange", "Account", new { userId = user.Id, email = model.NewEmail, token = confirmationToken }, protocol: Request.Scheme);
+            await _accountService.ResetEmailAsync(model.NewEmail, callbackUrl);
+            var successMessage = "Confirmation email was sent";
+            return View("_SuccessfulNotification", successMessage);
+        }
+
+        public async Task<IActionResult> ConfirmEmailChange(string? token, string? email, string? userId)
+        {
+            if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(token))
+            {
+                var errorMessage = "Something went wrong, please try again later";
+                return View("_FailedNotification", errorMessage);
+            }
+
+            var user = await _accountService.GetUserAsync(userId);
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{userId}'.");
+            }
+
+            var result = await _accountService.ChangeEmailAsync(user, email, token);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+
+                var errorMessage = "Something went wrong, please try again later";
+                return View("_FailedNotification", errorMessage);
+            }
+
+            await _signInManager.RefreshSignInAsync(user);
+            var successMessage = $"Email confirmed and updated to {email}";
+            return View("_SuccessfulNotification", successMessage);
         }
 
         [HttpGet("validation/username")]

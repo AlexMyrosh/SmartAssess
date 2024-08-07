@@ -1,6 +1,4 @@
-﻿using System.Net.Http;
-using System;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Text.Encodings.Web;
 using AutoMapper;
 using Business_Logic_Layer.Models;
@@ -75,6 +73,12 @@ namespace Business_Logic_Layer.Services.Implementations
             return true;
         }
 
+        public async Task ResetEmailAsync(string email, string callbackUrl)
+        {
+            var htmlMessage = $"Please confirm email by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.";
+            await _emailSender.SendEmailAsync(email, "Email confirmation", htmlMessage);
+        }
+
         public async Task<string> GenerateResetTokenAsync(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
@@ -90,6 +94,12 @@ namespace Business_Logic_Layer.Services.Implementations
         public async Task<string> GenerateEmailConfirmationTokenAsync(UserEntity user)
         {
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            return code;
+        }
+
+        public async Task<string> GenerateChangeEmailTokenAsync(UserEntity user, string newEmail)
+        {
+            var code = await _userManager.GenerateChangeEmailTokenAsync(user, newEmail);
             return code;
         }
 
@@ -138,6 +148,18 @@ namespace Business_Logic_Layer.Services.Implementations
         public async Task<IdentityResult> ChangePasswordAsync(UserEntity user, string currentPassword, string newPassword)
         {
             var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+            return result;
+        }
+
+        public async Task<UserEntity?> GetUserAsync(string id)
+        {
+            var result = await _userManager.FindByIdAsync(id);
+            return result;
+        }
+
+        public async Task<IdentityResult> ChangeEmailAsync(UserEntity user, string email, string token)
+        {
+            var result = await _userManager.ChangeEmailAsync(user, email, token);
             return result;
         }
     }
