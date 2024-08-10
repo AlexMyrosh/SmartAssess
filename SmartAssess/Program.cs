@@ -105,16 +105,20 @@ namespace Presentation_Layer
             services.AddScoped<IValidator<ResetPasswordViewModel>, ResetPasswordViewModelValidator>();
             services.AddScoped<IValidator<ChangePasswordViewModel>, ChangePasswordViewModelValidator>();
             services.AddScoped<IValidator<ChangeEmailViewModel>, ChangeEmailViewModelValidator>();
+            services.AddScoped<IValidator<CourseViewModel>, CourseViewModelValidator>();
 
             services.AddScoped<IExamService, ExamService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IUserExamPassService, UserExamPassService>();
             services.AddScoped<IOpenAiService, OpenAiService>();
             services.AddScoped<IEmailSender, EmailSender>();
+            services.AddScoped<ICourseService, CourseService>();
 
             services.AddScoped<IExamRepository, ExamRepository>();
             services.AddScoped<IUserExamPassRepository, UserExamAttemptRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ICourseRepository, CourseRepository>();
+
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddControllersWithViews().AddFluentValidation();

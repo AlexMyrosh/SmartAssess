@@ -18,6 +18,8 @@ namespace Data_Access_Layer.Context
 
         public DbSet<UserExamAttemptEntity> UserExamAttempts { get; set; }
 
+        public DbSet<CourseEntity> Courses { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -54,6 +56,19 @@ namespace Data_Access_Layer.Context
                 .WithMany(pass => pass.UserAnswers)
                 .HasForeignKey(answer => answer.UserExamAttemptId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            // Configure ExamEntity
+            modelBuilder.Entity<ExamEntity>()
+                .HasOne(answer => answer.Course)
+                .WithMany(pass => pass.Exams)
+                .HasForeignKey(answer => answer.CourseId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Configure CourseEntity
+            modelBuilder.Entity<CourseEntity>()
+                .HasMany(c => c.Users)
+                .WithMany(u => u.Courses)
+                .UsingEntity(j => j.ToTable("CourseUsers"));
         }
     }
 }

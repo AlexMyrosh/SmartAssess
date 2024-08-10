@@ -16,5 +16,7 @@ namespace Data_Access_Layer.Models
         public string LastName { get; set; }
 
         public List<UserExamAttemptEntity> UserExamAttempts { get; set; }
+
+        public List<CourseEntity> Courses { get; set; }
     }
 }

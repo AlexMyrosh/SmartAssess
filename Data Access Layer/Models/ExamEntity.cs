@@ -41,6 +41,10 @@ namespace Data_Access_Layer.Models
         [DefaultValue(false)]
         public bool IsDeleted { get; set; }
 
+        [Required]
+        public Guid CourseId { get; set; }
+        public virtual CourseEntity Course { get; set; }
+
         public virtual List<ExamQuestionEntity> Questions { get; set; }
 
         public virtual List<UserExamAttemptEntity> UserExamAttempts { get; set; }

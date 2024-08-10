@@ -11,6 +11,7 @@ namespace Business_Logic_Layer.AutoMapperProfiles
             CreateMap<ExamQuestionModel, ExamQuestionEntity>().ReverseMap();
             CreateMap<UserAnswerModel, UserAnswerEntity>().ReverseMap();
             CreateMap<UserModel, UserEntity>().ReverseMap();
+            CreateMap<CourseModel, CourseEntity>().ReverseMap();
 
             CreateMap<UserExamAttemptModel, UserExamAttemptEntity>()
                 .ForMember(dest => dest.Exam, opt => opt.Ignore())

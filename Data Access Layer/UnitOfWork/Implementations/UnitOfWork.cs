@@ -11,6 +11,7 @@ namespace Data_Access_Layer.UnitOfWork.Implementations
         private IExamRepository? _examRepository;
         private IUserExamPassRepository? _userExamPassRepository;
         private IUserRepository? _userRepository;
+        private ICourseRepository? _courseRepository;
 
         public UnitOfWork(SqlContext sqlContext)
         {
@@ -41,6 +42,15 @@ namespace Data_Access_Layer.UnitOfWork.Implementations
             {
                 _userRepository ??= new UserRepository(_sqlContext);
                 return _userRepository;
+            }
+        }
+
+        public ICourseRepository CourseRepository
+        {
+            get
+            {
+                _courseRepository ??= new CourseRepository(_sqlContext);
+                return _courseRepository;
             }
         }
 
