@@ -22,10 +22,10 @@ namespace Data_Access_Layer.Models
         public SubjectEntity Subject { get; set; }
 
         [Required]
-        public DateTime ExamStartDateTime { get; set; }
+        public DateTimeOffset ExamStartDateTime { get; set; }
 
         [Required]
-        public DateTime ExamEndDateTime { get; set; }
+        public DateTimeOffset ExamEndDateTime { get; set; }
 
         [Required]
         public TimeSpan ExamDuration { get; set; }

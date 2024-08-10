@@ -12,9 +12,9 @@ namespace Presentation_Layer.ViewModels
 
         public SubjectViewModel? Subject { get; set; }
 
-        public DateTime? ExamStartDateTime { get; set; }
+        public DateTimeOffset? ExamStartDateTime { get; set; }
 
-        public DateTime? ExamEndDateTime { get; set; }
+        public DateTimeOffset? ExamEndDateTime { get; set; }
 
         public TimeSpan? ExamDuration { get; set; }
 

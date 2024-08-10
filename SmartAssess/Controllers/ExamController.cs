@@ -9,15 +9,11 @@ namespace Presentation_Layer.Controllers
     public class ExamController : Controller
     {
         private readonly IExamService _examService;
-        private readonly IUserExamPassService _userExamPassService;
-        private readonly IAccountService _accountService;
         private readonly IMapper _mapper;
 
-        public ExamController(IExamService examService, IUserExamPassService userExamPassService, IAccountService accountService, IMapper mapper)
+        public ExamController(IExamService examService, IMapper mapper)
         {
             _examService = examService;
-            _userExamPassService = userExamPassService;
-            _accountService = accountService;
             _mapper = mapper;
         }
 

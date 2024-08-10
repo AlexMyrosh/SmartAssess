@@ -34,8 +34,8 @@ namespace Business_Logic_Layer.Services.Implementations
 
         public async Task<IEnumerable<ExamModel>> GetAllAvailableExamsWithDetailsAsync(bool includeDeleted = false)
         {
-            var currentDateTime = DateTime.Now;
-            var examEntities = await _unitOfWork.ExamRepository.GetAllExamsByFilterWithDetailsAsync(exam => exam.ExamStartDateTime <= currentDateTime && exam.ExamEndDateTime > currentDateTime, includeDeleted);
+            var currentDateTimeOffset = DateTimeOffset.UtcNow;
+            var examEntities = await _unitOfWork.ExamRepository.GetAllExamsByFilterWithDetailsAsync(exam => exam.ExamStartDateTime <= currentDateTimeOffset && exam.ExamEndDateTime > currentDateTimeOffset, includeDeleted);
             var examModels = _mapper.Map<IEnumerable<ExamModel>>(examEntities);
             return examModels;
         }
