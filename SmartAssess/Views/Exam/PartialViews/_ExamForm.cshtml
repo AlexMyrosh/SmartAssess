@@ -59,7 +59,7 @@
     {
         <div class="container">
             <div class="row question">
-                <div class="col">
+                <div class="col-6">
                     <div class="form-group">
                         <label asp-for="Questions[i].QuestionText" class="control-label"></label>
                         <textarea asp-for="Questions[i].QuestionText" class="form-control" rows="5"></textarea>
@@ -68,16 +68,25 @@
                     </div>
                     <br />
                 </div>
-                <div class="col">
-                    <div class="form-group teacherNote">
+                <div class="col-6">
+                    <div class="form-group">
                         <label asp-for="Questions[i].TeacherNoteForAssessment" class="control-label"></label>
                         <textarea asp-for="Questions[i].TeacherNoteForAssessment" class="form-control" rows="5"></textarea>
                         <span asp-validation-for="Questions[i].TeacherNoteForAssessment" class="text-danger"></span>
                     </div>
                     <br />
                 </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label asp-for="Questions[i].MaxGrade" class="control-label"></label>
+                        <input asp-for="Questions[i].MaxGrade" class="form-control" rows="5"></input>
+                        <span asp-validation-for="Questions[i].MaxGrade" class="text-danger"></span>
+                    </div>
+                    <br />
+                </div>
                 
                 <a class="btn btn-outline-danger delete-question" type="button">Remove Question</a>
+                <br />
             </div>
         </div>
     }

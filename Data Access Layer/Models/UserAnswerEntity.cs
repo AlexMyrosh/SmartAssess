@@ -8,11 +8,12 @@ namespace Data_Access_Layer.Models
         [Key]
         public Guid Id { get; set; }
 
-        [MaxLength(1000)]
+        [MaxLength(5000)]
         public string? AnswerText { get; set; }
 
         public int? Grade { get; set; }
 
+        [MaxLength(5000)]
         public string? Feedback { get; set; }
 
         [Required]

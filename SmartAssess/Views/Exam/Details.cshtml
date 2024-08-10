@@ -61,6 +61,10 @@
                 @Html.DisplayTextFor(_ => question.QuestionText)
 
                 <span>(</span>
+                @Html.DisplayNameFor(_ => question.MaxGrade)
+                <span> - </span>
+                @Html.DisplayTextFor(_ => question.MaxGrade)
+                <span>, </span>
                 @Html.DisplayNameFor(_ => question.TeacherNoteForAssessment)
                 <span> - </span>
                 @Html.DisplayTextFor(_ => question.TeacherNoteForAssessment)

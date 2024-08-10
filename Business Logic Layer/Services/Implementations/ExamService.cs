@@ -83,7 +83,9 @@ namespace Business_Logic_Layer.Services.Implementations
             }
 
             var examEntityFromDb = await _unitOfWork.ExamRepository.GetByIdWithDetailsAsync(model.Id.Value);
+            var userAttempts = examEntityFromDb.UserExamAttempts;
             _mapper.Map(model, examEntityFromDb);
+            examEntityFromDb.UserExamAttempts = userAttempts;
             await _unitOfWork.SaveAsync();
             return model.Id.Value;
         }

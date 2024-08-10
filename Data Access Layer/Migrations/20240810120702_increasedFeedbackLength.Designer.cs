@@ -4,6 +4,7 @@ using Data_Access_Layer.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data_Access_Layer.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    partial class SqlContextModelSnapshot : ModelSnapshot
+    [Migration("20240810120702_increasedFeedbackLength")]
+    partial class increasedFeedbackLength
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -102,11 +105,10 @@ namespace Data_Access_Layer.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("AnswerText")
-                        .HasMaxLength(5000)
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("Feedback")
-                        .HasMaxLength(5000)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("Grade")
@@ -215,7 +217,7 @@ namespace Data_Access_Layer.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Feedback")
-                        .HasMaxLength(5000)
+                        .HasMaxLength(2147483647)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")

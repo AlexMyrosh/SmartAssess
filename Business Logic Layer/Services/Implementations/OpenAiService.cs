@@ -2,7 +2,6 @@
 using Azure.AI.OpenAI;
 using Business_Logic_Layer.Models;
 using Business_Logic_Layer.Services.Interfaces;
-using Data_Access_Layer.UnitOfWork.Interfaces;
 using Microsoft.Extensions.Options;
 
 namespace Business_Logic_Layer.Services.Implementations
@@ -23,30 +22,41 @@ namespace Business_Logic_Layer.Services.Implementations
 
         public async Task ExamEvaluationAsync(Guid examAttemptId)
         {
+            var allFeedbacks = new List<string>();
             var userExamAttemptModel = await _userExamPassService.GetByIdWithDetailsAsync(examAttemptId);
+            var completionOptions = new ChatCompletionsOptions();
+            completionOptions.DeploymentName = _openAiConfig.DeploymentName;
             foreach (var userAnswerModel in userExamAttemptModel.UserAnswers)
             {
-                var completionOptions = new ChatCompletionsOptions
-                {
-                    DeploymentName = _openAiConfig.DeploymentName,
-                    Messages = {
-                        new ChatRequestUserMessage($"Here is a student's response to a question. " +
+                var message = $"Here is a student's response to a question. " +
                                                    $"Please provide a grade from 1 to {userAnswerModel.Question.MaxGrade} " +
                                                    $"and also give some feedback.\n\nQuestion: {userAnswerModel.Question.QuestionText}\n\n" +
-                                                   $"Student's Answer: {userAnswerModel.AnswerText}\n\n" +
-                                                   $"Teacher's Notes: {userAnswerModel.Question.TeacherNoteForAssessment}\n\n" +
-                                                   $"We expect your answer in the following format: \n\nGrade: <grade>\nFeedback: <feedback>")
-                    },
-                    MaxTokens = 1000,
-                    Temperature = 0.0f
-                };
+                                                   $"Student's Answer: {(string.IsNullOrEmpty(userAnswerModel.AnswerText) ? "<MISS>" : userAnswerModel.AnswerText)}\n\n" +
+                                                   $"Teacher's Notes: {(string.IsNullOrEmpty(userAnswerModel.Question.TeacherNoteForAssessment) ? "<MISS>" : userAnswerModel.Question.TeacherNoteForAssessment)}\n\n" +
+                                                   $"If there is word <MISS> above, it means that value is null or empty." + 
+                                                   $"We expect your answer in the following format: \n\nGrade: <grade>\nFeedback: <feedback>";
+
+                completionOptions.Messages.Add(new ChatRequestUserMessage(message));
+                completionOptions.MaxTokens = 1000;
+                completionOptions.Temperature = 0.0f;
 
                 var openAiResult = await _client.GetChatCompletionsAsync(completionOptions);
                 var response = openAiResult.Value.Choices[0].Message.Content;
                 userAnswerModel.Grade = ExtractGradeFromAiResponse(response);
                 userAnswerModel.Feedback = ExtractFeedbackFromAiResponse(response);
+                allFeedbacks.Add(userAnswerModel.Feedback);
             }
 
+            var generalFeedbackPrompt = $"Could you please provide an overall feedback for the all questions that you evaluated." +
+               $"We expect your answer in the following format: Feedback: <feedback>";
+
+            completionOptions.Messages.Add(new ChatRequestUserMessage(generalFeedbackPrompt));
+            completionOptions.Temperature = 0.5f;
+
+            var overallFeedbackOpenAiResponse = await _client.GetChatCompletionsAsync(completionOptions);
+            var overallFeedbackResponse = overallFeedbackOpenAiResponse.Value.Choices[0].Message.Content;
+            var overallFeedback = ExtractFeedbackFromAiResponse(overallFeedbackResponse);
+            userExamAttemptModel.Feedback = overallFeedback;
             await _userExamPassService.UpdateAsync(userExamAttemptModel);
         }
 
@@ -78,25 +88,29 @@ namespace Business_Logic_Layer.Services.Implementations
 
         private string ExtractFeedbackFromAiResponse(string response)
         {
-            string[] lines = response.Split('\n');
+            var index = response.IndexOf("Feedback:");
+            var result = response.Substring(index + 10);
+            return result;
+        }
 
-            foreach (var line in lines)
+        public async Task<string> ProvideOverallExamFeedback(List<string> allFeedbacks)
+        {
+            var generalFeedbackPrompt = $"Here are the feedbacks for each question:\n{string.Join("\n", allFeedbacks)}\n\n" +
+                $"Based on this, please provide a general feedback." +
+                $"We expect your answer in the following format: Feedback: <feedback>";
+
+            var completionOptions = new ChatCompletionsOptions
             {
-                var parts = line.Split(new[] { ':' }, 2);
+                DeploymentName = _openAiConfig.DeploymentName,
+                Messages = { new ChatRequestUserMessage(generalFeedbackPrompt) },
+                MaxTokens = 1000,
+                Temperature = 0.3f
+            };
 
-                if (parts.Length == 2)
-                {
-                    var key = parts[0].Trim();
-                    var value = parts[1].Trim();
-
-                    if (key.Equals("Feedback", StringComparison.OrdinalIgnoreCase))
-                    {
-                        return value;
-                    }
-                }
-            }
-
-            return string.Empty;
+            var openAiResult = await _client.GetChatCompletionsAsync(completionOptions);
+            var response = openAiResult.Value.Choices[0].Message.Content;
+            var overallFeedback = ExtractFeedbackFromAiResponse(response);
+            return overallFeedback;
         }
     }
 }
