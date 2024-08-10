@@ -82,7 +82,7 @@ namespace Business_Logic_Layer.Services.Implementations
                 throw new ArgumentException("ExamModel id is null", nameof(model.Id));
             }
 
-            var examEntityFromDb = await _unitOfWork.ExamRepository.GetByIdAsync(model.Id.Value);
+            var examEntityFromDb = await _unitOfWork.ExamRepository.GetByIdWithDetailsAsync(model.Id.Value);
             _mapper.Map(model, examEntityFromDb);
             await _unitOfWork.SaveAsync();
             return model.Id.Value;

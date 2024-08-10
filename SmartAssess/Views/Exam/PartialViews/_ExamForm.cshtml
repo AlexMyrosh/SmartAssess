@@ -2,28 +2,43 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @model Presentation_Layer.ViewModels.ExamViewModel
 
-<div class="form-group">
-    <label asp-for="Name" class="control-label"></label>
-    <input asp-for="Name" class="form-control" />
+<div class="row">
+    <div class="col">
+        <div class="form-group">
+            <label asp-for="Name" class="control-label"></label>
+            <input asp-for="Name" class="form-control" />
+        </div>
+    </div>
+    <div class="col">
+        <div class="form-group">
+            <label asp-for="Description" class="control-label"></label>
+            <input asp-for="Description" class="form-control" />
+        </div>
+    </div>
 </div>
-<div class="form-group">
-    <label asp-for="Description" class="control-label"></label>
-    <input asp-for="Description" class="form-control" />
-</div>
+
 <div class="form-group">
     <label asp-for="Subject" class="control-label"></label>
     <select asp-for="Subject" asp-items="Html.GetEnumSelectList<SubjectViewModel>()" class="form-control">
         <option selected="selected" value="">Please select</option>
     </select>
 </div>
-<div class="form-group">
-    <label asp-for="ExamStartDateTime" class="control-label"></label>
-    <input asp-for="ExamStartDateTime" class="form-control" />
+
+<div class="row">
+    <div class="col">
+        <div class="form-group">
+            <label asp-for="ExamStartDateTime" class="control-label"></label>
+            <input asp-for="ExamStartDateTime" class="form-control" />
+        </div>
+    </div>
+    <div class="col">
+        <div class="form-group">
+            <label asp-for="ExamEndDateTime" class="control-label"></label>
+            <input asp-for="ExamEndDateTime" class="form-control" />
+        </div>
+    </div>
 </div>
-<div class="form-group">
-    <label asp-for="ExamEndDateTime" class="control-label"></label>
-    <input asp-for="ExamEndDateTime" class="form-control" />
-</div>
+
 <div class="form-group">
     <label asp-for="ExamDuration" class="control-label"></label>
     <input asp-for="ExamDuration" type="time" class="form-control" />
@@ -42,13 +57,35 @@
 <div id="questionsContainer">
     @for (var i = 0; i < Model.Questions?.Count; i++)
     {
-        <div class="form-group question">
-            <label asp-for="Questions[i].QuestionText" class="control-label"></label>
-            <textarea asp-for="Questions[i].QuestionText" class="form-control" rows="5"></textarea>
-            <span asp-validation-for="Questions[i].QuestionText" class="text-danger"></span>
-            <input type="hidden" asp-for="Questions[i].Id" />
-            <a class="btn btn-outline-danger delete-question" type="button">Remove Question</a>
+        <div class="container">
+            <div class="row question">
+                <div class="col">
+                    <div class="form-group">
+                        <label asp-for="Questions[i].QuestionText" class="control-label"></label>
+                        <textarea asp-for="Questions[i].QuestionText" class="form-control" rows="5"></textarea>
+                        <span asp-validation-for="Questions[i].QuestionText" class="text-danger"></span>
+                        <input type="hidden" asp-for="Questions[i].Id" />
+                    </div>
+                    <br />
+                </div>
+                <div class="col">
+                    <div class="form-group teacherNote">
+                        <label asp-for="Questions[i].TeacherNoteForAssessment" class="control-label"></label>
+                        <textarea asp-for="Questions[i].TeacherNoteForAssessment" class="form-control" rows="5"></textarea>
+                        <span asp-validation-for="Questions[i].TeacherNoteForAssessment" class="text-danger"></span>
+                    </div>
+                    <br />
+                </div>
+                
+                <a class="btn btn-outline-danger delete-question" type="button">Remove Question</a>
+            </div>
         </div>
     }
 </div>
-<a class="btn btn-outline-success" id="addQuestion">Add Question</a>
+
+<br />
+<div class="container">
+    <div class="row">
+        <a class="btn btn-outline-success" id="addQuestion">Add Question</a>
+    </div>
+</div>

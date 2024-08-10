@@ -6,17 +6,20 @@
 
 <h1>Create</h1>
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            @await Html.PartialAsync("PartialViews/_ExamForm", Model)
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-outline-success"/>
-                <a asp-action="Index" class="btn btn-outline-warning">Back to List</a>
+<div class="container">
+    <form asp-action="Create">
+        @await Html.PartialAsync("PartialViews/_ExamForm", Model)
+        <br />
+        <div class="container">
+            <div class="row">
+                <div class="col text-center">
+                    <input type="submit" value="Create" class="btn btn-outline-success" />
+                    <a asp-action="Index" class="btn btn-outline-warning">Back to List</a>
+                </div>
+                <div asp-validation-summary="All" class="text-danger"></div>
             </div>
-            <div asp-validation-summary="All" class="text-danger"></div>
-        </form>
-    </div>
+        </div>
+    </form>
 </div>
 
 @section Scripts {

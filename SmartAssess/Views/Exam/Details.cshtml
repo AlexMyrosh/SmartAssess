@@ -59,7 +59,15 @@
             @foreach(var question in Model.Questions)
             {
                 @Html.DisplayTextFor(_ => question.QuestionText)
+
+                <span>(</span>
+                @Html.DisplayNameFor(_ => question.TeacherNoteForAssessment)
+                <span> - </span>
+                @Html.DisplayTextFor(_ => question.TeacherNoteForAssessment)
+                <span>)</span>
                 <br />
+
+                
             }
         </dd>
     </dl>

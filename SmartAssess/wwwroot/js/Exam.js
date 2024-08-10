@@ -1,7 +1,7 @@
 $(document).ready(function () {
     var $questionsContainer = $("#questionsContainer");
     var $addQuestion = $("#addQuestion");
-    var questionCounter = document.querySelectorAll("#questionsContainer div").length;
+    var questionCounter = document.querySelectorAll(".question").length;
 
     function UpdateQuestionAttributesIndexes() {
         $(".question").each(function (index, question) {
@@ -44,14 +44,12 @@ $(document).ready(function () {
         clone.find('textarea').val('');
         clone.find('input[type=hidden]').val('');
 
-        console.log(clone.html());
-
         $questionsContainer.append(clone);
         questionCounter++;
     });
 
     $questionsContainer.on("click", ".delete-question", function () {
-        if ($questionsContainer.children().length > 1) {
+        if (questionCounter > 1) {
             $(this).closest('.question').remove();
             UpdateQuestionAttributesIndexes();
             questionCounter--;
