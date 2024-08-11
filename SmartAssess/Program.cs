@@ -15,11 +15,11 @@ using Presentation_Layer.AutoMapperProfiles;
 using Presentation_Layer.Extensions;
 using Presentation_Layer.FluentValidator;
 using Presentation_Layer.ViewModels;
-using System;
 using FluentValidation.AspNetCore;
-using System.Configuration;
 using Business_Logic_Layer.Models;
-using Microsoft.Extensions.Options;
+using Serilog.Sinks.MSSqlServer;
+using Serilog;
+using Presentation_Layer.Filters;
 
 namespace Presentation_Layer
 {
@@ -28,6 +28,7 @@ namespace Presentation_Layer
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.Host.UseSerilog();
             ConfigureServices(builder.Services, builder.Configuration);
 
             var app = builder.Build();
@@ -54,12 +55,24 @@ namespace Presentation_Layer
             await app.RunAsync();
         }
 
-        [Obsolete("Obsolete")]
         private static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
             // Configure connection to sql server
             var sqlConnectionString = configuration.GetConnectionString("SmartAssessConnection");
             services.AddDbContext<SqlContext>(options => options.UseSqlServer(sqlConnectionString));
+
+            // Configure Logger
+            Log.Logger = new LoggerConfiguration()
+                .Enrich.FromLogContext()
+                .MinimumLevel.Warning()
+                .WriteTo.MSSqlServer(
+                    connectionString: sqlConnectionString,
+                    sinkOptions: new MSSqlServerSinkOptions
+                    {
+                        TableName = "LogEvents",
+                        AutoCreateSqlTable = true
+                    })
+                .CreateLogger();
 
             services.AddIdentity<UserEntity, IdentityRole>(options =>
             {
@@ -121,7 +134,12 @@ namespace Presentation_Layer
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            services.AddControllersWithViews().AddFluentValidation();
+            services.AddScoped<ErrorHandlingFilter>();
+
+            services.AddControllersWithViews(options =>
+            {
+                options.Filters.AddService(typeof(ErrorHandlingFilter));
+            }).AddFluentValidation();
             services.AddRazorPages();
         }
     }
