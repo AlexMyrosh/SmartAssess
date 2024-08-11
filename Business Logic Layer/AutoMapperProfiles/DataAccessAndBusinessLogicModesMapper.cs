@@ -24,7 +24,9 @@ namespace Business_Logic_Layer.AutoMapperProfiles
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email))
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
-            CreateMap<ExamModel, ExamEntity>();
+            CreateMap<ExamModel, ExamEntity>()
+                .ForMember(dest => dest.Course, opt => opt.Ignore());
+
             CreateMap<ExamEntity, ExamModel>()
                 .ForMember(dest => dest.ExamDuration,
                     opt => opt.MapFrom(src => DateTime.Now + src.ExamDuration > src.ExamEndDateTime

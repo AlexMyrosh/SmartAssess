@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Business_Logic_Layer.Models;
-using Business_Logic_Layer.Services.Implementations;
 using Business_Logic_Layer.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Presentation_Layer.ViewModels;
@@ -10,12 +9,14 @@ namespace Presentation_Layer.Controllers
     public class CourseController : Controller
     {
         private readonly ICourseService _courseService;
+        private readonly IAccountService _accountService;
         private readonly IMapper _mapper;
 
-        public CourseController(ICourseService courseService, IMapper mapper)
+        public CourseController(ICourseService courseService,  IMapper mapper, IAccountService accountService)
         {
             _courseService = courseService;
             _mapper = mapper;
+            _accountService = accountService;
         }
 
         [HttpGet]
@@ -26,11 +27,42 @@ namespace Presentation_Layer.Controllers
             return View(courseViewModels);
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> AppliedCourses()
+        {
+            var courseModels = await _courseService.GetAllAvailableForUserCoursesWithDetailsAsync(User);
+            var courseViewModels = _mapper.Map<IEnumerable<CourseViewModel>>(courseModels);
+            return View(courseViewModels);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ApplyForCourse(Guid courseId)
+        {
+            await _courseService.AddUserForCourseAsync(User, courseId);
+            return RedirectToAction("Details", new { id = courseId });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LeaveCourse(Guid courseId)
+        {
+            await _courseService.RemoveUserFromCourseAsync(User, courseId);
+            return RedirectToAction("AppliedCourses");
+        }
+
         [HttpGet]
         public async Task<IActionResult> Details(Guid id)
         {
             var courseModel = await _courseService.GetByIdWithDetailsAsync(id);
             var courseViewModel = _mapper.Map<CourseViewModel>(courseModel);
+
+            // TODO: Move to Business Logic
+            var currentUser = await _accountService.GetUserAsync(User);
+            foreach (var exam in courseViewModel.Exams)
+            {
+                exam.CurrentUserAttmptNumber = exam.UserExamAttempts.Count(x => x.User.Id == currentUser.Id);
+            }
+
             return View(courseViewModel);
         }
 

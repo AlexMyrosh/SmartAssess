@@ -88,6 +88,7 @@ namespace Data_Access_Layer.Repositories.Implementations
                 .Where(exam => exam.IsDeleted == false || exam.IsDeleted == includeDeleted)
                 .Include(exam => exam.Questions)
                 .Include(exam => exam.UserExamAttempts)
+                .ThenInclude(attempt => attempt.User)
                 .ToListAsync();
 
             return examEntities;

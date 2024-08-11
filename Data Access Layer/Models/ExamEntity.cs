@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using Data_Access_Layer.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace Data_Access_Layer.Models
@@ -16,10 +15,10 @@ namespace Data_Access_Layer.Models
         [Required]
         [MaxLength(1000)]
         public string Description { get; set; }
-        
+
         [Required]
-        [DefaultValue(SubjectEntity.NotSet)]
-        public SubjectEntity Subject { get; set; }
+        [DefaultValue(1)]
+        public int MaxAttemptsAllowed { get; set; }
 
         [Required]
         public DateTimeOffset ExamStartDateTime { get; set; }

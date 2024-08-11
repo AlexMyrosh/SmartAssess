@@ -91,6 +91,14 @@ namespace Presentation_Layer.Controllers
             return View(viewModel);
         }
 
+        [HttpGet("Account/Details/{id}")]
+        public async Task<IActionResult> Details(string id)
+        {
+            var currentUser = await _accountService.GetUserAsync(id);
+            var viewModel = _mapper.Map<UserViewModel>(currentUser);
+            return View(viewModel);
+        }
+
         [HttpGet]
         public async Task<IActionResult> Update()
         {

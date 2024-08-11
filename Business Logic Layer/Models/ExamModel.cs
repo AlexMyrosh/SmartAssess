@@ -1,6 +1,4 @@
-﻿using Business_Logic_Layer.Enums;
-
-namespace Business_Logic_Layer.Models
+﻿namespace Business_Logic_Layer.Models
 {
     public class ExamModel
     {
@@ -10,7 +8,7 @@ namespace Business_Logic_Layer.Models
 
         public string? Description { get; set; }
 
-        public SubjectModel? Subject { get; set; }
+        public int? MaxAttemptsAllowed { get; set; }
 
         public DateTimeOffset? ExamStartDateTime { get; set; }
 
@@ -23,6 +21,8 @@ namespace Business_Logic_Layer.Models
         public int? MinimumPassGrade { get; set; }
 
         public bool? IsDeleted { get; set; }
+
+        public CourseModel? Course { get; set; }
 
         public List<ExamQuestionModel>? Questions { get; set; }
 

@@ -1,6 +1,4 @@
-﻿using Presentation_Layer.Enums;
-
-namespace Presentation_Layer.ViewModels
+﻿namespace Presentation_Layer.ViewModels
 {
     public class ExamViewModel
     {
@@ -10,7 +8,7 @@ namespace Presentation_Layer.ViewModels
 
         public string? Description { get; set; }
 
-        public SubjectViewModel? Subject { get; set; }
+        public int? MaxAttemptsAllowed { get; set; }
 
         public DateTimeOffset? ExamStartDateTime { get; set; }
 
@@ -24,6 +22,12 @@ namespace Presentation_Layer.ViewModels
 
         public bool? IsDeleted { get; set; }
 
+        public int? CurrentUserAttmptNumber { get; set; }
+
+        public CourseViewModel? Course { get; set; }
+
         public List<ExamQuestionViewModel>? Questions { get; set; }
+
+        public List<UserExamAttemptViewModel>? UserExamAttempts { get; set; }
     }
 }

@@ -22,5 +22,9 @@ namespace Business_Logic_Layer.Services.Interfaces
         Task<Guid> UpdateAsync(CourseModel model);
 
         Task<IEnumerable<CourseModel>> GetAllAvailableForUserCoursesWithDetailsAsync(ClaimsPrincipal userPrincipal, bool includeDeleted = false);
+
+        Task AddUserForCourseAsync(ClaimsPrincipal userPrincipal, Guid courseId);
+
+        Task RemoveUserFromCourseAsync(ClaimsPrincipal userPrincipal, Guid courseId);
     }
 }

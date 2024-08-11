@@ -22,6 +22,45 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Description)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Users)
+        </dt>
+        <dd class="col-sm-10">
+            @foreach (var user in Model.Users)
+            {
+                <a asp-controller="Account" asp-action="Details" asp-route-userId="@user.Id">
+                    @Html.DisplayTextFor(_ => user.FirstName)
+                    <span> </span>
+                    @Html.DisplayTextFor(_ => user.LastName)
+                </a>
+            }
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Exams)
+        </dt>
+        <dd class="col-sm-10">
+            <div class="container">
+                    @foreach (var exam in Model.Exams)
+                    {
+                        <div class="row">
+                            <div class="col">
+                                @Html.DisplayTextFor(_ => exam.Name)
+                            </div>
+                            <div class="col">
+                            @if(exam.CurrentUserAttmptNumber >= exam.MaxAttemptsAllowed)
+                            {
+                                <button class="btn btn-outline-info" disabled>Pass</button>
+                            }
+                            else
+                            {
+                                @Html.ActionLink("Pass", "Assessment", "UserExamPass", new { examId = exam.Id }, new { @class = "btn btn-outline-info" })
+                            }
+                            
+                            </div>
+                        </div>
+                    }
+            </div>
+        </dd>
     </dl>
 </div>
 <div>

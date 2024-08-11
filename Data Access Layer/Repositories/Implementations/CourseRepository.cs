@@ -63,6 +63,8 @@ namespace Data_Access_Layer.Repositories.Implementations
         {
             var courseEntity = await _sqlContext.Courses
                 .Include(course => course.Exams)
+                .ThenInclude(exam => exam.UserExamAttempts)
+                .ThenInclude(attempt => attempt.User)
                 .Include(course => course.Users)
                 .FirstOrDefaultAsync(course => course.Id == id);
 

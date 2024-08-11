@@ -20,6 +20,24 @@ namespace Business_Logic_Layer.Services.Implementations
             _accountService = accountService;
         }
 
+        public async Task AddUserForCourseAsync(ClaimsPrincipal userPrincipal, Guid courseId)
+        {
+            var user = await _accountService.GetUserAsync(userPrincipal);
+            if(user is null)
+            {
+                return;
+            }
+
+            var courseModel = await _unitOfWork.CourseRepository.GetByIdWithDetailsAsync(courseId);
+            if(courseModel is null)
+            {
+                return;
+            }
+
+            courseModel.Users.Add(user);
+            await _unitOfWork.SaveAsync();
+        }
+
         public async Task<Guid> CreateAsync(CourseModel model)
         {
             var courseEntity = _mapper.Map<CourseEntity>(model);
@@ -72,6 +90,24 @@ namespace Business_Logic_Layer.Services.Implementations
             var result = await _unitOfWork.CourseRepository.HardDeleteAsync(id);
             await _unitOfWork.SaveAsync();
             return result;
+        }
+
+        public async Task RemoveUserFromCourseAsync(ClaimsPrincipal userPrincipal, Guid courseId)
+        {
+            var user = await _accountService.GetUserAsync(userPrincipal);
+            if (user is null)
+            {
+                return;
+            }
+
+            var courseModel = await _unitOfWork.CourseRepository.GetByIdWithDetailsAsync(courseId);
+            if (courseModel is null)
+            {
+                return;
+            }
+
+            courseModel.Users.Remove(user);
+            await _unitOfWork.SaveAsync();
         }
 
         public async Task<bool> SoftDeleteAsync(Guid id)

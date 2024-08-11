@@ -9,11 +9,15 @@ namespace Presentation_Layer.Controllers
     public class ExamController : Controller
     {
         private readonly IExamService _examService;
+        private readonly ICourseService _courseService;
+        private readonly IAccountService _accountService;
         private readonly IMapper _mapper;
 
-        public ExamController(IExamService examService, IMapper mapper)
+        public ExamController(IExamService examService, ICourseService courseService, IAccountService accountService, IMapper mapper)
         {
             _examService = examService;
+            _courseService = courseService;
+            _accountService = accountService;
             _mapper = mapper;
         }
 
@@ -34,14 +38,17 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create(Guid courseId)
         {
+            var courseModel = await _courseService.GetByIdAsync(courseId);
+            var courseViewModel = _mapper.Map<CourseViewModel>(courseModel);
             var examViewModel = new ExamViewModel
             {
                 Questions = new List<ExamQuestionViewModel>
                 {
                     new()
-                }
+                },
+                Course = courseViewModel
             };
 
             return View(examViewModel);
