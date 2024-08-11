@@ -4,18 +4,21 @@ namespace Presentation_Layer.Controllers
 {
     public class ErrorController : Controller
     {
+        [HttpGet("/Error/400")]
         public IActionResult Error400()
         {
             Response.StatusCode = 400;
             return View("400");
         }
 
+        [HttpGet("/Error/401")]
         public IActionResult Error401()
         {
             Response.StatusCode = 401;
             return View("401");
         }
 
+        [HttpGet("/Error/403")]
         public IActionResult Error403()
         {
             Response.StatusCode = 403;
