@@ -1,4 +1,4 @@
-﻿namespace Presentation_Layer.Roles
+﻿namespace Data_Access_Layer.Roles
 {
     public static class RoleHierarchy
     {

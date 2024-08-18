@@ -1,79 +1,73 @@
 ﻿@model Presentation_Layer.ViewModels.RegisterViewModel
 
-<h2 class="text-center">Register</h2>
-<br />
-<div class="container">
-    <div class="row">
-        <div class="col">
-            <form method="post" asp-anti-forgery="true">
-                <div class="form-group row">
-                    <label class="col-sm-2 col-form-label" asp-for="FirstName"></label>
-                    <div class="col-sm-10">
-                        <input class="form-control" asp-for="FirstName" />
-                    </div>
-                    <span asp-validation-for="FirstName" class="text-danger"></span>
+@{
+    var outerRadius = 24;
+    var innerRadius = outerRadius - 16;
+    var outerRadiusResult = $"{outerRadius}px;";
+    var innerRadiusResult = $"{innerRadius}px;";
+}
+
+<div class="d-flex justify-content-center align-items-center">
+    <div class="card text-center" style="width: 40rem; height: auto; border-radius: @outerRadiusResult">
+        <div class="card-header">
+            <h1 class="display-5">Register</h1>
+        </div>
+        <div class="card-body">
+            <form method="post">
+
+                <div class="form-floating mb-3">
+                    <input asp-for="FirstName" type="text" class="form-control form-control-lg" placeholder="Username" style="border-radius: @innerRadiusResult"/>
+                    <label asp-for="FirstName" class="form-label"></label>
                 </div>
-                <br />
-                <div class="form-group row">
-                    <label class="col-sm-2 col-form-label" asp-for="LastName"></label>
-                    <div class="col-sm-10">
-                        <input class="form-control" asp-for="LastName" />
-                    </div>
-                    <span asp-validation-for="LastName" class="text-danger"></span>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="LastName" type="text" class="form-control form-control-lg" placeholder="Password" style="border-radius: @innerRadiusResult"/>
+                    <label asp-for="LastName" class="form-label"></label>
                 </div>
-                <br />
-                <div class="form-group row">
-                    <label class="col-sm-2 col-form-label" asp-for="UserName"></label>
-                    <div class="col-sm-10">
-                        <input class="form-control" asp-for="UserName" />
-                    </div>
-                    <span asp-validation-for="UserName" class="text-danger"></span>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="UserName" type="text" class="form-control form-control-lg" placeholder="Username" style="border-radius: @innerRadiusResult"/>
+                    <label asp-for="UserName" class="form-label"></label>
                 </div>
-                <br />
-                <div class="form-group row">
-                    <label class="col-sm-2 col-form-label" asp-for="Email"></label>
-                    <div class="col-sm-10">
-                        <input class="form-control" type="email" asp-for="Email" />
-                    </div>
-                    <span asp-validation-for="Email" class="text-danger"></span>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Email" type="email" class="form-control form-control-lg" placeholder="Password" style="border-radius: @innerRadiusResult"/>
+                    <label asp-for="Email" class="form-label"></label>
                 </div>
-                <br />
-                <div class="form-group row">
-                    <label class="col-sm-2 col-form-label" asp-for="Password"></label>
-                    <div class="col-sm-10">
-                        <input class="form-control" type="password" asp-for="Password" />
-                    </div>
-                    <span asp-validation-for="Password" class="text-danger"></span>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Password" type="password" class="form-control form-control-lg" placeholder="Username" style="border-radius: @innerRadiusResult"/>
+                    <label asp-for="Password" class="form-label"></label>
                 </div>
-                <br />
-                <div class="form-group row">
-                    <label class="col-sm-2 col-form-label" asp-for="ConfirmPassword"></label>
-                    <div class="col-sm-10">
-                        <input class="form-control" type="password" asp-for="ConfirmPassword" />
-                    </div>
-                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="ConfirmPassword" type="password" class="form-control form-control-lg" placeholder="Password" style="border-radius: @innerRadiusResult"/>
+                    <label asp-for="ConfirmPassword" class="form-label"></label>
                 </div>
-                <br/>
-                <div class="container">
-                    <div class="row">
-                        <div class="col text-center">
-                            <button class="btn btn-outline-success" type="submit">Register</button>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col text-center">
-                            <span>Already have an account?</span>
-                            @Html.ActionLink("Login", "Login")
-                        </div>
-                    </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-lg btn-block" style="width: -webkit-fill-available; border-radius: @innerRadiusResult">Register</button>
                 </div>
-                <div asp-validation-summary="All" class="text-danger"></div>
+
+                <div class="col text-center">
+                    <span>Already have an account?</span>
+                    @Html.ActionLink("Login", "Login", "Account", null, new { @class = "text-decoration-none" })
+                </div>
+
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <br id="spaceBeforeErrorModal"/>
+                    <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show" style="border-radius: @innerRadiusResult margin-bottom: 0">
+                        <i class="bi-exclamation-octagon-fill" style="font-size: 1.5em; line-height: 1;"></i>
+                        <strong class="mx-2">Error!</strong> @string.Join(", ", ViewData.ModelState.SelectMany(ms => ms.Value.Errors).Select(e => e.ErrorMessage))
+                        <button id="closeErrorsButton" type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
             </form>
         </div>
     </div>
 </div>
 
-@*For remote validation*@
-<script src="~/lib/jquery/dist/jquery.js"></script>
-<script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
-<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+@section Scripts {
+    <script src="~/js/Form.js"></script>
+}

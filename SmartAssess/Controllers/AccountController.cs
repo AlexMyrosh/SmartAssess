@@ -2,6 +2,7 @@
 using Business_Logic_Layer.Models;
 using Business_Logic_Layer.Services.Interfaces;
 using Data_Access_Layer.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Presentation_Layer.ViewModels;
@@ -84,6 +85,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Details()
         {
             var currentUser = await _accountService.GetUserAsync(User);
@@ -92,6 +94,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpGet("Account/Details/{id}")]
+        [Authorize]
         public async Task<IActionResult> Details(string id)
         {
             var currentUser = await _accountService.GetUserAsync(id);
@@ -100,6 +103,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Update()
         {
             var currentUser = await _accountService.GetUserAsync(User);
@@ -108,6 +112,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Update(UserViewModel user)
         {
             var userModel = _mapper.Map<UserModel>(user);
@@ -137,25 +142,15 @@ namespace Presentation_Layer.Controllers
             if (ModelState.IsValid)
             {
                 var isUserExist = await _accountService.IsUserExistByEmailAsync(model.Email);
-                if (!isUserExist)
+                if (isUserExist)
                 {
-                    ModelState.AddModelError("", "User with this email is not found, please check email or try later");
-                    return View(model);
+                    var resetToken = await _accountService.GenerateResetTokenAsync(model.Email);
+                    var callbackUrl = Url.Action("ResetPassword", "Account", new { userEmail = model.Email, code = resetToken }, protocol: Request.Scheme);
+                    await _accountService.ResetPasswordEmailAsync(model.Email, callbackUrl);
                 }
 
-                var resetToken = await _accountService.GenerateResetTokenAsync(model.Email);
-                var callbackUrl = Url.Action("ResetPassword", "Account", new { userEmail = model.Email, code = resetToken }, protocol: Request.Scheme);
-                var result = await _accountService.ResetPasswordEmailAsync(model.Email, callbackUrl);
-                if (result)
-                {
-                    var notification = "Email for password reset it sent, please check your email";
-                    return View("_SuccessfulNotification", notification);
-                }
-                else
-                {
-                    var notification = "Something went wrong, please check that email is correct or wait and try later";
-                    return View("_FailedNotification", notification);
-                }
+                TempData["Notification"] = "If the email address is found in our system, we have sent a recovery email";
+                return RedirectToAction("Login");
             }
 
             return View(model);
@@ -195,6 +190,7 @@ namespace Presentation_Layer.Controllers
             return View();
         }
 
+        [HttpGet]
         public async Task<IActionResult> ConfirmEmail(string userId, string code)
         {
             var result = await _accountService.ConfirmEmailAsync(userId, code);
@@ -248,12 +244,15 @@ namespace Presentation_Layer.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        [Authorize]
         public IActionResult ChangeEmail()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> ChangeEmail(ChangeEmailViewModel model)
         {
             if (!ModelState.IsValid)

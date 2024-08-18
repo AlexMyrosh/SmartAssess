@@ -1,23 +1,23 @@
 ﻿using AutoMapper;
 using Business_Logic_Layer.Models;
 using Business_Logic_Layer.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Presentation_Layer.ViewModels;
 
 namespace Presentation_Layer.Controllers
 {
+    [Authorize]
     public class ExamController : Controller
     {
         private readonly IExamService _examService;
         private readonly ICourseService _courseService;
-        private readonly IAccountService _accountService;
         private readonly IMapper _mapper;
 
-        public ExamController(IExamService examService, ICourseService courseService, IAccountService accountService, IMapper mapper)
+        public ExamController(IExamService examService, ICourseService courseService, IMapper mapper)
         {
             _examService = examService;
             _courseService = courseService;
-            _accountService = accountService;
             _mapper = mapper;
         }
 

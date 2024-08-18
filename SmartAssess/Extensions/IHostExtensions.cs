@@ -9,19 +9,19 @@ namespace Presentation_Layer.Extensions
             using var serviceScope = host.Services.CreateScope();
             var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-            if (!await roleManager.RoleExistsAsync(Roles.Roles.Student))
+            if (!await roleManager.RoleExistsAsync(Data_Access_Layer.Roles.Roles.Student))
             {
-                await roleManager.CreateAsync(new IdentityRole(Roles.Roles.Student));
+                await roleManager.CreateAsync(new IdentityRole(Data_Access_Layer.Roles.Roles.Student));
             }
 
-            if (!await roleManager.RoleExistsAsync(Roles.Roles.Teacher))
+            if (!await roleManager.RoleExistsAsync(Data_Access_Layer.Roles.Roles.Teacher))
             {
-                await roleManager.CreateAsync(new IdentityRole(Roles.Roles.Teacher));
+                await roleManager.CreateAsync(new IdentityRole(Data_Access_Layer.Roles.Roles.Teacher));
             }
 
-            if (!await roleManager.RoleExistsAsync(Roles.Roles.Admin))
+            if (!await roleManager.RoleExistsAsync(Data_Access_Layer.Roles.Roles.Admin))
             {
-                await roleManager.CreateAsync(new IdentityRole(Roles.Roles.Admin));
+                await roleManager.CreateAsync(new IdentityRole(Data_Access_Layer.Roles.Roles.Admin));
             }
         }
     }
