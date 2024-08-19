@@ -3,7 +3,9 @@
 }
 
 <div class="text-center">
-    <h1>Welcome to SmartAssess!</h1>
-    <p>Sign up today to gain access to our full range of features.</p>
-    <a asp-controller="Account" asp-action="Register" class="btn btn-outline-success">Sign Up</a> or <a asp-controller="Account" asp-action="Login" class="btn btn-outline-success">Log In</a>
+    <h1 style="font-size: 72px;">Welcome to SmartAssess!</h1>
+    @if (!User.Identity.IsAuthenticated)
+    {
+        <h3>Sign up to gain access to full range of features.</h3>
+    }
 </div>

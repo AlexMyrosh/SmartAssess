@@ -26,7 +26,7 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        @if (User.Identity.IsAuthenticated)
+                        @if (User.IsInRole(Data_Access_Layer.Roles.Roles.Student))
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="AppliedCourses">My courses</a>
@@ -34,6 +34,12 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="Index">All courses</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="UserExamPass" asp-action="PassedExams">My passed exams</a>
+                            </li>
+                        }
+                        @if (User.IsInRole(Data_Access_Layer.Roles.Roles.Teacher))
+                        {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Exam" asp-action="Index">Exams</a>
                             </li>
@@ -47,7 +53,7 @@
                         {
                             <li class="nav-item nav-link">
                                 <span>Hello,
-                                    <a asp-controller="Account" asp-action="Details">@user?.FirstName @user?.LastName</a>
+                                    <a asp-controller="Account" asp-action="Details" class="text-decoration-none">@user?.FirstName @user?.LastName</a>
                                 </span>
                             </li>
                             <li class="nav-item">

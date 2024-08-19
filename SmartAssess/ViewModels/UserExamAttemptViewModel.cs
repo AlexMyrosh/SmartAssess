@@ -1,6 +1,4 @@
-﻿using Data_Access_Layer.Models;
-
-namespace Presentation_Layer.ViewModels
+﻿namespace Presentation_Layer.ViewModels
 {
     public class UserExamAttemptViewModel
     {
@@ -12,7 +10,7 @@ namespace Presentation_Layer.ViewModels
 
         public int? TotalGrade { get; set; }
 
-        public UserEntity? User { get; set; }
+        public UserViewModel? User { get; set; }
 
         public ExamViewModel? Exam { get; set; }
 

@@ -1,27 +1,135 @@
 ﻿@model Presentation_Layer.ViewModels.UserViewModel
 
 @{
-    ViewData["Title"] = "UserProfileDetails";
+    ViewData["Title"] = "Profile";
 }
 
-<div>
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FirstName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FirstName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LastName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LastName)
-        </dd>
-    </dl>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ti-icons@0.1.2/css/themify-icons.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-4 mb-5 mb-lg-0 wow fadeIn pb-4">
+            <div class="card border-0 shadow">
+                <img src="https://cdn.prod.website-files.com/6600e1eab90de089c2d9c9cd/66975dededca9e25a704ce54_image_34ff6756_1720668987871_1024.jpeg" alt="...">
+                <div class="card-body p-1-9" style="padding: 2rem 2rem 1rem 2rem">
+                    <div class="mb-4">
+                        <h3 class="h4 mb-0">@Model.FirstName @Model.LastName</h3>
+                        <span class="text-primary">@string.Join(", ", Model.Roles)</span>
+                    </div>
+                    <ul class="list-unstyled mb-4">
+                        <li class="mb-3" title="Email"><i class="far fa-envelope display-25 me-3 text-secondary"></i>@Model.Email</li>
+                        <li class="mb-3" title="Phone number"><i class="fas fa-mobile-alt display-25 me-3 text-secondary"></i>@Model.PhoneNumber</li>
+                        <li class="mb-3" title="Location"><i class="fas fa-map-marker-alt display-25 me-3 text-secondary"></i>@Model.City, @Model.Country</li>
+                        <li class="mb-3" title="Educational institution"><i class="fas fa-university display-25 me-3 text-secondary"></i>@Model.EducationalInstitution</li>
+                        <li title="Last login"><i class="fas fa-clock display-25 me-3 text-secondary"></i>@Model.LastLogInDateTime</li>
+                    </ul>
+                    @Html.ActionLink("Change password", "ChangePassword", "Account", null, new { @class = "text-decoration-none" })
+                    <br />
+                    @Html.ActionLink("Change phone number", "ChangePhoneNumber", "Account", null, new { @class = "text-decoration-none" })
+                    <br />
+                    @Html.ActionLink("Change email", "ChangeEmail", "Account", null, new { @class = "text-decoration-none" })
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="ps-lg-1-6 ps-xl-5">
+                <div class="mb-1 wow fadeIn">
+                    <div class="text-start mb-1-6 wow fadeIn">
+                        <div class="d-flex flex-md-row flex-column align-items-center">
+                            <h2 class="h1 mb-0 text-primary">#About Me</h2>
+                            <i id="editButton" class="fas fa-pencil-alt display-25 ms-3 me-3 clickable-icon" style="font-size:24px;"></i>
+                        </div>
+                    </div>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <pre id="descriptionDisplay" style="white-space: pre-wrap;">@Model.AboutUser</pre>
+                            </div>
+                        </div>
+                    </div>
+                    <textarea class="form-control mb-2" id="descriptionEdit" rows="4" style="display:none;"></textarea>
+                    <button id="saveButton" style="display:none;" class="btn btn-success">Save</button>
+                    <button id="cancelButton" style="display:none;" class="btn btn-warning">Cancel</button>
+                </div>
+                <div class="mb-5 wow fadeIn">
+                    <div class="text-start mb-1-6 wow fadeIn">
+                        <h2 class="mb-0 text-primary">#Applied courses</h2>
+                    </div>
+                    <div class="row mt-n4">
+                        @foreach (var course in Model.Courses)
+                        {
+                            <div class="col-sm-6 col-xl-4 mt-4">
+                                <div class="card text-center border-0 rounded-3">
+                                    <div class="card-body">
+                                        <i class="ti-bookmark-alt icon-box medium rounded-3 mb-4"></i>
+                                        <h3 class="h5 mb-3">@Html.ActionLink(course.Name, "Details", "Course", new { id = course.Id }, new {style="text-decoration: none; color: black;"})</h3>
+                                        <p class="mb-0">@course.Description</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-    @Html.ActionLink("Change Password", "ChangePassword", "Account", null, new { @class = "btn btn-outline-primary" })
-    @Html.ActionLink("Update", "Update", "Account", null, new { @class = "btn btn-outline-warning" })
-    @Html.ActionLink("Change Email", "ChangeEmail", "Account", null, new { @class = "btn btn-outline-info" })
-</div>
+
+@section Scripts {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(function () {
+            $('#editButton').on('click', function () {
+                var descriptionHeight = $('#descriptionDisplay').height();
+                $('#descriptionDisplay').hide();
+                $('#descriptionEdit').val($('#descriptionDisplay').text()).show().height(descriptionHeight + 20);
+                $('#saveButton').show();
+                $('#cancelButton').show();
+                $(this).hide();
+            });
+
+            $('#saveButton').on('click', function () {
+                var newDescription = $('#descriptionEdit').val();
+                $.ajax({
+                    url: '@Url.Action("UpdateDescription", "Account")',
+                    type: 'POST',
+                    data: { userId: '@Model.Id', description: newDescription },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#descriptionDisplay').text(newDescription).show();
+                            $('#descriptionEdit').hide();
+                            $('#editButton').show();
+                            $('#saveButton').hide();
+                            $('#cancelButton').hide();
+                        } else {
+                            alert('Failed to update description: ' + response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('Error updating description.');
+                    }
+                });
+            });
+
+            $('#cancelButton').on('click', function () {
+                $('#descriptionDisplay').show();
+                $('#descriptionEdit').hide();
+                $('#editButton').show();
+                $('#saveButton').hide();
+                $('#cancelButton').hide();
+            });
+        });
+    </script>
+}
+<style>
+    .clickable-icon {
+        cursor: pointer;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .clickable-icon:hover {
+        transform: scale(1.2);
+    }
+</style>

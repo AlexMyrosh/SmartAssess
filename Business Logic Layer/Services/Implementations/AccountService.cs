@@ -4,6 +4,7 @@ using AutoMapper;
 using Business_Logic_Layer.Models;
 using Business_Logic_Layer.Services.Interfaces;
 using Data_Access_Layer.Models;
+using Data_Access_Layer.UnitOfWork.Implementations;
 using Data_Access_Layer.UnitOfWork.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
@@ -24,9 +25,10 @@ namespace Business_Logic_Layer.Services.Implementations
             _mapper = mapper;
         }
 
-        public async Task<IdentityResult> CreateAsync(UserEntity user, string password)
+        public async Task<IdentityResult> CreateAsync(UserModel user, string password)
         {
-            var identityResult = await _userManager.CreateAsync(user, password);
+            var userEntity = _mapper.Map<UserEntity>(user);
+            var identityResult = await _userManager.CreateAsync(userEntity, password);
             if (identityResult is null)
             {
                 throw new NullReferenceException("identityResult is null");
@@ -34,17 +36,19 @@ namespace Business_Logic_Layer.Services.Implementations
 
             if (identityResult.Succeeded)
             {
-                // TODO: Replace "Student" by enum or const value
-                await _userManager.AddToRoleAsync(user, "Student");
+                await _userManager.AddToRoleAsync(userEntity, Data_Access_Layer.Roles.Roles.Student);
             }
 
             return identityResult;
         }
 
-        public async Task<UserEntity?> GetUserAsync(ClaimsPrincipal userPrincipal)
+        public async Task<UserModel?> GetUserAsync(ClaimsPrincipal userPrincipal)
         {
-            var userEntity = await _userManager.GetUserAsync(userPrincipal);
-            return userEntity;
+            var userEntityId = (await _userManager.GetUserAsync(userPrincipal))?.Id;
+            var userEntity = await _unitOfWork.UserRepository.GetByIdWithDetailsAsync(userEntityId);
+            var userModel = _mapper.Map<UserModel>(userEntity);
+            userModel.Roles = await _userManager.GetRolesAsync(userEntity);
+            return userModel;
         }
 
         public async Task<IdentityResult?> UpdateAsync(UserModel user)
@@ -91,15 +95,17 @@ namespace Business_Logic_Layer.Services.Implementations
             return code;
         }
 
-        public async Task<string> GenerateEmailConfirmationTokenAsync(UserEntity user)
+        public async Task<string> GenerateEmailConfirmationTokenAsync(UserModel user)
         {
-            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var userEntity = _mapper.Map<UserEntity>(user);
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(userEntity);
             return code;
         }
 
-        public async Task<string> GenerateChangeEmailTokenAsync(UserEntity user, string newEmail)
+        public async Task<string> GenerateChangeEmailTokenAsync(UserModel user, string newEmail)
         {
-            var code = await _userManager.GenerateChangeEmailTokenAsync(user, newEmail);
+            var userEntity = _mapper.Map<UserEntity>(user);
+            var code = await _userManager.GenerateChangeEmailTokenAsync(userEntity, newEmail);
             return code;
         }
 
@@ -145,21 +151,24 @@ namespace Business_Logic_Layer.Services.Implementations
                 $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
         }
 
-        public async Task<IdentityResult> ChangePasswordAsync(UserEntity user, string currentPassword, string newPassword)
+        public async Task<IdentityResult> ChangePasswordAsync(UserModel user, string currentPassword, string newPassword)
         {
-            var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+            var userEntity = _mapper.Map<UserEntity>(user);
+            var result = await _userManager.ChangePasswordAsync(userEntity, currentPassword, newPassword);
             return result;
         }
 
-        public async Task<UserEntity?> GetUserAsync(string id)
+        public async Task<UserModel?> GetUserAsync(string id)
         {
-            var result = await _userManager.FindByIdAsync(id);
-            return result;
+            var userEntity = await _userManager.FindByIdAsync(id);
+            var userModel = _mapper.Map<UserModel>(userEntity);
+            return userModel;
         }
 
-        public async Task<IdentityResult> ChangeEmailAsync(UserEntity user, string email, string token)
+        public async Task<IdentityResult> ChangeEmailAsync(UserModel user, string email, string token)
         {
-            var result = await _userManager.ChangeEmailAsync(user, email, token);
+            var userEntity = _mapper.Map<UserEntity>(user);
+            var result = await _userManager.ChangeEmailAsync(userEntity, email, token);
             return result;
         }
     }

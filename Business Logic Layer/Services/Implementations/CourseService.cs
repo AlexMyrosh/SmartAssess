@@ -34,7 +34,8 @@ namespace Business_Logic_Layer.Services.Implementations
                 return;
             }
 
-            courseModel.Users.Add(user);
+            var userEntity = _mapper.Map<UserEntity>(user);
+            courseModel.Users.Add(userEntity);
             await _unitOfWork.SaveAsync();
         }
 
@@ -106,7 +107,8 @@ namespace Business_Logic_Layer.Services.Implementations
                 return;
             }
 
-            courseModel.Users.Remove(user);
+            var userEntity = _mapper.Map<UserEntity>(user);
+            courseModel.Users.Remove(userEntity);
             await _unitOfWork.SaveAsync();
         }
 

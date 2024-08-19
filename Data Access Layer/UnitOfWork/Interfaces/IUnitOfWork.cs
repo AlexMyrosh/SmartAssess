@@ -13,5 +13,7 @@ namespace Data_Access_Layer.UnitOfWork.Interfaces
         ICourseRepository CourseRepository { get; }
 
         Task SaveAsync();
+
+        void ClearChangeTracker();
     }
 }

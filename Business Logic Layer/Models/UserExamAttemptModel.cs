@@ -1,6 +1,4 @@
-﻿using Data_Access_Layer.Models;
-
-namespace Business_Logic_Layer.Models
+﻿namespace Business_Logic_Layer.Models
 {
     public class UserExamAttemptModel
     {
@@ -12,7 +10,7 @@ namespace Business_Logic_Layer.Models
 
         public int? TotalGrade { get; set; }
 
-        public UserEntity? User { get; set; }
+        public UserModel? User { get; set; }
 
         public ExamModel? Exam { get; set; }
 

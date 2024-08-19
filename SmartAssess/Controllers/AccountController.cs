@@ -33,11 +33,12 @@ namespace Presentation_Layer.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userEntity = _mapper.Map<UserEntity>(model);
-                var result = await _accountService.CreateAsync(userEntity, model.Password);
+                var userModel = _mapper.Map<UserModel>(model);
+                var userEntity = _mapper.Map<UserEntity>(userModel);
+                var result = await _accountService.CreateAsync(userModel, model.Password);
                 if (result.Succeeded)
                 {
-                    var confirmationToken = await _accountService.GenerateEmailConfirmationTokenAsync(userEntity);
+                    var confirmationToken = await _accountService.GenerateEmailConfirmationTokenAsync(userModel);
                     var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = userEntity.Id, code = confirmationToken }, protocol: HttpContext.Request.Scheme);
                     await _accountService.SendConfirmationEmailAsync(userEntity.Email, callbackUrl);
                     await _signInManager.SignInAsync(userEntity, isPersistent: false);
@@ -68,6 +69,7 @@ namespace Presentation_Layer.Controllers
 
                 if (result.Succeeded)
                 {
+                    //_accountService.UpdateLastLoginDate(User);
                     return RedirectToAction("Index", "Home");
                 }
 
@@ -100,6 +102,19 @@ namespace Presentation_Layer.Controllers
             var currentUser = await _accountService.GetUserAsync(id);
             var viewModel = _mapper.Map<UserViewModel>(currentUser);
             return View(viewModel);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> UpdateDescription(string userId, string description)
+        {
+            var userModel = new UserModel
+            {
+                Id = userId,
+                AboutUser = description
+            };
+            await _accountService.UpdateAsync(userModel);
+            return Json(new { success = true });
         }
 
         [HttpGet]
@@ -299,7 +314,8 @@ namespace Presentation_Layer.Controllers
                 return View("_FailedNotification", errorMessage);
             }
 
-            await _signInManager.RefreshSignInAsync(user);
+            var userEntity = _mapper.Map<UserEntity>(user);
+            await _signInManager.RefreshSignInAsync(userEntity);
             var successMessage = $"Email confirmed and updated to {email}";
             return View("_SuccessfulNotification", successMessage);
         }

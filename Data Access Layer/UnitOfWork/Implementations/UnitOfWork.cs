@@ -58,5 +58,10 @@ namespace Data_Access_Layer.UnitOfWork.Implementations
         {
             await _sqlContext.SaveChangesAsync();
         }
+
+        public void ClearChangeTracker()
+        {
+            _sqlContext.ChangeTracker.Clear();
+        }
     }
 }

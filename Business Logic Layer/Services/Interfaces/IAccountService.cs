@@ -1,17 +1,16 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using Business_Logic_Layer.Models;
-using Data_Access_Layer.Models;
 
 namespace Business_Logic_Layer.Services.Interfaces
 {
     public interface IAccountService
     {
-        Task<IdentityResult> CreateAsync(UserEntity user, string password);
+        Task<IdentityResult> CreateAsync(UserModel user, string password);
 
-        Task<UserEntity?> GetUserAsync(ClaimsPrincipal userPrincipal);
+        Task<UserModel?> GetUserAsync(ClaimsPrincipal userPrincipal);
 
-        Task<UserEntity?> GetUserAsync(string id);
+        Task<UserModel?> GetUserAsync(string id);
 
         Task<IdentityResult?> UpdateAsync(UserModel user);
 
@@ -21,7 +20,7 @@ namespace Business_Logic_Layer.Services.Interfaces
 
         Task<string> GenerateResetTokenAsync(string email);
 
-        Task<string> GenerateChangeEmailTokenAsync(UserEntity user, string newEmail);
+        Task<string> GenerateChangeEmailTokenAsync(UserModel user, string newEmail);
 
         Task<IdentityResult> ResetPasswordAsync(string email, string code, string newPassword);
 
@@ -29,14 +28,14 @@ namespace Business_Logic_Layer.Services.Interfaces
 
         Task<bool> IsUserExistByEmailAsync(string email);
 
-        Task<string> GenerateEmailConfirmationTokenAsync(UserEntity user);
+        Task<string> GenerateEmailConfirmationTokenAsync(UserModel user);
 
         Task<IdentityResult> ConfirmEmailAsync(string userId, string code);
 
-        Task<IdentityResult> ChangeEmailAsync(UserEntity user, string email, string token);
+        Task<IdentityResult> ChangeEmailAsync(UserModel user, string email, string token);
 
         Task SendConfirmationEmailAsync(string email, string callbackUrl);
 
-        Task<IdentityResult> ChangePasswordAsync(UserEntity user, string currentPassword, string newPassword);
+        Task<IdentityResult> ChangePasswordAsync(UserModel user, string currentPassword, string newPassword);
     }
 }

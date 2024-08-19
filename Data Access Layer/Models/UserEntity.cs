@@ -15,6 +15,23 @@ namespace Data_Access_Layer.Models
         [MinLength(1)]
         public string LastName { get; set; }
 
+        [MaxLength(100)]
+        public string Country { get; set; }
+
+        [MaxLength(100)]
+        public string City { get; set; }
+
+        [MaxLength(100)]
+        public string EducationalInstitution { get; set; }
+
+        [MaxLength(5000)]
+        public string AboutUser { get; set; }
+
+        [MaxLength(1000)]
+        public string Interests { get; set; }
+
+        public DateTime LastLogInDateTime { get; set; }
+
         public List<UserExamAttemptEntity> UserExamAttempts { get; set; }
 
         public List<CourseEntity> Courses { get; set; }
