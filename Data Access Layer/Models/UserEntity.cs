@@ -27,8 +27,7 @@ namespace Data_Access_Layer.Models
         [MaxLength(5000)]
         public string AboutUser { get; set; }
 
-        [MaxLength(1000)]
-        public string Interests { get; set; }
+        public string ImagePath { get; set; }
 
         public DateTime LastLogInDateTime { get; set; }
 

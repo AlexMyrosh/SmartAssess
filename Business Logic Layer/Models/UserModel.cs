@@ -20,7 +20,7 @@
 
         public string? AboutUser { get; set; }
 
-        public string? Interests { get; set; }
+        public string? ImagePath { get; set; }
 
         public DateTime? LastLogInDateTime { get; set; }
 

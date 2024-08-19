@@ -5,6 +5,7 @@ using Data_Access_Layer.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Presentation_Layer.ViewModels;
 
 namespace Presentation_Layer.Controllers
@@ -66,10 +67,9 @@ namespace Presentation_Layer.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, false);
-
                 if (result.Succeeded)
                 {
-                    //_accountService.UpdateLastLoginDate(User);
+                    await _accountService.UpdateLastLoginDateAsync(User);
                     return RedirectToAction("Index", "Home");
                 }
 
@@ -117,6 +117,35 @@ namespace Presentation_Layer.Controllers
             return Json(new { success = true });
         }
 
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> UpdateFirstAndLastName(string userId, string firstName, string lastName)
+        {
+            await _accountService.UpdateAsync(new UserModel
+            {
+                Id = userId,
+                FirstName = firstName,
+                LastName = lastName
+            });
+
+            return Json(new { success = true });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> UpdateLocationAndEducationalInstitutionInfo(string userId, string country, string city, string educationalInstitution)
+        {
+            await _accountService.UpdateAsync(new UserModel
+            {
+                Id = userId,
+                Country = country,
+                City = city,
+                EducationalInstitution = educationalInstitution
+            });
+
+            return Json(new { success = true });
+        }
+
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> Update()
@@ -143,6 +172,66 @@ namespace Presentation_Layer.Controllers
             }
 
             return View(user);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> UpdateImage(string userId, IFormFile file)
+        {
+            if (file != null && file.Length > 0)
+            {
+                var fileExtension = Path.GetExtension(file.FileName);
+                var fileName = userId + fileExtension;
+                var imagesFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images");
+                if (!Directory.Exists(imagesFolderPath))
+                {
+                    Directory.CreateDirectory(imagesFolderPath);
+                }
+
+                var filePath = Path.Combine(imagesFolderPath, fileName);
+                await using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                await _accountService.UpdateAsync(new UserModel
+                {
+                    Id = userId,
+                    ImagePath = filePath
+                });
+
+                // Redirect back to user profile page
+                return RedirectToAction("Details");
+            }
+
+            return RedirectToAction("Details");
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> RemoveImage(string userId)
+        {
+            var user = await _accountService.GetUserWithoutTrackingAsync(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (!string.IsNullOrEmpty(user.ImagePath))
+            {
+                if (System.IO.File.Exists(user.ImagePath))
+                {
+                    System.IO.File.Delete(user.ImagePath);
+                }
+
+                await _accountService.UpdateAsync(new UserModel
+                {
+                    Id = user.Id,
+                    ImagePath = string.Empty 
+                });
+            }
+
+            return RedirectToAction("Details");
         }
 
         [HttpGet]

@@ -4,31 +4,145 @@
     ViewData["Title"] = "Profile";
 }
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ti-icons@0.1.2/css/themify-icons.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-7 col-lg-4 mb-5 mb-lg-0 wow fadeIn pb-4">
             <div class="card border-0 shadow">
-                <img src="https://cdn.prod.website-files.com/6600e1eab90de089c2d9c9cd/66975dededca9e25a704ce54_image_34ff6756_1720668987871_1024.jpeg" alt="...">
+                <form id="uploadForm" asp-action="UpdateImage" method="post" enctype="multipart/form-data">
+                    <div class="image-container" onclick="document.getElementById('fileUpload').click();">
+                        @if (string.IsNullOrWhiteSpace(Model.ImagePath))
+                        {
+                            <img src="@Url.Content("~/images/default-user-photo.png")" alt="Add user image">
+                        }
+                        else
+                        {
+                            <img src="@Url.Content("~/images/" + System.IO.Path.GetFileName(Model.ImagePath))" alt="User Image"/>
+                        }
+
+                        <div class="overlay">Update Photo</div>
+                        <input type="hidden" name="userId" value="@Model.Id" />
+                        <input type="file" id="fileUpload" name="file" style="display: none;" onchange="submitForm();"/>
+                    </div>
+                </form>
+                @if (!string.IsNullOrWhiteSpace(Model.ImagePath))
+                {
+                    <form asp-action="RemoveImage" asp-controller="Account" method="post">
+                        <input type="hidden" name="userId" value="@Model.Id" />
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end" style="margin-bottom: -1rem;">
+                            <button class="btn btn-link text-decoration-none" type="submit">Remove Image</button>
+                        </div>
+                    </form>
+                }
+
                 <div class="card-body p-1-9" style="padding: 2rem 2rem 1rem 2rem">
                     <div class="mb-4">
-                        <h3 class="h4 mb-0">@Model.FirstName @Model.LastName</h3>
+                        <div class="mb-1 wow fadeIn">
+                            <div class="row">
+                                <div class="col-11">
+                                    <h3 id="nameDisplay" class="h4 mb-0">@Model.FirstName @Model.LastName</h3>
+                                </div>
+                                <div class="col-1">
+                                    <i id="editNameButton" class="fas fa-pencil-alt display-25 clickable-icon" style="font-size:18px;margin-left: auto;"></i>
+                                </div>
+                            </div>
+                            <div class="form-floating mb-3" style="display:none;" id="firstNameEditContainer">
+                                <input id="firstNameEdit" type="text" class="form-control" placeholder="First name"/>
+                                <label for="firstNameEdit" class="form-label">First name</label>
+                            </div>
+                            <div class="form-floating mb-3" style="display:none;" id="lastNameEditContainer">
+                                <input id="lastNameEdit" type="text" class="form-control" placeholder="Last name"/>
+                                <label for="lastNameEdit" class="form-label">Last name</label>
+                            </div>
+                            <button id="saveNameButton" style="display:none;" class="btn btn-success">Save</button>
+                            <button id="cancelNameButton" style="display:none;" class="btn btn-warning">Cancel</button>
+                        </div>
+
                         <span class="text-primary">@string.Join(", ", Model.Roles)</span>
                     </div>
-                    <ul class="list-unstyled mb-4">
-                        <li class="mb-3" title="Email"><i class="far fa-envelope display-25 me-3 text-secondary"></i>@Model.Email</li>
-                        <li class="mb-3" title="Phone number"><i class="fas fa-mobile-alt display-25 me-3 text-secondary"></i>@Model.PhoneNumber</li>
-                        <li class="mb-3" title="Location"><i class="fas fa-map-marker-alt display-25 me-3 text-secondary"></i>@Model.City, @Model.Country</li>
-                        <li class="mb-3" title="Educational institution"><i class="fas fa-university display-25 me-3 text-secondary"></i>@Model.EducationalInstitution</li>
-                        <li title="Last login"><i class="fas fa-clock display-25 me-3 text-secondary"></i>@Model.LastLogInDateTime</li>
-                    </ul>
+                    
+                    <div id="userInfoContainer">
+                        <ul class="list-unstyled mb-4">
+                            <div class="mb-1 wow fadeIn">
+                                <div class="row">
+                                    <div class="col-11">
+                                        <li class="mb-3" title="Email">
+                                            <i class="far fa-envelope display-25 me-3 text-secondary"></i>
+                                            <span id="emailText">@Model.Email</span>
+                                        </li>
+                                        <li class="mb-3" title="Phone number">
+                                            <i class="fas fa-mobile-alt display-25 me-3 text-secondary"></i>
+                                            <span id="phoneNumberText">@Model.PhoneNumber</span>
+                                        </li>
+                                        <li id="userLocationInfo" class="mb-3" title="Location">
+                                            <i class="fas fa-map-marker-alt display-25 me-3 text-secondary"></i>
+                                            <span id="locationText">@Model.City, @Model.Country</span>
+                                        </li>
+                                        <li id="EducationInstitution" class="mb-3" title="Educational institution">
+                                            <i class="fas fa-university display-25 me-3 text-secondary"></i>
+                                            <span id="educationalInstitutionText">@Model.EducationalInstitution</span>
+                                        </li>
+                                        <li title="Last login">
+                                            <i class="fas fa-clock display-25 me-3 text-secondary"></i>
+                                            <span id="lastLogInDateTimeText">@Model.LastLogInDateTime</span>
+                                        </li>
+                                    </div>
+                                    <div class="col-1">
+                                        <i id="editUserInfoButton" class="fas fa-pencil-alt display-25 clickable-icon" style="font-size:18px;margin-left: auto;"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </ul>
+                    </div>
+                    
+                    @* Update user info form *@
+                    <div id="userInfoEditContainer" style="display:none;">
+                        <ul class="list-unstyled mb-4">
+                            <div class="mb-1 wow fadeIn">
+                                <li class="mb-3" title="Email"><i class="far fa-envelope display-25 me-3 text-secondary"></i>@Model.Email</li>
+                                <li class="mb-3" title="Phone number"><i class="fas fa-mobile-alt display-25 me-3 text-secondary"></i>@Model.PhoneNumber</li>
+
+                                <li class="mb-3" title="Location">
+                                    <div class="row">
+                                        <div class="col-1">
+                                            <i class="fas fa-map-marker-alt display-25 me-3 text-secondary"></i>
+                                        </div>
+                                        <div class="col">
+                                            <select id="country" name="country" onchange="updateCities(this.value)" class="form-select">
+                                                <option value="" selected disabled>Country</option>
+                                            </select>
+                                        </div>
+                                        <div class="col">
+                                            <select id="city" name="city" class="form-select">
+                                                <option value="" selected disabled>City</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <li title="Educational institution">
+                                    <div class="row">
+                                        <div class="col-1">
+                                            <i class="fas fa-university display-25 me-3 text-secondary"></i>
+                                        </div>
+                                        <div class="col-11">
+                                            <div class="form-floating mb-3" id="EducationInstitutionEditContainer">
+                                                <input id="EducationInstitutionEdit" type="text" class="form-control" placeholder="Education institution"/>
+                                                <label for="EducationInstitutionEdit" class="form-label">Educational institution</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class=" mb-3" title="Last login"><i class="fas fa-clock display-25 me-3 text-secondary"></i>@Model.LastLogInDateTime</li>
+                                <button id="saveUserInfoButton" class="btn btn-success">Save</button>
+                                <button id="cancelUserInfoButton" class="btn btn-warning">Cancel</button>
+                            </div>
+                        </ul>
+                    </div>
+
                     @Html.ActionLink("Change password", "ChangePassword", "Account", null, new { @class = "text-decoration-none" })
-                    <br />
+                    <br/>
                     @Html.ActionLink("Change phone number", "ChangePhoneNumber", "Account", null, new { @class = "text-decoration-none" })
-                    <br />
+                    <br/>
                     @Html.ActionLink("Change email", "ChangeEmail", "Account", null, new { @class = "text-decoration-none" })
                 </div>
             </div>
@@ -39,7 +153,7 @@
                     <div class="text-start mb-1-6 wow fadeIn">
                         <div class="d-flex flex-md-row flex-column align-items-center">
                             <h2 class="h1 mb-0 text-primary">#About Me</h2>
-                            <i id="editButton" class="fas fa-pencil-alt display-25 ms-3 me-3 clickable-icon" style="font-size:24px;"></i>
+                            <i id="editButton" class="fas fa-pencil-alt display-25 ms-3 me-3 clickable-icon" style="font-size:18px;"></i>
                         </div>
                     </div>
                     <div class="container">
@@ -78,7 +192,192 @@
 </div>
 
 @section Scripts {
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    
+    @* API to get a list of countries and cities *@
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: 'https://countriesnow.space/api/v0.1/countries',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    if (data.error === false) {
+                        var sortedCountries = data.data.sort((a, b) => a.country.localeCompare(b.country));
+                        sortedCountries.forEach(function (country) {
+                            $('#country').append($('<option>', {
+                                value: country.country,
+                                text: country.country
+                            }));
+                        });
+                    }
+                },
+                error: function () {
+                    alert('Error retrieving countries. Please try again later.');
+                }
+            });
+        });
+
+        function updateCities(countryName) {
+            $('#city').empty().append($('<option>', {
+                text: 'Please select a city',
+                disabled: true,
+                selected: true
+            }));
+
+            $.ajax({
+                url: 'https://countriesnow.space/api/v0.1/countries/cities',
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify({ country: countryName }),
+                success: function (data) {
+                    if (data.error === false) {
+                        var sortedCities = data.data.sort((a, b) => a.localeCompare(b));
+                        sortedCities.forEach(function (city) {
+                            $('#city').append($('<option>', {
+                                value: city,
+                                text: city
+                            }));
+                        });
+                    }
+                },
+                error: function () {
+                    alert('Error retrieving cities. Please try again later.');
+                }
+            });
+        }
+    </script>
+    
+    @* Update "user location and education institution" fields *@
+    <script>
+        $(function () {
+            $('#editUserInfoButton').on('click', function () {
+                $('#userInfoContainer').hide();
+                $('#userInfoEditContainer').show();
+                $(this).hide();
+                $('#EducationInstitutionEdit').val($('#educationalInstitutionText').text());
+
+                var userCountry = '@Model.Country';
+                var userCity = '@Model.City';
+                $('#country').val(userCountry).change();
+
+                var intervalID = setInterval(function () {
+                    if (document.getElementById('city').length > 1) {
+                        clearInterval(intervalID);
+                        $('#city').val(userCity).change();
+                    }
+                }, 100);
+            });
+
+            $('#saveUserInfoButton').on('click', function () {
+                var newCountryName = $('#country').val();
+                var newCityName = $('#city').val();
+                var newEducationalInstitutionName = $('#EducationInstitutionEdit').val();
+
+                $.ajax({
+                    url: '@Url.Action("UpdateLocationAndEducationalInstitutionInfo", "Account")',
+                    type: 'POST',
+                    data: { userId: '@Model.Id', country: newCountryName, city: newCityName, educationalInstitution: newEducationalInstitutionName },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#locationText').text(`${newCityName}, ${newCountryName}`);
+                            $('#educationalInstitutionText').text(`${newEducationalInstitutionName}`);
+
+                            $('#userInfoContainer').show();
+                            $('#editUserInfoButton').show();
+                            $('#userInfoEditContainer').hide();
+                        } else {
+                            alert('Failed to update first and last name: ' + response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('Error updating description.');
+                    }
+                });
+            });
+
+            $('#cancelUserInfoButton').on('click', function () {
+                $('#userInfoContainer').show();
+                $('#editUserInfoButton').show();
+                $('#userInfoEditContainer').hide();
+            });
+        });
+    </script>
+
+    @* Update "first and last name" fields *@
+    <script>
+        var newFirstName = $('#firstNameEdit').val();
+        var newLastName = $('#lastNameEdit').val();
+
+        $(function () {
+            $('#editNameButton').on('click', function () {
+                $('#nameDisplay').hide();
+                $('#firstNameEditContainer').show();
+                $('#lastNameEditContainer').show();
+
+                if (newFirstName) {
+                    $('#firstNameEdit').val(newFirstName);
+                } else {
+                    $('#firstNameEdit').val('@Model.FirstName');
+                }
+
+                if (newLastName) {
+                    $('#lastNameEdit').val(newLastName);
+                } else {
+                    $('#lastNameEdit').val('@Model.LastName');
+                }
+
+                $('#saveNameButton').show();
+                $('#cancelNameButton').show();
+                $(this).hide();
+            });
+
+            $('#saveNameButton').on('click', function () {
+                newFirstName = $('#firstNameEdit').val();
+                newLastName = $('#lastNameEdit').val();
+
+                $.ajax({
+                    url: '@Url.Action("UpdateFirstAndLastName", "Account")',
+                    type: 'POST',
+                    data: { userId: '@Model.Id', firstName: newFirstName, lastName: newLastName },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#nameDisplay').text(`${newFirstName} ${newLastName}`).show();
+                            $('#UserProfileLink').text(`${newFirstName} ${newLastName}`);
+                            $('#firstNameEditContainer').hide();
+                            $('#lastNameEditContainer').hide();
+                            $('#editNameButton').show();
+                            $('#saveNameButton').hide();
+                            $('#cancelNameButton').hide();
+                        } else {
+                            alert('Failed to update first and last name: ' + response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('Error updating description.');
+                    }
+                });
+            });
+
+            $('#cancelNameButton').on('click', function () {
+                $('#nameDisplay').show();
+                $('#firstNameEditContainer').hide();
+                $('#lastNameEditContainer').hide();
+                $('#editNameButton').show();
+                $('#saveNameButton').hide();
+                $('#cancelNameButton').hide();
+            });
+        });
+    </script>
+
+    @* Upload photo script *@
+    <script>
+        function submitForm() {
+            document.getElementById('uploadForm').submit();
+        }
+    </script>
+    
+    @* Update "about me" field *@
     <script>
         $(function () {
             $('#editButton').on('click', function () {
@@ -123,6 +422,7 @@
         });
     </script>
 }
+
 <style>
     .clickable-icon {
         cursor: pointer;
@@ -131,5 +431,41 @@
 
     .clickable-icon:hover {
         transform: scale(1.2);
+    }
+</style>
+
+<style>
+    .image-container {
+        position: relative;
+        cursor: pointer;
+    }
+
+    .image-container img {
+        transition: opacity 0.3s ease-in-out;
+        width: 100%;
+    }
+
+    .image-container:hover img {
+        opacity: 0.5;
+    }
+
+    .image-container:hover .overlay {
+        opacity: 1;
+    }
+
+    .image-container .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        font-size: 20px;
+        opacity: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.3s ease-in-out;
     }
 </style>

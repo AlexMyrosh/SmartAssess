@@ -12,7 +12,11 @@ namespace Business_Logic_Layer.Services.Interfaces
 
         Task<UserModel?> GetUserAsync(string id);
 
+        Task<UserModel?> GetUserWithoutTrackingAsync(string id);
+
         Task<IdentityResult?> UpdateAsync(UserModel user);
+
+        Task UpdateLastLoginDateAsync(ClaimsPrincipal userPrincipal);
 
         Task<bool> ResetPasswordEmailAsync(string email, string callbackUrl);
 

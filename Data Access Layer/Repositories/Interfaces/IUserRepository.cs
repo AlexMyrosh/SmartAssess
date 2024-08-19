@@ -7,5 +7,7 @@ namespace Data_Access_Layer.Repositories.Interfaces
         Task<UserEntity?> GetByIdAsync(string id);
 
         Task<UserEntity?> GetByIdWithDetailsAsync(string id);
+
+        Task<UserEntity?> GetByIdWithoutTrackingAsync(string id);
     }
 }

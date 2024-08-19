@@ -1,6 +1,4 @@
-﻿using Business_Logic_Layer.Models;
-
-namespace Presentation_Layer.ViewModels
+﻿namespace Presentation_Layer.ViewModels
 {
     public class UserViewModel
     {
@@ -22,7 +20,7 @@ namespace Presentation_Layer.ViewModels
 
         public string? AboutUser { get; set; }
 
-        public string? Interests { get; set; }
+        public string? ImagePath { get; set; }
 
         public DateTime? LastLogInDateTime { get; set; }
 

@@ -64,6 +64,16 @@ namespace Business_Logic_Layer.Services.Implementations
             return identityResult;
         }
 
+        public async Task UpdateLastLoginDateAsync(ClaimsPrincipal userPrincipal)
+        {
+            var userId = _userManager.GetUserId(userPrincipal);
+            await UpdateAsync(new UserModel
+            {
+                Id = userId,
+                LastLogInDateTime = DateTime.Now
+            });
+        }
+
         public async Task<bool> ResetPasswordEmailAsync(string email, string callbackUrl)
         {
             var user = await _userManager.FindByEmailAsync(email);
@@ -161,6 +171,13 @@ namespace Business_Logic_Layer.Services.Implementations
         public async Task<UserModel?> GetUserAsync(string id)
         {
             var userEntity = await _userManager.FindByIdAsync(id);
+            var userModel = _mapper.Map<UserModel>(userEntity);
+            return userModel;
+        }
+
+        public async Task<UserModel?> GetUserWithoutTrackingAsync(string id)
+        {
+            var userEntity = await _unitOfWork.UserRepository.GetByIdWithoutTrackingAsync(id);
             var userModel = _mapper.Map<UserModel>(userEntity);
             return userModel;
         }

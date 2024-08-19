@@ -20,6 +20,12 @@ namespace Data_Access_Layer.Repositories.Implementations
             return userEntity;
         }
 
+        public async Task<UserEntity?> GetByIdWithoutTrackingAsync(string id)
+        {
+            var userEntity = await _sqlContext.Set<UserEntity>().AsNoTracking().FirstOrDefaultAsync(user => user.Id == id);
+            return userEntity;
+        }
+
         public async Task<UserEntity?> GetByIdWithDetailsAsync(string id)
         {
             var userEntity = await _sqlContext.Set<UserEntity>()
