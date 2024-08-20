@@ -4,7 +4,6 @@ using AutoMapper;
 using Business_Logic_Layer.Models;
 using Business_Logic_Layer.Services.Interfaces;
 using Data_Access_Layer.Models;
-using Data_Access_Layer.UnitOfWork.Implementations;
 using Data_Access_Layer.UnitOfWork.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
@@ -112,9 +111,9 @@ namespace Business_Logic_Layer.Services.Implementations
             return code;
         }
 
-        public async Task<string> GenerateChangeEmailTokenAsync(UserModel user, string newEmail)
+        public async Task<string> GenerateChangeEmailTokenAsync(string userId, string newEmail)
         {
-            var userEntity = _mapper.Map<UserEntity>(user);
+            var userEntity = await _unitOfWork.UserRepository.GetByIdAsync(userId);
             var code = await _userManager.GenerateChangeEmailTokenAsync(userEntity, newEmail);
             return code;
         }
@@ -161,9 +160,9 @@ namespace Business_Logic_Layer.Services.Implementations
                 $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
         }
 
-        public async Task<IdentityResult> ChangePasswordAsync(UserModel user, string currentPassword, string newPassword)
+        public async Task<IdentityResult> ChangePasswordAsync(string userId, string currentPassword, string newPassword)
         {
-            var userEntity = _mapper.Map<UserEntity>(user);
+            var userEntity = await _unitOfWork.UserRepository.GetByIdAsync(userId);
             var result = await _userManager.ChangePasswordAsync(userEntity, currentPassword, newPassword);
             return result;
         }
@@ -185,6 +184,13 @@ namespace Business_Logic_Layer.Services.Implementations
         public async Task<IdentityResult> ChangeEmailAsync(UserModel user, string email, string token)
         {
             var userEntity = _mapper.Map<UserEntity>(user);
+            var result = await _userManager.ChangeEmailAsync(userEntity, email, token);
+            return result;
+        }
+
+        public async Task<IdentityResult> ChangeEmailAsync(string userId, string email, string token)
+        {
+            var userEntity = await _unitOfWork.UserRepository.GetByIdAsync(userId);
             var result = await _userManager.ChangeEmailAsync(userEntity, email, token);
             return result;
         }

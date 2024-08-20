@@ -24,7 +24,7 @@ namespace Business_Logic_Layer.Services.Interfaces
 
         Task<string> GenerateResetTokenAsync(string email);
 
-        Task<string> GenerateChangeEmailTokenAsync(UserModel user, string newEmail);
+        Task<string> GenerateChangeEmailTokenAsync(string userId, string newEmail);
 
         Task<IdentityResult> ResetPasswordAsync(string email, string code, string newPassword);
 
@@ -38,8 +38,10 @@ namespace Business_Logic_Layer.Services.Interfaces
 
         Task<IdentityResult> ChangeEmailAsync(UserModel user, string email, string token);
 
+        Task<IdentityResult> ChangeEmailAsync(string userId, string email, string token);
+
         Task SendConfirmationEmailAsync(string email, string callbackUrl);
 
-        Task<IdentityResult> ChangePasswordAsync(UserModel user, string currentPassword, string newPassword);
+        Task<IdentityResult> ChangePasswordAsync(string userId, string currentPassword, string newPassword);
     }
 }

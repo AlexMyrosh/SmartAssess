@@ -5,7 +5,6 @@ using Data_Access_Layer.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Presentation_Layer.ViewModels;
 
 namespace Presentation_Layer.Controllers
@@ -14,13 +13,15 @@ namespace Presentation_Layer.Controllers
     {
         private readonly SignInManager<UserEntity> _signInManager;
         private readonly IAccountService _accountService;
+        private readonly IPhoneMessageSender _phoneMessageSender;
         private readonly IMapper _mapper;
 
-        public AccountController(IAccountService accountService, SignInManager<UserEntity> signInManager, IMapper mapper)
+        public AccountController(IAccountService accountService, SignInManager<UserEntity> signInManager, IPhoneMessageSender phoneMessageSender, IMapper mapper)
         {
             _signInManager = signInManager;
             _mapper = mapper;
             _accountService = accountService;
+            _phoneMessageSender = phoneMessageSender;
         }
 
         [HttpGet]
@@ -320,32 +321,27 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        public async Task<JsonResult> ChangePassword(ChangePasswordViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return Json(new { success = false, message = string.Join("\n", ModelState.Values.SelectMany(x => x.Errors.Select(y => y.ErrorMessage))) });
             }
 
-            var user = await _accountService.GetUserAsync(User);
-            if (user == null)
-            {
-                return RedirectToAction("Login");
-            }
-
-            var result = await _accountService.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+            var result = await _accountService.ChangePasswordAsync(model.UserId, model.CurrentPassword, model.NewPassword);
             if (result.Succeeded)
             {
-                var successMessage = "Password successfully updated";
-                return View("_SuccessfulNotification", successMessage);
+                return Json(new { success = true, message = "Password successfully updated" });
             }
 
+            List<string> errorList = new();
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);
+                errorList.Add(error.Description);
             }
 
-            return View(model);
+            return Json(new { success = false, message = string.Join("\n", errorList) });
         }
 
         [HttpGet]
@@ -357,41 +353,28 @@ namespace Presentation_Layer.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> ChangeEmail(ChangeEmailViewModel model)
+        public async Task<JsonResult> ChangeEmail(string userId, string newEmail)
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return Json(new { success = false, message = string.Join("\n", ModelState.Values.SelectMany(x => x.Errors.Select(y => y.ErrorMessage))) });
             }
 
-            var user = await _accountService.GetUserAsync(User);
-            if (user == null)
-            {
-                return RedirectToAction("Login");
-            }
-
-            var confirmationToken = await _accountService.GenerateChangeEmailTokenAsync(user, model.NewEmail);
-            var callbackUrl = Url.Action("ConfirmEmailChange", "Account", new { userId = user.Id, email = model.NewEmail, token = confirmationToken }, protocol: Request.Scheme);
-            await _accountService.ResetEmailAsync(model.NewEmail, callbackUrl);
-            var successMessage = "Confirmation email was sent";
-            return View("_SuccessfulNotification", successMessage);
+            var confirmationToken = await _accountService.GenerateChangeEmailTokenAsync(userId, newEmail);
+            var callbackUrl = Url.Action("ConfirmEmailChange", "Account", new { userId, email = newEmail, token = confirmationToken }, protocol: Request.Scheme);
+            await _accountService.ResetEmailAsync(newEmail, callbackUrl);
+            return Json(new { success = true, message = "Confirmation email was sent" });
         }
 
         public async Task<IActionResult> ConfirmEmailChange(string? token, string? email, string? userId)
         {
             if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(token))
             {
-                var errorMessage = "Something went wrong, please try again later";
-                return View("_FailedNotification", errorMessage);
+                TempData["ErrorNotification"] = "Invalid link, please try again later";
+                return RedirectToAction("Details");
             }
 
-            var user = await _accountService.GetUserAsync(userId);
-            if (user == null)
-            {
-                return NotFound($"Unable to load user with ID '{userId}'.");
-            }
-
-            var result = await _accountService.ChangeEmailAsync(user, email, token);
+            var result = await _accountService.ChangeEmailAsync(userId, email, token);
             if (!result.Succeeded)
             {
                 foreach (var error in result.Errors)
@@ -399,14 +382,44 @@ namespace Presentation_Layer.Controllers
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
 
-                var errorMessage = "Something went wrong, please try again later";
-                return View("_FailedNotification", errorMessage);
+                TempData["ErrorNotification"] = "Something went wrong, please try again later";
+                return RedirectToAction("Details");
             }
 
-            var userEntity = _mapper.Map<UserEntity>(user);
-            await _signInManager.RefreshSignInAsync(userEntity);
-            var successMessage = $"Email confirmed and updated to {email}";
-            return View("_SuccessfulNotification", successMessage);
+            TempData["SuccessNotification"] = $"Email confirmed and updated to {email}";
+            return RedirectToAction("Details");
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> SendVerificationCode(string phoneNumber)
+        {
+            if (string.IsNullOrWhiteSpace(phoneNumber))
+            {
+                return Json(new { success = false, message = "Enter phone number" });
+            }
+
+            // Generate a verification code
+            var verificationCode = _phoneMessageSender.GenerateVerificationCode();
+            //await _phoneMessageSender.SendSmsAsync(phoneNumber, verificationCode);
+
+            // Store the code and phone number in the session or database
+            //HttpContext.Session.SetString("VerificationCode", verificationCode);
+            //HttpContext.Session.SetString("PhoneNumber", phoneNumber);
+
+            // Redirect to the confirmation page
+            return Json(new { success = true, message = "Confirmation code was send" });
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> ConfirmVerificationCode(string userId, string code)
+        {
+            if (code is null || code.Length != 6)
+            {
+                return Json(new { success = false, message = "Enter verification code" });
+            }
+
+            // Redirect to the confirmation page
+            return Json(new { success = true, message = "Phone number updated successfully" });
         }
 
         [HttpGet("validation/username")]

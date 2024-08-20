@@ -2,7 +2,29 @@
 
 @{
     ViewData["Title"] = "Profile";
+    var successNotification = TempData["SuccessNotification"] as string;
+    var errorNotification = TempData["ErrorNotification"] as string;
 }
+
+<style>
+    .link-button {
+        background: none !important;
+        border: none;
+        padding: 0 !important;
+        color: #0d6efd;
+        cursor: pointer;
+    }
+
+    /* Hide up/down spinner for number inputs */
+    .codeConfirmationInputCell{
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .codeConfirmationInputCell {
+        -moz-appearance: textfield; /* Firefox */
+    }
+</style>
 
 <div class="container">
     <div class="row justify-content-center">
@@ -28,12 +50,11 @@
                 {
                     <form asp-action="RemoveImage" asp-controller="Account" method="post">
                         <input type="hidden" name="userId" value="@Model.Id" />
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end" style="margin-bottom: -1rem;">
-                            <button class="btn btn-link text-decoration-none" type="submit">Remove Image</button>
+                        <div class="d-grid justify-content-md-end me-2 mt-2" style="margin-bottom: -1rem;">
+                            <button type="submit" class="link-button">Remove Image</button>
                         </div>
                     </form>
                 }
-
                 <div class="card-body p-1-9" style="padding: 2rem 2rem 1rem 2rem">
                     <div class="mb-4">
                         <div class="mb-1 wow fadeIn">
@@ -56,10 +77,8 @@
                             <button id="saveNameButton" style="display:none;" class="btn btn-success">Save</button>
                             <button id="cancelNameButton" style="display:none;" class="btn btn-warning">Cancel</button>
                         </div>
-
                         <span class="text-primary">@string.Join(", ", Model.Roles)</span>
                     </div>
-                    
                     <div id="userInfoContainer">
                         <ul class="list-unstyled mb-4">
                             <div class="mb-1 wow fadeIn">
@@ -138,12 +157,19 @@
                             </div>
                         </ul>
                     </div>
-
-                    @Html.ActionLink("Change password", "ChangePassword", "Account", null, new { @class = "text-decoration-none" })
-                    <br/>
-                    @Html.ActionLink("Change phone number", "ChangePhoneNumber", "Account", null, new { @class = "text-decoration-none" })
-                    <br/>
-                    @Html.ActionLink("Change email", "ChangeEmail", "Account", null, new { @class = "text-decoration-none" })
+                    <div>
+                        <button type="button" class="link-button" data-bs-toggle="modal" data-bs-target="#passwordChangeModal">
+                            Change password
+                        </button>
+                        <br />
+                        <button type="button" class="link-button" data-bs-toggle="modal" data-bs-target="#phoneNumberChangeModal">
+                            Change phone number
+                        </button>
+                        <br />
+                        <button type="button" class="link-button" data-bs-toggle="modal" data-bs-target="#emailChangeModal">
+                            Change email
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -191,8 +217,487 @@
     </div>
 </div>
 
+<!-- Toast Container -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    @if (!string.IsNullOrEmpty(successNotification))
+    {
+        <div class="toast bg-success text-white show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-body">
+                <div class="d-flex gap-4">
+                    <span><i class="fa fa-check-circle fa-lg"></i></span>
+                    <div class="d-flex flex-grow-1 align-items-center">
+                        <span class="fw-semibold">@successNotification</span>
+                        <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(errorNotification))
+    {
+        <div class="toast bg-danger text-white show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-body">
+                <div class="d-flex gap-4">
+                    <span><i class="fa fa-exclamation-circle fa-lg"></i></span>
+                    <div class="d-flex flex-grow-1 align-items-center">
+                        <span class="fw-semibold">@errorNotification</span>
+                        <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Modal for password change-->
+<div class="modal fade" id="passwordChangeModal" tabindex="-1" aria-labelledby="passwordChangeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="passwordChangeModalLabel">Password change</h1>
+                <button id="closePasswordChangeCrossButton" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-floating mb-3">
+                    <input id="currentPasswordField" type="password" class="form-control" placeholder="Education institution" />
+                    <label for="currentPasswordField" class="form-label">Current password</label>
+                </div>
+                    
+                <div class="form-floating mb-3">
+                    <input id="newPasswordField" type="password" class="form-control" placeholder="Education institution" />
+                    <label for="newPasswordField" class="form-label">New password</label>
+                </div>
+                    
+                <div class="form-floating">
+                    <input id="confirmNewPasswordField" type="password" class="form-control" placeholder="Education institution" />
+                    <label for="confirmNewPasswordField" class="form-label">Confirm new password</label>
+                </div>
+                <div id="passwordChangeErrorContainer" style="display: none;">
+                    <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show mt-3" style="margin-bottom: 0">
+                        <i class="bi-exclamation-octagon-fill" style="font-size: 1.5em; line-height: 1;"></i>
+                        <strong class="mx-2">Error!</strong>
+                        <pre id="passwordChangeErrorText" style="margin-bottom: 0; white-space: pre-wrap;"></pre>
+                        <button id="closeErrorsButton" type="button" class="btn-close"></button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="closePasswordChangeButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button id="updatePasswordButton" type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for phone number change -->
+<div class="modal fade" id="phoneNumberChangeModal" tabindex="-1" aria-labelledby="phoneNumberChangeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="phoneNumberChangeModalLabel">Phone number change</h1>
+                <button id="verifyPhoneNumberCloseCrossButton" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="phoneNumberContainer">
+                    <div class="form-floating">
+                        <input id="phoneNumberField" type="text" class="form-control" placeholder="Phone number"/>
+                        <label for="phoneNumberField" class="form-label">Phone number</label>
+                    </div>
+                </div>
+
+                <div id="verificationCodeContainer" style="display: none;">
+                    <span class="mobile-text">Enter the code we just sent on <b id="confirmationCodePhoneNumber" class="text-danger"></b></span>
+                    <div class="d-flex flex-row mt-4">
+                        <input type="text" class="form-control me-2 codeConfirmationInputCell" autofocus=""
+                               inputmode="numeric" pattern="[0-9]*" oninput="handleInput(this, 1)" onkeydown="handleKeyDown(event, this, 0)">
+                        <input type="text" class="form-control me-2 codeConfirmationInputCell"
+                               inputmode="numeric" pattern="[0-9]*" oninput="handleInput(this, 2)" onkeydown="handleKeyDown(event, this, 1)">
+                        <input type="text" class="form-control me-2 codeConfirmationInputCell"
+                               inputmode="numeric" pattern="[0-9]*" oninput="handleInput(this, 3)" onkeydown="handleKeyDown(event, this, 2)">
+                        <input type="text" class="form-control me-2 codeConfirmationInputCell"
+                               inputmode="numeric" pattern="[0-9]*" oninput="handleInput(this, 4)" onkeydown="handleKeyDown(event, this, 3)">
+                        <input type="text" class="form-control me-2 codeConfirmationInputCell"
+                               inputmode="numeric" pattern="[0-9]*" oninput="handleInput(this, 5)" onkeydown="handleKeyDown(event, this, 4)">
+                        <input type="text" class="form-control codeConfirmationInputCell"
+                               inputmode="numeric" pattern="[0-9]*" oninput="handleInput(this, 6)" onkeydown="handleKeyDown(event, this, 5)">
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <span class="d-block mobile-text">Don't receive the code?</span>
+                        <span id="resend-button" class="font-weight-bold text-danger cursor" style="pointer-events: none; opacity: 0.5;">Resend</span>
+                        <span class="font-weight-bold timer_text">in</span>
+                        <span id="timer" class="font-weight-bold text-danger">60</span>
+                        <span class="font-weight-bold timer_text">seconds</span>
+                    </div>
+                </div>
+                
+                <div id="phoneNumberChangeErrorContainer" style="display: none;">
+                    <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show mt-3" style="margin-bottom: 0">
+                        <i class="bi-exclamation-octagon-fill" style="font-size: 1.5em; line-height: 1;"></i>
+                        <strong class="mx-2">Error!</strong>
+                        <pre id="phoneNumberChangeErrorText" style="margin-bottom: 0; white-space: pre-wrap;"></pre>
+                        <button id="closeErrorsforPhoneNumberChangeButton" type="button" class="btn-close"></button>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button id="verifyPhoneNumberBackButton" type="button" class="btn btn-secondary" style="display: none;">Back</button>
+                <button id="verifyPhoneNumberCloseButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="display: none;">Close</button>
+                <button id="sendVerificationCodeButton" type="button" class="btn btn-primary">Send Verification Code</button>
+                <button id="confirmVerificationCodeButton" type="button" class="btn btn-primary" style="display: none;">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for email change-->
+<div class="modal fade" id="emailChangeModal" tabindex="-1" aria-labelledby="emailChangeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="emailChangeModalLabel">Email change</h1>
+                <button id="closeEmailUpdateCrossButton" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-floating">
+                    <input id="newEmailField" type="email" class="form-control" placeholder="Education institution" />
+                    <label for="newEmailField" class="form-label">New email</label>
+                </div>
+                <div id="emailChangeErrorContainer" style="display: none;">
+                    <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show mt-3" style="margin-bottom: 0">
+                        <i class="bi-exclamation-octagon-fill" style="font-size: 1.5em; line-height: 1;"></i>
+                        <strong class="mx-2">Error!</strong>
+                        <pre id="emailChangeErrorText" style="margin-bottom: 0; white-space: pre-wrap;"></pre>
+                        <button id="closeErrorsforEmailChangeButton" type="button" class="btn-close"></button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="closeEmailUpdateButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button id="updateEmailButton" type="button" class="btn btn-primary">Send confirmation message</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Notification message -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="testToast" class="toast bg-success text-white" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-body">
+            <div class="d-flex gap-4">
+                <span> <i class="fa fa-check-circle fa-lg"></i></span>
+                <div class="d-flex flex-grow-1 align-items-center">
+                    <span class="fw-semibold" id="testToastMessage" style="font-size: initial;"></span>
+                </div>
+                <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     
+    @* Update phone number logic *@
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const timerElement = document.getElementById('timer');
+            const resendButton = document.getElementById('resend-button');
+            let timeLeft = 10; // 60 seconds timer
+
+            function updateTimer() {
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    resendButton.style.pointerEvents = 'auto'; // Enable button
+                    resendButton.style.opacity = '1'; // Full opacity
+                    resendButton.classList.remove('text-danger');
+                    resendButton.classList.add('text-success');
+                    timerElement.textContent = ''; // Remove timer text
+                    $('.timer_text').text('');
+                } else {
+                    timerElement.textContent = timeLeft;
+                    timeLeft -= 1;
+                }
+            }
+
+            // Start the timer when the modal is opened
+            const timerInterval = setInterval(updateTimer, 1000);
+
+            // Optionally: Add event listener to the resend button
+            resendButton.addEventListener('click', () => {
+                if (resendButton.style.pointerEvents === 'auto') {
+                    // Handle the resend action here
+                    console.log('Resend button clicked');
+                }
+            });
+        });
+
+
+        $(function () {
+            $('#sendVerificationCodeButton').on('click', function () {
+                var phoneNumberValue = $('#phoneNumberField').val();
+                $.ajax({
+                    url: '@Url.Action("SendVerificationCode", "Account")',
+                    type: 'POST',
+                    data: { phoneNumber: phoneNumberValue },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#phoneNumberContainer').hide();
+                            $('#verificationCodeContainer').show();
+                            $('#confirmationCodePhoneNumber').text(phoneNumberValue);
+                            $('#sendVerificationCodeButton').hide();
+                            $('#confirmVerificationCodeButton').show();
+                            $('#closeErrorsforPhoneNumberChangeButton').click();
+                            $('#verifyPhoneNumberBackButton').show();
+                            startTimer();
+                        } else {
+                            $('#phoneNumberChangeErrorContainer').show();
+                            $('#phoneNumberChangeErrorText').text(response.message);
+                        }
+                    },
+                    error: function (error) {
+                        $('#phoneNumberChangeErrorContainer').show();
+                        $('#phoneNumberChangeErrorText').text(response.message);
+                    }
+                });
+            });
+
+            $('#confirmVerificationCodeButton').on('click', function () {
+                const fields = document.querySelectorAll('.codeConfirmationInputCell');
+                const fullVerificationCode = Array.from(fields).map(field => field.value).join('');
+
+                $.ajax({
+                    url: '@Url.Action("ConfirmVerificationCode", "Account")',
+                    type: 'POST',
+                    data: { userId: '@Model.Id', code: fullVerificationCode },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#verifyPhoneNumberCloseButton').click();
+                            $('#phoneNumberField').val ('');
+                            $('#phoneNumberContainer').show();
+                            $('#verificationCodeContainer').hide();
+                            $('#sendVerificationCodeButton').show();
+                            $('#confirmVerificationCodeButton').hide();
+                            $('.codeConfirmationInputCell').val('');
+                            $('#closeErrorsforPhoneNumberChangeButton').click();
+                            $('#verifyPhoneNumberBackButton').hide();
+                        } else {
+                            $('#phoneNumberChangeErrorContainer').show();
+                            $('#phoneNumberChangeErrorText').text(response.message);
+                        }
+                    },
+                    error: function (error) {
+                        $('#phoneNumberChangeErrorContainer').show();
+                        $('#phoneNumberChangeErrorText').text(response.message);
+                    }
+                });
+            });
+
+            $('#closeErrorsforPhoneNumberChangeButton').on('click', function () {
+                $('#phoneNumberChangeErrorContainer').hide();
+            });
+
+            $('#verifyPhoneNumberCloseButton').on('click', function () {
+                $('#phoneNumberField').val('');
+                $('.codeConfirmationInputCell').val('');
+                $('#phoneNumberContainer').show();
+                $('#verificationCodeContainer').hide();
+                $('#sendVerificationCodeButton').show();
+                $('#confirmVerificationCodeButton').hide();
+                $('#verifyPhoneNumberBackButton').hide();
+            });
+
+            $('#verifyPhoneNumberCloseCrossButton').on('click', function () {
+                $('#phoneNumberField').val('');
+                $('.codeConfirmationInputCell').val('');
+                $('#phoneNumberContainer').show();
+                $('#verificationCodeContainer').hide();
+                $('#sendVerificationCodeButton').show();
+                $('#confirmVerificationCodeButton').hide();
+                $('#verifyPhoneNumberBackButton').hide();
+                $('#closeErrorsforPhoneNumberChangeButton').click();
+            });
+
+            $('#verifyPhoneNumberBackButton').on('click', function () {
+                $('.codeConfirmationInputCell').val('');
+                $('#phoneNumberContainer').show();
+                $('#verificationCodeContainer').hide();
+                $('#sendVerificationCodeButton').show();
+                $('#confirmVerificationCodeButton').hide();
+                $('#verifyPhoneNumberBackButton').hide();
+                $('#closeErrorsforPhoneNumberChangeButton').click();
+            });
+        });
+
+        function startTimer() {
+            const timerElement = $('#timer');
+            const resendButton = $('#resend-button');
+            let timeLeft = 10; // 60 seconds timer
+            updateTimer();
+            function updateTimer() {
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    resendButton.css({ 'pointer-events': 'auto', 'opacity': '1' }); // Enable button
+                    resendButton.removeClass('text-danger').addClass('text-success');
+                    timerElement.text(''); // Remove timer text
+                    $('.timer_text').text('');
+                } else {
+                    timerElement.text(timeLeft);
+                    timeLeft -= 1;
+                }
+            }
+        }
+
+        function handleInput(currentField, nextFieldIndex) {
+            if (currentField.value.length > 1) {
+                // Allow only the last character if more than one digit is input
+                currentField.value = currentField.value.slice(-1);
+            }
+
+            if (currentField.value.length === 1) {
+                // Move to the next field
+                const nextField = document.querySelectorAll('.codeConfirmationInputCell')[nextFieldIndex];
+                if (nextField) {
+                    nextField.focus();
+                }
+            }
+            // Move to the previous field if the current field is cleared
+            else if (currentField.value.length === 0) {
+                const fields = document.querySelectorAll('.codeConfirmationInputCell');
+                const currentIndex = Array.from(fields).indexOf(currentField);
+                if (currentIndex > 0) {
+                    const prevField = fields[currentIndex - 1];
+                    if (prevField) {
+                        prevField.focus();
+                    }
+                }
+            }
+        }
+
+        function handleKeyDown(event, currentField, index) {
+            const key = event.key;
+            const fields = document.querySelectorAll('.codeConfirmationInputCell');
+
+            if (key === 'ArrowRight') {
+                // Move to the next field if right arrow is pressed
+                if (index < fields.length - 1) {
+                    fields[index + 1].focus();
+                }
+            } else if (key === 'ArrowLeft') {
+                // Move to the previous field if left arrow is pressed
+                if (index > 0) {
+                    fields[index - 1].focus();
+                }
+            } else if (!isDigit(event)) {
+                event.preventDefault();
+            }
+        }
+
+        function isDigit(event) {
+            const key = event.key;
+            return (key >= '0' && key <= '9') || key === 'Backspace' || key === 'ArrowLeft' || key === 'ArrowRight';
+        }
+    </script>
+
+    @* Update user email logic *@
+    <script>
+        $(function () {
+            $('#updateEmailButton').on('click', function () {
+                var newEmailValue = $('#newEmailField').val();
+
+                $.ajax({
+                    url: '@Url.Action("ChangeEmail", "Account")',
+                    type: 'POST',
+                    data: { userId: '@Model.Id', newEmail: newEmailValue },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#closeEmailUpdateButton').click();
+                            $('#closeErrorsforEmailChangeButton').click();
+                            $('#newEmailField').val('');
+
+                            var toastEl = $('#testToast');
+                            var toastMessage = $('#testToastMessage');
+                            toastMessage.text(response.message);
+                            var toast = new bootstrap.Toast(toastEl);
+                            toast.show();
+                        } else {
+                            $('#emailChangeErrorContainer').show();
+                            $('#emailChangeErrorText').text(response.message);
+                        }
+                    },
+                    error: function (error) {
+                        $('#emailChangeErrorContainer').show();
+                        $('#emailChangeErrorText').text(response.message);
+                    }
+                });
+            });
+
+            $('#closeEmailUpdateButton').on('click', function () {
+                $('#emailChangeErrorContainer').hide();
+                $('#newEmailField').val('');
+            });
+
+            $('#closeEmailUpdateCrossButton').on('click', function () {
+                $('#emailChangeErrorContainer').hide();
+                $('#newEmailField').val('');
+            });
+        });
+    </script>
+
+    @* Update user password logic *@
+    <script>
+        $(function () {
+            $('#updatePasswordButton').on('click', function () {
+                var currentPasswordValue = $('#currentPasswordField').val();
+                var newPasswordValue = $('#newPasswordField').val();
+                var confirmNewPasswordValue = $('#confirmNewPasswordField').val();
+
+                $.ajax({
+                    url: '@Url.Action("ChangePassword", "Account")',
+                    type: 'POST',
+                    data: { userId: '@Model.Id', currentPassword: currentPasswordValue, newPassword: newPasswordValue, confirmNewPassword: confirmNewPasswordValue },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#closePasswordChangeButton').click();
+                            $('#closeErrorsButton').click();
+                            $('#currentPasswordField').val('');
+                            $('#newPasswordField').val('');
+                            $('#confirmNewPasswordField').val('');
+
+                            var toastEl = $('#testToast');
+                            var toastMessage = $('#testToastMessage');
+                            toastMessage.text(response.message);
+                            var toast = new bootstrap.Toast(toastEl);
+                            toast.show();
+                        } else {
+                            $('#passwordChangeErrorContainer').show();
+                            $('#passwordChangeErrorText').text(response.message);
+                        }
+                    },
+                    error: function (error) {
+                        $('#passwordChangeErrorContainer').show();
+                        $('#passwordChangeErrorText').text(response.message);
+                    }
+                });
+            });
+
+            $('#closePasswordChangeButton').on('click', function () {
+                $('#passwordChangeErrorContainer').hide();
+                $('#currentPasswordField').val('');
+                $('#newPasswordField').val('');
+                $('#confirmNewPasswordField').val('');
+            });
+
+            $('#closePasswordChangeCrossButton').on('click', function () {
+                $('#passwordChangeErrorCrossContainer').hide();
+                $('#currentPasswordField').val('');
+                $('#newPasswordField').val('');
+                $('#confirmNewPasswordField').val('');
+            });
+        });
+    </script>
+
     @* API to get a list of countries and cities *@
     <script>
         $(document).ready(function () {

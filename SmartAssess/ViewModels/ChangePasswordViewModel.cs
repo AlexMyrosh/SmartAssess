@@ -4,6 +4,8 @@ namespace Presentation_Layer.ViewModels
 {
     public class ChangePasswordViewModel
     {
+        public string? UserId { get; set; }
+
         [DataType(DataType.Password)]
         [Display(Name = "Current Password")]
         public string? CurrentPassword { get; set; }

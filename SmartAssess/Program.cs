@@ -108,6 +108,7 @@ namespace Presentation_Layer
 
             services.Configure<OpenAiConfig>(configuration.GetSection("OpenAiConfig"));
             services.Configure<EmailConfig>(configuration.GetSection("EmailSettings"));
+            services.Configure<CommunicationServiceConfig>(configuration.GetSection("CommunicationServiceSettings"));
 
             services.AddScoped<IValidator<ExamQuestionViewModel>, ExamQuestionViewModelValidator>();
             services.AddScoped<IValidator<ExamViewModel>, ExamViewModelValidator>();
@@ -126,6 +127,7 @@ namespace Presentation_Layer
             services.AddScoped<IOpenAiService, OpenAiService>();
             services.AddScoped<IEmailSender, EmailSender>();
             services.AddScoped<ICourseService, CourseService>();
+            services.AddScoped<IPhoneMessageSender, PhoneMessageSender>();
 
             services.AddScoped<IExamRepository, ExamRepository>();
             services.AddScoped<IUserExamPassRepository, UserExamAttemptRepository>();

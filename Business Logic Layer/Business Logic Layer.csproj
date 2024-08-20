@@ -5,10 +5,13 @@
     <RootNamespace>Business_Logic_Layer</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <UserSecretsId>833c093a-e808-4770-8933-568e0c359d8a</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Azure.Communication.Sms" Version="1.0.1" />
     <PackageReference Include="Microsoft.KernelMemory.AI.AzureOpenAI" Version="0.69.240727.1" />
+    <PackageReference Include="Twilio" Version="7.2.2" />
   </ItemGroup>
 
   <ItemGroup>
