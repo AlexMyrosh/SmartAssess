@@ -43,5 +43,7 @@ namespace Business_Logic_Layer.Services.Interfaces
         Task SendConfirmationEmailAsync(string email, string callbackUrl);
 
         Task<IdentityResult> ChangePasswordAsync(string userId, string currentPassword, string newPassword);
+
+        string GetUserId(ClaimsPrincipal claimsPrincipal);
     }
 }

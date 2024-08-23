@@ -194,5 +194,11 @@ namespace Business_Logic_Layer.Services.Implementations
             var result = await _userManager.ChangeEmailAsync(userEntity, email, token);
             return result;
         }
+
+        public string GetUserId(ClaimsPrincipal claimsPrincipal)
+        {
+            var userId = _userManager.GetUserId(claimsPrincipal);
+            return userId;
+        }
     }
 }

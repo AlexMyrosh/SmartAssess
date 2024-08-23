@@ -53,11 +53,21 @@ namespace Presentation_Layer.Controllers
             return View(viewModel);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> PaginateAppliedCourses(int pageNumber = 1, string searchQuery = "")
+        {
+            var paginationCourseModel = await _courseService.GetAllAppliedByUserBySearchQueryWithPaginationAsync(User, PageSize, searchQuery, pageNumber);
+            var viewModel = _mapper.Map<PaginationCourseViewModel>(paginationCourseModel);
+            viewModel.PageSize = PageSize;
+            viewModel.PageNumber = pageNumber;
+            return PartialView("PartialViews/_CourseListAndPagination", viewModel);
+        }
+
         [HttpPost]
         public async Task<IActionResult> ApplyForCourse(Guid courseId)
         {
             await _courseService.AddUserForCourseAsync(User, courseId);
-            return RedirectToAction("Details", new { id = courseId });
+            return RedirectToAction("AppliedCourses");
         }
 
         [HttpPost]

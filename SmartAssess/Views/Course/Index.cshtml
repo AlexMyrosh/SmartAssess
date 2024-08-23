@@ -45,8 +45,7 @@
 
                 var courseListHtml = $(parsedData).filter('#courseList').html();
                 var paginationHtml = $(parsedData).filter('#paginationContainer').html();
-
-                if (courseListHtml !== undefined) {
+                if (courseListHtml !== undefined && !isEmptyRow(courseListHtml)) {
                     $('#courseList').html(courseListHtml);
                 }else{
                     $('#courseList').html('<div class="text-center mt-5 mb-5"><h1>Nothing found</h1></div>');
@@ -60,6 +59,11 @@
                 alert('Error loading courses.');
             }
         });
+    }
+
+    function isEmptyRow(htmlString) {
+        var parsedRowValue = $($.parseHTML(htmlString)).filter('.row').html();
+        return parsedRowValue.trim().length === 0
     }
 
     $(document).on('click', '.pagination-button', function (e) {
