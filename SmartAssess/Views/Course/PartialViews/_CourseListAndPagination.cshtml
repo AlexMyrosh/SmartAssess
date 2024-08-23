@@ -1,0 +1,11 @@
+﻿@model PaginationCourseViewModel
+
+<div id="courseList">
+    <div class="row">
+        @Html.Partial("PartialViews/_CourseList", Model.Items)
+    </div>
+</div>
+
+<div class="d-flex justify-content-center" id="paginationContainer" style="font-size: larger;">
+    @Html.Partial("PartialViews/_Pagination", Model)
+</div>

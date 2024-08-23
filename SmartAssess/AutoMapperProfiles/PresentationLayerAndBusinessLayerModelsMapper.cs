@@ -9,6 +9,7 @@ namespace Presentation_Layer.AutoMapperProfiles
     {
         public PresentationLayerAndBusinessLayerModelsMapper()
         {
+            CreateMap<PaginationCourseModel, PaginationCourseViewModel>().ReverseMap();
             CreateMap<ExamViewModel, ExamModel>().ReverseMap();
             CreateMap<ExamQuestionViewModel, ExamQuestionModel>().ReverseMap();
             CreateMap<UserAnswerViewModel, UserAnswerModel>().ReverseMap();

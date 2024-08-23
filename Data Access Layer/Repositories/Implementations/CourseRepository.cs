@@ -30,6 +30,26 @@ namespace Data_Access_Layer.Repositories.Implementations
             return courseEntities;
         }
 
+        public async Task<PaginationCourseEntity> GetAllByFilterWithPaginationAsync(Expression<Func<CourseEntity, bool>> filter, int pageSize, int pageNumber = 1, bool includeDeleted = false)
+        {
+            var query = _sqlContext.Courses
+                .Where(course => course.IsDeleted == false || course.IsDeleted == includeDeleted)
+                .Where(filter);
+
+            var result = new PaginationCourseEntity
+            {
+                TotalItems = await query.CountAsync()
+            };
+
+            var courseEntities = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            result.Items = courseEntities;
+            return result;
+        }
+
         public async Task<IEnumerable<CourseEntity>> GetAllWithDetailsAsync(bool includeDeleted = false)
         {
             var courseEntities = await _sqlContext.Courses

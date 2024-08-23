@@ -9,6 +9,7 @@ namespace Business_Logic_Layer.AutoMapperProfiles
         public DataAccessAndBusinessLogicModesMapper()
         {
             CreateMap<ExamQuestionModel, ExamQuestionEntity>().ReverseMap();
+            CreateMap<PaginationCourseModel, PaginationCourseEntity>().ReverseMap();
             CreateMap<UserAnswerModel, UserAnswerEntity>().ReverseMap();
             CreateMap<UserModel, UserEntity>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));

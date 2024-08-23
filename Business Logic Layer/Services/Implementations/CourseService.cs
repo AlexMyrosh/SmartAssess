@@ -56,13 +56,20 @@ namespace Business_Logic_Layer.Services.Implementations
 
         public async Task<IEnumerable<CourseModel>> GetAllAvailableForUserCoursesWithDetailsAsync(ClaimsPrincipal userPrincipal, bool includeDeleted = false)
         {
-            var user = await _accountService.GetUserAsync(userPrincipal);
+            var userModel = await _accountService.GetUserAsync(userPrincipal);
             var courseEntities = await _unitOfWork.CourseRepository.GetAllWithDetailsByFilterAsync(
-                course => course.Users.Any(user => user.Id == user.Id), 
+                course => course.Users.Any(user => user.Id == userModel.Id), 
                 includeDeleted);
 
             var courseModels = _mapper.Map<IEnumerable<CourseModel>>(courseEntities);
             return courseModels;
+        }
+
+        public async Task<PaginationCourseModel> GetAllBySearchQueryWithPaginationAsync(int pageSize, string searchQuery = "", int pageNumber = 1, bool includeDeleted = false)
+        {
+            var paginationCourseEntity = await _unitOfWork.CourseRepository.GetAllByFilterWithPaginationAsync(course => course.Name.Contains(searchQuery), pageSize, pageNumber, includeDeleted);
+            var paginationCourseModel = _mapper.Map<PaginationCourseModel>(paginationCourseEntity);
+            return paginationCourseModel;
         }
 
         public async Task<IEnumerable<CourseModel>> GetAllWithDetailsAsync(bool includeDeleted = false)

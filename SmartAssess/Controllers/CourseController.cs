@@ -4,6 +4,7 @@ using Business_Logic_Layer.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Presentation_Layer.ViewModels;
+using Twilio.TwiML.Fax;
 
 namespace Presentation_Layer.Controllers
 {
@@ -13,6 +14,8 @@ namespace Presentation_Layer.Controllers
         private readonly ICourseService _courseService;
         private readonly IAccountService _accountService;
         private readonly IMapper _mapper;
+
+        private const int PageSize = 12;
 
         public CourseController(ICourseService courseService,  IMapper mapper, IAccountService accountService)
         {
@@ -24,11 +27,22 @@ namespace Presentation_Layer.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var courseModels = await _courseService.GetAllWithDetailsAsync();
-            var courseViewModels = _mapper.Map<IEnumerable<CourseViewModel>>(courseModels);
-            return View(courseViewModels);
+            var paginationCourseModel = await _courseService.GetAllBySearchQueryWithPaginationAsync(PageSize);
+            var viewModel = _mapper.Map<PaginationCourseViewModel>(paginationCourseModel);
+            viewModel.PageSize = PageSize;
+            viewModel.PageNumber = 1;
+            return View(viewModel);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> PaginateCourses(int pageNumber = 1, string searchQuery = "")
+        {
+            var paginationCourseModel = await _courseService.GetAllBySearchQueryWithPaginationAsync(PageSize, searchQuery, pageNumber);
+            var viewModel = _mapper.Map<PaginationCourseViewModel>(paginationCourseModel);
+            viewModel.PageSize = PageSize;
+            viewModel.PageNumber = pageNumber;
+            return PartialView("PartialViews/_CourseListAndPagination", viewModel);
+        }
 
         [HttpGet]
         public async Task<IActionResult> AppliedCourses()

@@ -1,61 +1,102 @@
-﻿@model IEnumerable<Presentation_Layer.ViewModels.CourseViewModel>
+﻿@model PaginationCourseViewModel
 
 @{
-    ViewData["Title"] = "GetAll";
+    ViewData["Title"] = "All courses";
 }
 
-<h1>GetAll</h1>
-
-<p>
-    <a asp-action="Create" class="btn btn-outline-primary">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Exams)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Users)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) { 
-    <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Exams.Count)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Users.Count)
-            </td>
-            <td>
-                @Html.ActionLink("Add exam", "Create", "Exam", new { courseId = item.Id }, new { @class = "btn btn-outline-info" })
-                @Html.ActionLink("Update", "Update", new { id = item.Id }, new { @class = "btn btn-outline-info" })
-                @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-outline-info" })
-                    <form asp-area="" asp-controller="Course" asp-action="ApplyForCourse" method="post" style="display: inline-block;">
-                        <input type="hidden" name="courseId" value="@item.Id" />
-                        <button type="submit" class="btn btn-outline-info">Apply</button>
-                    </form>
-                <form asp-area="" asp-controller="Course" asp-action="Delete" method="post" style="display: inline-block;">
-                    <input type="hidden" name="id" value="@item.Id" />
-                    <button type="submit" class="btn btn-outline-info">Delete</button>
-                </form>
-            </td>
-        </tr>
+@if (User.IsInRole(Data_Access_Layer.Roles.Roles.Teacher) || User.IsInRole(Data_Access_Layer.Roles.Roles.Admin))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-outline-primary">Create New</a>
+    </p>
 }
-    </tbody>
-</table>
+
+<div class="container-fluid custom-container" style="width: 90%;">
+    @if (Model.Items.Any())
+    {
+        <h1 class="text-center"> All courses</h1>
+        <div class="form-floating mb-3">
+            <input type="text" id="searchInput" name="searchQuery" class="form-control" placeholder="Search courses..." aria-label="Search courses" onkeyup="filterCourses()">
+            <label for="searchInput" class="form-label">Search for courses</label>
+        </div>
+
+        <div id="courseListAndPagination">
+            @Html.Partial("PartialViews/_CourseListAndPagination", Model)
+        </div>
+    }
+    else
+    {
+        <div class="text-center">
+            <h1 style="font-size: 72px;">There is no courses at the moment</h1>
+        </div>
+    }
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function filterCourses() {
+        var searchQuery = $('#searchInput').val();
+        $.ajax({
+            url: '/Course/PaginateCourses',
+            type: 'GET',
+            data: { searchQuery: searchQuery, pageNumber: 1 }, // Reset to first page on search
+            success: function (data) {
+                var parsedData = $.parseHTML(data);
+
+                var courseListHtml = $(parsedData).filter('#courseList').html();
+                var paginationHtml = $(parsedData).filter('#paginationContainer').html();
+
+                if (courseListHtml !== undefined) {
+                    $('#courseList').html(courseListHtml);
+                }
+
+                if (paginationHtml !== undefined) {
+                    $('#paginationContainer').html(paginationHtml);
+                }
+            },
+            error: function () {
+                alert('Error loading courses.');
+            }
+        });
+    }
+
+    $(document).on('click', '.pagination-button', function (e) {
+        e.preventDefault();
+        var page = $(this).data('page');
+        var searchQuery = $('#searchInput').val();
+
+        $.ajax({
+            url: '/Course/PaginateCourses',
+            type: 'GET',
+            data: { searchQuery: searchQuery, pageNumber: page },
+            success: function (data) {
+                // Parse the HTML response into DOM elements
+                var parsedData = $.parseHTML(data);
+
+                // Extract the course list and pagination content
+                var courseListHtml = $(parsedData).filter('#courseList').html();
+                var paginationHtml = $(parsedData).filter('#paginationContainer').html();
+
+                // Update the HTML content on the page
+                if (courseListHtml !== undefined) {
+                    $('#courseList').html(courseListHtml);
+                }
+
+                if (paginationHtml !== undefined) {
+                    $('#paginationContainer').html(paginationHtml);
+                }
+            },
+            error: function () {
+                alert('Error loading courses.');
+            }
+        });
+    });
+</script>
+<style>
+    .custom-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start; /* Ensures content starts from the top */
+        min-height: 100vh; /* Optional: Ensure the container takes the full height of the viewport */
+    }
+</style>

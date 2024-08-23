@@ -327,7 +327,7 @@
                         <span class="d-block mobile-text">Don't receive the code?</span>
                         <span id="resend-button" class="font-weight-bold text-danger cursor" style="pointer-events: none; opacity: 0.5;">Resend</span>
                         <span class="font-weight-bold timer_text">in</span>
-                        <span id="timer" class="font-weight-bold text-danger">60</span>
+                        <span id="timer" class="font-weight-bold text-danger">10</span>
                         <span class="font-weight-bold timer_text">seconds</span>
                     </div>
                 </div>
@@ -401,40 +401,9 @@
     
     @* Update phone number logic *@
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const timerElement = document.getElementById('timer');
-            const resendButton = document.getElementById('resend-button');
-            let timeLeft = 10; // 60 seconds timer
-
-            function updateTimer() {
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    resendButton.style.pointerEvents = 'auto'; // Enable button
-                    resendButton.style.opacity = '1'; // Full opacity
-                    resendButton.classList.remove('text-danger');
-                    resendButton.classList.add('text-success');
-                    timerElement.textContent = ''; // Remove timer text
-                    $('.timer_text').text('');
-                } else {
-                    timerElement.textContent = timeLeft;
-                    timeLeft -= 1;
-                }
-            }
-
-            // Start the timer when the modal is opened
-            const timerInterval = setInterval(updateTimer, 1000);
-
-            // Optionally: Add event listener to the resend button
-            resendButton.addEventListener('click', () => {
-                if (resendButton.style.pointerEvents === 'auto') {
-                    // Handle the resend action here
-                    console.log('Resend button clicked');
-                }
-            });
-        });
-
-
         $(function () {
+            var timerIntervalId;
+
             $('#sendVerificationCodeButton').on('click', function () {
                 var phoneNumberValue = $('#phoneNumberField').val();
                 $.ajax({
@@ -450,7 +419,7 @@
                             $('#confirmVerificationCodeButton').show();
                             $('#closeErrorsforPhoneNumberChangeButton').click();
                             $('#verifyPhoneNumberBackButton').show();
-                            startTimer();
+                            startCountdown(9);
                         } else {
                             $('#phoneNumberChangeErrorContainer').show();
                             $('#phoneNumberChangeErrorText').text(response.message);
@@ -506,6 +475,7 @@
                 $('#sendVerificationCodeButton').show();
                 $('#confirmVerificationCodeButton').hide();
                 $('#verifyPhoneNumberBackButton').hide();
+                clearInterval(timerIntervalId);
             });
 
             $('#verifyPhoneNumberCloseCrossButton').on('click', function () {
@@ -517,6 +487,7 @@
                 $('#confirmVerificationCodeButton').hide();
                 $('#verifyPhoneNumberBackButton').hide();
                 $('#closeErrorsforPhoneNumberChangeButton').click();
+                clearInterval(timerIntervalId);
             });
 
             $('#verifyPhoneNumberBackButton').on('click', function () {
@@ -527,26 +498,25 @@
                 $('#confirmVerificationCodeButton').hide();
                 $('#verifyPhoneNumberBackButton').hide();
                 $('#closeErrorsforPhoneNumberChangeButton').click();
+                clearInterval(timerIntervalId);
             });
         });
 
-        function startTimer() {
-            const timerElement = $('#timer');
-            const resendButton = $('#resend-button');
-            let timeLeft = 10; // 60 seconds timer
-            updateTimer();
-            function updateTimer() {
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    resendButton.css({ 'pointer-events': 'auto', 'opacity': '1' }); // Enable button
-                    resendButton.removeClass('text-danger').addClass('text-success');
-                    timerElement.text(''); // Remove timer text
-                    $('.timer_text').text('');
-                } else {
-                    timerElement.text(timeLeft);
-                    timeLeft -= 1;
+        function startCountdown(seconds) {
+            $('.timer_text').show();
+            $('#timer').show();
+            let counter = seconds;
+
+            timerIntervalId = setInterval(() => {
+                document.getElementById('timer').innerHTML = `${counter}`;
+                counter--;
+
+                if (counter < 0) {
+                    clearInterval(timerIntervalId);
+                    $('.timer_text').hide();;
+                    $('#timer').hide();
                 }
-            }
+            }, 1000);
         }
 
         function handleInput(currentField, nextFieldIndex) {
