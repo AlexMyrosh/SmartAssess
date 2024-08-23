@@ -21,7 +21,7 @@ namespace Business_Logic_Layer.Services.Interfaces
 
         Task<Guid> UpdateAsync(CourseModel model);
 
-        Task<IEnumerable<CourseModel>> GetAllAvailableForUserCoursesWithDetailsAsync(ClaimsPrincipal userPrincipal, bool includeDeleted = false);
+        Task<PaginationCourseModel> GetAllAppliedByUserBySearchQueryWithPaginationAsync(ClaimsPrincipal userPrincipal, int pageSize, string searchQuery = "", int pageNumber = 1, bool includeDeleted = false);
 
         Task<PaginationCourseModel> GetAllBySearchQueryWithPaginationAsync(int pageSize, string searchQuery = "", int pageNumber = 1, bool includeDeleted = false);
 

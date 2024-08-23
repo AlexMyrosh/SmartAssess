@@ -12,9 +12,9 @@
 }
 
 <div class="container-fluid custom-container" style="width: 90%;">
+    <h1 class="text-center"> All courses</h1>
     @if (Model.Items.Any())
     {
-        <h1 class="text-center"> All courses</h1>
         <div class="form-floating mb-3">
             <input type="text" id="searchInput" name="searchQuery" class="form-control" placeholder="Search courses..." aria-label="Search courses" onkeyup="filterCourses()">
             <label for="searchInput" class="form-label">Search for courses</label>
@@ -48,6 +48,8 @@
 
                 if (courseListHtml !== undefined) {
                     $('#courseList').html(courseListHtml);
+                }else{
+                    $('#courseList').html('<div class="text-center mt-5 mb-5"><h1>Nothing found</h1></div>');
                 }
 
                 if (paginationHtml !== undefined) {
@@ -94,9 +96,6 @@
 </script>
 <style>
     .custom-container {
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start; /* Ensures content starts from the top */
-        min-height: 100vh; /* Optional: Ensure the container takes the full height of the viewport */
+        min-height: calc(100vh - 129px);
     }
 </style>

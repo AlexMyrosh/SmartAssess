@@ -4,7 +4,6 @@ using Business_Logic_Layer.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Presentation_Layer.ViewModels;
-using Twilio.TwiML.Fax;
 
 namespace Presentation_Layer.Controllers
 {
@@ -47,9 +46,11 @@ namespace Presentation_Layer.Controllers
         [HttpGet]
         public async Task<IActionResult> AppliedCourses()
         {
-            var courseModels = await _courseService.GetAllAvailableForUserCoursesWithDetailsAsync(User);
-            var courseViewModels = _mapper.Map<IEnumerable<CourseViewModel>>(courseModels);
-            return View(courseViewModels);
+            var paginationCourseModel = await _courseService.GetAllAppliedByUserBySearchQueryWithPaginationAsync(User, PageSize);
+            var viewModel = _mapper.Map<PaginationCourseViewModel>(paginationCourseModel);
+            viewModel.PageSize = PageSize;
+            viewModel.PageNumber = 1;
+            return View(viewModel);
         }
 
         [HttpPost]

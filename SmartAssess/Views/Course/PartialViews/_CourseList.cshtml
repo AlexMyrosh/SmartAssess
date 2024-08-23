@@ -1,28 +1,19 @@
 ﻿@model IEnumerable<CourseViewModel>
 
-@if (Model.Any())
+@foreach (var course in Model)
 {
-    @foreach (var course in Model)
-    {
-        <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3 d-flex align-items-stretch">
-            <div class="card">
-                <a asp-controller="Course" asp-action="Details" asp-route-id="@course.Id" style="text-decoration: none; color: black;">
-                    <img src="https://www.kpigamification.com/images/default-course-thumbnail.png" class="card-img-top"
-                         alt="Hollywood Sign on The Hill"/>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">@course.Name</h5>
-                        <p class="card-text">
-                            @course.Description
-                        </p>
-                    </div>
-                </a>
-            </div>
+    <div class="col-xxl-3 col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3 d-flex align-items-stretch">
+        <div class="card">
+            <a asp-controller="Course" asp-action="Details" asp-route-id="@course.Id" style="text-decoration: none; color: black;">
+                <img src="https://www.kpigamification.com/images/default-course-thumbnail.png" class="card-img-top"
+                     alt="Hollywood Sign on The Hill"/>
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">@course.Name</h5>
+                    <p class="card-text">
+                        @course.Description
+                    </p>
+                </div>
+            </a>
         </div>
-    }
-}
-else
-{
-    <div class="text-center mt-5 mb-5">
-        <h1>Nothing found</h1>
     </div>
 }
