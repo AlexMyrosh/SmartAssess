@@ -67,14 +67,14 @@ namespace Presentation_Layer.Controllers
         public async Task<IActionResult> ApplyForCourse(Guid courseId)
         {
             await _courseService.AddUserForCourseAsync(User, courseId);
-            return RedirectToAction("AppliedCourses");
+            return RedirectToAction("Details", new { id = courseId});
         }
 
         [HttpPost]
         public async Task<IActionResult> LeaveCourse(Guid courseId)
         {
             await _courseService.RemoveUserFromCourseAsync(User, courseId);
-            return RedirectToAction("AppliedCourses");
+            return RedirectToAction("Details", new { id = courseId });
         }
 
         [HttpGet]
@@ -82,6 +82,7 @@ namespace Presentation_Layer.Controllers
         {
             var courseModel = await _courseService.GetByIdWithDetailsAsync(id);
             var courseViewModel = _mapper.Map<CourseViewModel>(courseModel);
+            ViewBag.UserId = _accountService.GetUserId(User);
 
             // TODO: Move to Business Logic
             var currentUser = await _accountService.GetUserAsync(User);

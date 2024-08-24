@@ -14,7 +14,11 @@ namespace Data_Access_Layer.Models
 
         [Required]
         [MaxLength(1000)]
-        public string Description { get; set; }
+        public string ShortDescription { get; set; }
+
+        [Required]
+        [MaxLength(5000)]
+        public string LongDescription { get; set; }
 
         [Required]
         [DefaultValue(false)]

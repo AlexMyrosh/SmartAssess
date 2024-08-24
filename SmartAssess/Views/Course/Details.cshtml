@@ -1,75 +1,139 @@
 ﻿@model Presentation_Layer.ViewModels.CourseViewModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = Model.Name;
+    var isUserAppliedForCourse = Model.Users.Any(user => user.Id == ViewBag.UserId);
 }
 
-<h1>Details</h1>
+<style>
+    .centered {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        text-align: center;
+        color: white;
+    }
 
-<div>
-    <h4>CourseViewModel</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Users)
-        </dt>
-        <dd class="col-sm-10">
-            @foreach (var user in Model.Users)
-            {
-                <a asp-controller="Account" asp-action="Details" asp-route-userId="@user.Id">
-                    @Html.DisplayTextFor(_ => user.FirstName)
-                    <span> </span>
-                    @Html.DisplayTextFor(_ => user.LastName)
-                </a>
-            }
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Exams)
-        </dt>
-        <dd class="col-sm-10">
-            <div class="container">
-                    @foreach (var exam in Model.Exams)
-                    {
-                        <div class="row">
-                            <div class="col">
-                                @Html.DisplayTextFor(_ => exam.Name)
-                            </div>
-                            <div class="col">
-                            @if(exam.CurrentUserAttmptNumber >= exam.MaxAttemptsAllowed)
-                            {
-                                <button class="btn btn-outline-info" disabled>Pass</button>
-                            }
-                            else
-                            {
-                                @Html.ActionLink("Pass", "Assessment", "UserExamPass", new { examId = exam.Id }, new { @class = "btn btn-outline-info" })
-                            }
-                            
-                            </div>
+    .image-container {
+        width: calc(100% + 24px);
+        position: relative;
+        overflow: hidden;
+        margin-left: -12px;
+        margin-right: -12px;
+        margin-top: -16px;
+    }
+
+    .image-container img {
+        filter: brightness(50%);
+        width: 100vw;
+        height: auto;
+        object-fit: cover;
+    }
+
+    .straddle-button {
+        position: absolute;
+        left: 92%;
+        transform: translateX(-50%);
+        bottom: 5%;
+        padding: 10px 20px;
+        cursor: pointer;
+        font-size: 1.5vw;
+        width: max-content;
+        border-radius: 35px;
+    }
+</style>
+
+<div class="container-fluid" style="padding: 0;">
+    <div class="decor-default">
+        <div class="">
+            <div class="contact">
+                <div class="controls">
+                    <div class="image-container">
+                        <img src="https://t3.ftcdn.net/jpg/05/22/05/58/360_F_522055892_v1jV6zS7oJ9AQRBzaj5xcT6jkqX2NQUr.jpg">
+                        <div class="centered">
+                            <h1 class="display-1" style="font-size: 6vw; font-weight: 400;">
+                                @Model.Name
+                            </h1>
                         </div>
-                    }
-            </div>
-        </dd>
-    </dl>
-</div>
-<div>
-    <form asp-action="ApplyForCourse" asp-controller="Course" method="post">
-        <input type="hidden" name="courseId" value="@Model.Id" />
-        <button class="btn btn-success" type="submit">Apply</button>
-    </form>
+                        @if (isUserAppliedForCourse)
+                        {
+                            <form asp-controller="Course" asp-action="LeaveCourse" method="post">
+                                <input type="hidden" name="courseId" value="@Model.Id" />
+                                <button class=" btn btn-warning straddle-button">Leave</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-controller="Course" asp-action="ApplyForCourse" method="post">
+                                <input type="hidden" name="courseId" value="@Model.Id" />
+                                <button class="btn btn-success straddle-button">Apply</button>
+                            </form>
+                        }
+                        
+                    </div>
+                </div>
+                
+                @if (!string.IsNullOrWhiteSpace(Model.LongDescription))
+                {
+                    <div class="container" style="margin-top: 30px; margin-bottom: 30px;">
+                        <div class="text-center">
+                            <h1 class="display-4">Course description</h1>
+                        </div>
+                        <pre style="white-space: pre-line; font-family: 'Montserrat'; font-size: 16px;">
+                        @Model.LongDescription
+                    </pre>
+                    </div>
+                }
 
-    @Html.ActionLink("Update", "Update", new { id = Model.Id }) |
-    @Html.ActionLink("Update", "Update", new { id = Model.Id }) |
-    <a asp-action="Index">Back to List</a>
+                @if (isUserAppliedForCourse)
+                {
+                    <div class="container" style="margin-top: 30px; margin-bottom: 30px;">
+                        <div class="text-center">
+                            <h1 class="display-4">Opened exams</h1>
+                        </div>
+
+                        @if (!Model.Exams.Any())
+                        {
+                            <p class="text-center" style="margin-top: 22px;">
+                                No exams at the moment
+                            </p>
+                        }
+                        
+                        @foreach (var exam in Model.Exams)
+                        {
+                            <div class="card text-center mb-4">
+                                <div class="card-header" style="font-size: x-large; font-weight: 500;">
+                                    @exam.Name
+                                </div>
+                                <div class="card-body" style="padding-bottom:0;">
+                                    <p class="card-text">@exam.Description</p>
+                                    <p class="text-center">
+                                        Attempts: @exam.CurrentUserAttmptNumber/@exam.MaxAttemptsAllowed
+                                    </p>
+                                    <p class="text-center">
+                                        Duration: @exam.ExamDuration
+                                    </p>
+                                    <p class="text-center">
+                                        Threshold score : @exam.MinimumPassGrade/@exam.Questions.Sum(q=>q.MaxGrade)
+                                    </p>
+                                </div>
+                                <div class="card-footer text-muted">
+                                    @if (exam.CurrentUserAttmptNumber >= exam.MaxAttemptsAllowed)
+                                    {
+                                        <button class="btn btn-success disabled">Start attempt</button>
+                                    }
+                                    else
+                                    {
+                                        @Html.ActionLink("Start attempt", "Assessment", "UserExamPass", new { examId = exam.Id }, new { @class = "btn btn-success" })
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
 </div>

@@ -6,7 +6,9 @@
 
         public string Name { get; set; }
 
-        public string Description { get; set; }
+        public string ShortDescription { get; set; }
+
+        public string LongDescription { get; set; }
 
         public List<ExamModel> Exams { get; set; }
 

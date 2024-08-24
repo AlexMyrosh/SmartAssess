@@ -109,8 +109,8 @@ namespace Business_Logic_Layer.Services.Implementations
 
         public async Task RemoveUserFromCourseAsync(ClaimsPrincipal userPrincipal, Guid courseId)
         {
-            var user = await _accountService.GetUserAsync(userPrincipal);
-            if (user is null)
+            var userId = _accountService.GetUserId(userPrincipal);
+            if (string.IsNullOrWhiteSpace(userId))
             {
                 return;
             }
@@ -121,7 +121,7 @@ namespace Business_Logic_Layer.Services.Implementations
                 return;
             }
 
-            var userEntity = _mapper.Map<UserEntity>(user);
+            var userEntity = await _unitOfWork.UserRepository.GetByIdAsync(userId);
             courseModel.Users.Remove(userEntity);
             await _unitOfWork.SaveAsync();
         }

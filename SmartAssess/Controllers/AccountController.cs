@@ -147,34 +147,6 @@ namespace Presentation_Layer.Controllers
             return Json(new { success = true });
         }
 
-        [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> Update()
-        {
-            var currentUser = await _accountService.GetUserAsync(User);
-            var viewModel = _mapper.Map<UserViewModel>(currentUser);
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> Update(UserViewModel user)
-        {
-            var userModel = _mapper.Map<UserModel>(user);
-            var result = await _accountService.UpdateAsync(userModel);
-            if (result.Succeeded)
-            {
-                return RedirectToAction("Details");
-            }
-
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError("", error.Description);
-            }
-
-            return View(user);
-        }
-
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> UpdateImage(string userId, IFormFile file)
