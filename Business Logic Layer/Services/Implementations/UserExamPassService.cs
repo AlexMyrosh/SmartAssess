@@ -53,7 +53,7 @@ namespace Business_Logic_Layer.Services.Implementations
             return model;
         }
 
-        public async Task<Guid> UpdateAsync(UserExamAttemptModel model)
+        public async Task<Guid> UpdateAsync(UserExamAttemptModel model, bool isExamChecked)
         {
             if (model.Id is null)
             {
@@ -77,6 +77,11 @@ namespace Business_Logic_Layer.Services.Implementations
             {
                 userAttemptEntityFromDb.UserAnswers[i].Grade = model.UserAnswers[i].Grade;
                 userAttemptEntityFromDb.UserAnswers[i].Feedback = model.UserAnswers[i].Feedback;
+            }
+
+            if (isExamChecked)
+            {
+                userAttemptEntityFromDb.IsExamAssessed = true;
             }
 
             await _unitOfWork.SaveAsync();

@@ -40,7 +40,7 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="Index">All courses</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="UserExamPass" asp-action="PassedExams">My passed exams</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="UserExamPass" asp-action="PassedByCurrentUserExams">My passed exams</a>
                             </li>
                         }
                         @if (User.IsInRole(Data_Access_Layer.Roles.Roles.Teacher))

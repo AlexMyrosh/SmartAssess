@@ -1,0 +1,163 @@
+﻿@model List<CourseViewModel>
+
+@{
+    ViewData["Title"] = "Passed exams";
+}
+
+<style>
+    .image-container {
+        margin-left: -12px;
+        margin-right: -12px;
+    }
+
+    .image-container img {
+        width: 100vw;
+    }
+
+    .first-level-collapse{
+        background-color: #e3e4e6 !important;
+    }
+
+    .second-level-collapse{
+        background-color: #E9EAEC !important;
+    }
+
+    .collapsed {
+        background-color: white !important;
+    }
+</style>
+
+<div class="panel-group">
+    <div class="container-fluid" style="padding: 0;">
+        <div class="decor-default">
+            <div class="">
+                <div class="contact">
+                    <div class="controls">
+                        <div class="image-container">
+                            <img src="/images/banners/banner-1.png">
+                        </div>
+                    </div>
+                    
+                    <div class="container" style="margin-top: 30px; margin-bottom: 30px;">
+                        <div class="text-center">
+                            <h1 class="display-4">Course marks</h1>
+                        </div>
+                        <div class="mt-5">
+                            @foreach (var course in Model)
+                            {
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="course-@course.Id-header">
+                                        <button class="accordion-button collapsed first-level-collapse"
+                                                type="button"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#course-@course.Id"
+                                                aria-expanded="false"
+                                                aria-controls="course-@course.Id"
+                                                style="box-shadow: none;">
+                                            @course.Name
+                                        </button>
+                                    </h2>
+
+                                    <div id="course-@course.Id"
+                                         class="accordion-collapse collapse"
+                                         aria-labelledby="course-@course.Id-header">
+                                        @foreach (var exam in course.Exams)
+                                        {
+                                            <div class="accordion-item" style="border-left: none;border-right: none;">
+                                                <h2 class="accordion-header" id="course-@course.Id-exam-@exam.Id-header">
+                                                    <button class="accordion-button collapsed second-level-collapse"
+                                                            type="button"
+                                                            data-bs-toggle="collapse"
+                                                            data-bs-target="#course-@course.Id-exam-@exam.Id"
+                                                            aria-expanded="false"
+                                                            aria-controls="course-@course.Id-exam-@exam.Id"
+                                                            style="box-shadow: none;">
+                                                        @exam.Name
+                                                    </button>
+                                                </h2>
+                                                <div id="course-@course.Id-exam-@exam.Id"
+                                                     class="accordion-collapse collapse"
+                                                     aria-labelledby="course-@course.Id-exam-@exam.Id-header">
+                                                    <div class="accordion-body p-0">
+                                                        <section class="intro">
+                                                            <div class="gradient-custom-1 h-100">
+                                                                <div class="mask d-flex align-items-center h-100">
+                                                                    <div class="container">
+                                                                        <div class="row justify-content-center">
+                                                                            <div class="col-12">
+                                                                                <div class="table-responsive bg-white">
+                                                                                    <table class="table mb-0">
+                                                                                        <thead>
+                                                                                        <tr>
+                                                                                            <th class="text-center" scope="col">Attempt</th>
+                                                                                            <th class="text-center" scope="col">Grade</th>
+                                                                                            <th class="text-center" scope="col">Max Grade</th>
+                                                                                            <th class ="text-center" scope="col">Min Pass Grade</th>
+                                                                                            <th class="text-center" scope="col">Result</th>
+                                                                                                <th class="text-center" scope="col"></th>
+                                                                                        </tr>
+                                                                                        </thead>
+                                                                                        <tbody>
+                                                                                        @for (var i = 0; i < exam.UserExamAttempts.Count; i++)
+                                                                                        {
+                                                                                            <tr>
+                                                                                                    <td class="text-center align-middle">@(i + 1)</td>
+                                                                                                    <td class="text-center align-middle">
+                                                                                                    @if (exam.UserExamAttempts[i].IsExamAssessed)
+                                                                                                    {
+                                                                                                        @exam.UserExamAttempts[i].TotalGrade
+                                                                                                    }
+                                                                                                    else
+                                                                                                    {
+                                                                                                        <span>-</span>
+                                                                                                    }
+                                                                                                </td>
+                                                                                                    <td class="text-center align-middle">@exam.Questions.Sum(q => q.MaxGrade)</td>
+                                                                                                    <td class="text-center align-middle">@exam.MinimumPassGrade</td>
+                                                                                                    <td class="text-center align-middle">
+                                                                                                    @if (exam.UserExamAttempts[i].IsExamAssessed)
+                                                                                                    {
+                                                                                                        @if (exam.UserExamAttempts[i].TotalGrade >= exam.MinimumPassGrade)
+                                                                                                        {
+                                                                                                            <span class="text-success">Passed</span>
+                                                                                                        }
+                                                                                                        else
+                                                                                                        {
+                                                                                                            <span class="text-danger">Failed</span>
+                                                                                                        }
+                                                                                                    }
+                                                                                                    else
+                                                                                                    {
+                                                                                                        <span class="text-warning">Not Assessed Yet</span>
+                                                                                                    }
+                                                                                                </td>
+                                                                                                    <td class="text-center align-middle">
+                                                                                                    <a class="btn btn-outline-primary" asp-controller="UserExamPass" asp-action="Details" asp-route-id="@exam.UserExamAttempts[i].Id">
+                                                                                                        Details
+                                                                                                    </a>
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                        }
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </section>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

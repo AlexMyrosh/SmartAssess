@@ -14,6 +14,6 @@ namespace Business_Logic_Layer.Services.Interfaces
 
         Task<UserExamAttemptModel?> GetByIdWithDetailsAsync(Guid id);
 
-        Task<Guid> UpdateAsync(UserExamAttemptModel model);
+        Task<Guid> UpdateAsync(UserExamAttemptModel model, bool isExamChecked);
     }
 }

@@ -11,18 +11,20 @@ namespace Presentation_Layer.Controllers
     public class UserExamPassController : Controller
     {
         private readonly IExamService _examService;
+        private readonly ICourseService _courseService;
         private readonly IUserExamPassService _userExamPassService;
         private readonly IOpenAiService _openAiService;
         private readonly IAccountService _accountService;
         private readonly IMapper _mapper;
 
-        public UserExamPassController(IExamService examService, IUserExamPassService userExamPassService, IOpenAiService openAiService, IAccountService accountService, IMapper mapper)
+        public UserExamPassController(IExamService examService, ICourseService courseService, IUserExamPassService userExamPassService, IOpenAiService openAiService, IAccountService accountService, IMapper mapper)
         {
             _examService = examService;
             _userExamPassService = userExamPassService;
             _openAiService = openAiService;
             _accountService = accountService;
             _mapper = mapper;
+            _courseService = courseService;
         }
 
         [HttpGet]
@@ -31,6 +33,21 @@ namespace Presentation_Layer.Controllers
             var examPassModels = await _userExamPassService.GetAllWithDetailsAsync();
             var viewModel = _mapper.Map<IEnumerable<UserExamAttemptViewModel>>(examPassModels);
             return View(viewModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> PassedByCurrentUserExams()
+        {
+            var courseModels = await _courseService.GetAllWithTakenUserExamsAsync(User);
+            var courseViewModels = _mapper.Map<List<CourseViewModel>>(courseModels);
+
+            var currentUser = await _accountService.GetUserAsync(User);
+            foreach (var courseViewModel in courseViewModels)
+            {
+                courseViewModel.Exams = courseViewModel.Exams.Where(x => x.UserExamAttempts.Count(x => x.User.Id == currentUser.Id) > 0).ToList();
+            }
+
+            return View(courseViewModels);
         }
 
         [HttpGet]
@@ -55,7 +72,7 @@ namespace Presentation_Layer.Controllers
             if (ModelState.IsValid)
             {
                 var model = _mapper.Map<UserExamAttemptModel>(viewModel);
-                var updateEntityId = await _userExamPassService.UpdateAsync(model);
+                var updateEntityId = await _userExamPassService.UpdateAsync(model, true);
                 return RedirectToAction("Details", new { id = updateEntityId });
             }
 
@@ -67,6 +84,10 @@ namespace Presentation_Layer.Controllers
         {
             var examModel = await _examService.GetByIdWithDetailsAsync(examId);
             var viewModel = _mapper.Map<UserExamAttemptViewModel>(examModel);
+
+            // TODO: Move to Business Logic
+            var currentUser = await _accountService.GetUserAsync(User);
+            viewModel.Exam.CurrentUserAttmptNumber = viewModel.Exam.UserExamAttempts.Count(x => x.User.Id == currentUser.Id);
             return View(viewModel);
         }
 

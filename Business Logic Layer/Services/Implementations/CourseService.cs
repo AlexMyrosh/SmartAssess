@@ -140,5 +140,13 @@ namespace Business_Logic_Layer.Services.Implementations
             await _unitOfWork.SaveAsync();
             return model.Id;
         }
+
+        public async Task<IEnumerable<CourseModel>> GetAllWithTakenUserExamsAsync(ClaimsPrincipal userPrincipal, bool includeDeleted = false)
+        {
+            var userId = _accountService.GetUserId(userPrincipal);
+            var courseEntities = await _unitOfWork.CourseRepository.GetAllByFilterAsync(course => course.Exams.Any(exam => exam.UserExamAttempts.Any(userAttempt => userAttempt.UserId == userId)));
+            var courseModels = _mapper.Map<IEnumerable<CourseModel>>(courseEntities);
+            return courseModels;
+        }
     }
 }

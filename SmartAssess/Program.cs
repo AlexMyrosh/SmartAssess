@@ -39,9 +39,8 @@ namespace Presentation_Layer
             if (!app.Environment.IsDevelopment())
             {
                 app.UseHsts();
+                app.UseStatusCodePagesWithReExecute("/Error/{0}");
             }
-
-            app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
@@ -136,11 +135,11 @@ namespace Presentation_Layer
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            services.AddScoped<ErrorHandlingFilter>();
+            //services.AddScoped<ErrorHandlingFilter>();
 
             services.AddControllersWithViews(options =>
             {
-                options.Filters.AddService(typeof(ErrorHandlingFilter));
+                //options.Filters.AddService(typeof(ErrorHandlingFilter));
             }).AddFluentValidation();
             services.AddRazorPages();
         }

@@ -37,17 +37,20 @@ namespace Presentation_Layer.AutoMapperProfiles
                  }).ToList()));
 
             CreateMap<UserExamAttemptModel, UserExamAttemptViewModel>()
-                .ForMember(dest => dest.UserAnswers, opt => opt.MapFrom(src => src.UserAnswers.Select(ua => new UserAnswerViewModel
-                {
-                    Id = ua.Id,
-                    AnswerText = ua.AnswerText,
-                    Grade = ua.Grade,
-                    Feedback = ua.Feedback,
-                    Question = new ExamQuestionViewModel
+                .ForMember(dest => dest.UserAnswers, opt => opt.MapFrom(src => src.UserAnswers.Select(ua =>
+                    new UserAnswerViewModel
                     {
-                        QuestionText = ua.Question.QuestionText
-                    }
-                })));
+                        Id = ua.Id,
+                        AnswerText = ua.AnswerText,
+                        Grade = ua.Grade,
+                        Feedback = ua.Feedback,
+                        Question = new ExamQuestionViewModel
+                        {
+                            QuestionText = ua.Question.QuestionText,
+                            MaxGrade = ua.Question.MaxGrade
+                        }
+                    })))
+                .ForMember(dest => dest.TotalGrade, opt => opt.MapFrom(src => src.UserAnswers.Sum(x => x.Grade)));
         }
     }
 }

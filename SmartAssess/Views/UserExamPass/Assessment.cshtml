@@ -1,68 +1,181 @@
 ﻿@model UserExamAttemptViewModel
+@{
+    ViewData["Title"] = Model.Exam.Name;
+}
 
-<h2>Exam</h2>
-<hr />
-<dl class="row">
-    <dt class = "col-sm-2">
-        @Html.DisplayNameFor(model => model.Exam.Name)
-    </dt>
-    <dd class = "col-sm-10">
-        @Html.DisplayFor(model => model.Exam.Name)
-    </dd>
-    <dt class = "col-sm-2">
-        @Html.DisplayNameFor(model => model.Exam.Description)
-    </dt>
-    <dd class = "col-sm-10">
-        @Html.DisplayFor(model => model.Exam.Description)
-    </dd>
-    <dt class = "col-sm-2">
-        @Html.DisplayNameFor(model => model.Exam.MaxAttemptsAllowed)
-    </dt>
-    <dd class = "col-sm-10">
-        @Html.DisplayFor(model => model.Exam.MaxAttemptsAllowed)
-    </dd>
-    <dt class = "col-sm-2">
-        @Html.DisplayNameFor(model => model.Exam.ExamDuration)
-    </dt>
-    <dd class = "col-sm-10">
-        <div id="countdown"></div>
-    </dd>
-</dl>
+<form asp-controller="UserExamPass" asp-action="Assessment">
+    <div class="my-container">
+        <div class="row h-100 g-3">
+            <!-- Left Block: Pagination -->
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Exam info</h4>
+                        <p><strong>Course:</strong> @Model.Exam.Course.Name</p>
+                        <p><strong>Exam:</strong> @Model.Exam.Name</p>
+                        <p><strong>Description:</strong> @Model.Exam.Description</p>
+                        <p><strong>Attempt:</strong> @(Model.Exam.CurrentUserAttmptNumber + 1) of @Model.Exam.MaxAttemptsAllowed</p>
+                        <p><strong>Threshold score:</strong> @Model.Exam.MinimumPassGrade</p>
+                        <p><strong>Max score:</strong> @Model.Exam.Questions.Sum(q=>q.MaxGrade)</p>
+                        <p><strong>Time Remaining:</strong> <span id="countdown-timer"></span></p>
+                        <p><strong>Questions:</strong></p>
+                        <div class="container d-flex">
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination" id="pagination-nav">
+                                    @for (int i = 0; i < Model.UserAnswers.Count; i++) {
+                                        <li class="page-item me-2" data-page="@i">
+                                            <a class="page-link" href="javascript:void(0);" onclick="showQuestion(@i)">
+                                                @(i + 1)
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </nav>
+                        </div>
+                        <div class="container d-flex align-items-center justify-content-center">
+                            <div>
+                                @Html.HiddenFor(model=>model.Exam.Id)
+                                <button id="submitExamButton" class="btn btn-success">Submit exam</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-<form method="post" asp-controller="UserExamPass" asp-action="Assessment">
-    @for (var i = 0; i < Model.UserAnswers.Count; i++)
-    {
-        <h5>@Model.UserAnswers[i].Question.QuestionText</h5>
-        <textarea asp-for="UserAnswers[i].AnswerText" class="form-control"></textarea>
-        <span asp-validation-for="UserAnswers[i].AnswerText" class="text-danger"></span>
-        @Html.HiddenFor(model => model.UserAnswers[i].Question.Id)
-    }
+            <div class="col-8">
+                <div class="card">
+                    <div class="card-body question active" id="question-0">
+                        <h5 class="card-title">Question 1</h5>
+                        <p class="card-text">@Model.UserAnswers[0].Question.QuestionText</p>
+                        <p><strong>Max grade for this question:</strong> @Model.UserAnswers[0].Question.MaxGrade</p>
+                        @Html.HiddenFor(model => Model.UserAnswers[0].Question.Id)
+                        <textarea asp-for="UserAnswers[0].AnswerText" class="form-control" style="flex-grow: 1; margin-top: 10px;" placeholder="Enter your answer here..."></textarea>
+                    </div>
 
-    @Html.HiddenFor(model => model.Exam.Id)
-    <br/>
-    <button id="completeExamButton" type="submit" class="btn btn-outline-success">Submit</button>
-    <a asp-action="Index" asp-controller="Exam" class="btn btn-outline-warning">Back to List</a>
+                    @for (var i = 1; i < Model.UserAnswers.Count; i++)
+                    {
+                        <div class="card-body question" id="question-@i">
+                            <h5 class="card-title">Question @(i + 1)</h5>
+                            <p class="card-text">@Model.UserAnswers[i].Question.QuestionText</p>
+                            <p><strong>Max grade for this question:</strong> @Model.UserAnswers[i].Question.MaxGrade</p>
+                            @Html.HiddenFor(model => Model.UserAnswers[i].Question.Id)
+                            <textarea asp-for="UserAnswers[i].AnswerText" class="form-control" style="flex-grow: 1; margin-top: 10px;" placeholder="Enter your answer here..."></textarea>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
 </form>
 
-@section Scripts {
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialize the countdown timer:
+        var duration = '@Model.Exam.ExamDuration';
+        var timeParts = duration.split(':');
+        var examDurationInSeconds = (+timeParts[0]) * 3600 + (+timeParts[1]) * 60 + (+timeParts[2]);
 
-    <script>
-        var duration = @Model.Exam.ExamDuration.Value.TotalSeconds; // get duration in seconds.
-        var timerId = setInterval(countdown, 1000);
+        var countdownElement = document.getElementById('countdown-timer');
+        startTimer(examDurationInSeconds, countdownElement);
+    });
 
-        function countdown() {
-            if (duration < 0) {
-                clearInterval(timerId);
-                document.getElementById('completeExamButton').click();
-            } else {
-                var hours = Math.floor(duration / 3600),
-                    minutes = Math.floor((duration % 3600) / 60),
-                    seconds = Math.floor(duration % 60);
+    function startTimer(duration, display) {
+        var timer = duration, hours, minutes, seconds;
+        var endTimer = setInterval(function () {
+            hours = parseInt(timer / 3600, 10);
+            minutes = parseInt((timer % 3600) / 60, 10);
+            seconds = parseInt(timer % 60, 10);
 
-                document.getElementById('countdown').innerHTML = `${hours}:${minutes}:${seconds}`;
-                duration--;
+            hours = hours < 10 ? "0" + hours : hours;
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            display.textContent = hours + ":" + minutes + ":" + seconds;
+
+            if (--timer < 0) {
+                clearInterval(endTimer);
+                $("#submitExamButton").click();
             }
-        }
-    </script>
+        }, 1000);
+    }
+</script>
 
-}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialize to show the first question
+        showQuestion(0);
+    });
+
+    function showQuestion(currentPage) {
+        let allPageItems = document.querySelectorAll('#pagination-nav .page-item');
+        let allQuestions = document.querySelectorAll(".question");
+
+        // Update the active class on pagination items
+        allPageItems.forEach((item, index) => {
+            if (index === currentPage) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+
+        // Display the corresponding question
+        allQuestions.forEach(question => {
+            if (question.id === `question-${currentPage}`) {
+                question.classList.add('active');
+            } else {
+                question.classList.remove('active');
+            }
+        });
+    }
+</script>
+
+<style>
+    .card {
+        height: 100%;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .my-container {
+        padding: 20px;
+        /* height: calc(100vh - 129px); */
+    }
+
+    #answer-textarea {
+        flex-grow: 1; /* Grow to take up all available space */
+        margin-top: 10px; /* Adjust based on design */
+        resize: none; /* Optional: Prevent manual resizing */
+    }
+
+    .question {
+        display: none;
+        flex-direction: column;
+    }
+
+    .question.active {
+        display: flex;
+    }
+
+    .pagination {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center; /* This centers the pagination items */
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .page-link {
+        padding: 5px 10px;
+        text-decoration: none;
+        color: #007bff;
+        border: 1px solid #dee2e6;
+        background-color: #fff;
+        cursor: pointer;
+    }
+
+    .page-item.active .page-link {
+        color: #fff;
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+</style>

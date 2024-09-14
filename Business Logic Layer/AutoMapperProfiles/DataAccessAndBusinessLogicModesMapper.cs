@@ -33,10 +33,7 @@ namespace Business_Logic_Layer.AutoMapperProfiles
                 .ForMember(dest => dest.Course, opt => opt.Ignore());
 
             CreateMap<ExamEntity, ExamModel>()
-                .ForMember(dest => dest.ExamDuration,
-                    opt => opt.MapFrom(src => DateTime.Now + src.ExamDuration > src.ExamEndDateTime
-                        ? src.ExamEndDateTime - DateTime.Now
-                        : src.ExamDuration));
+                .ForMember(dest => dest.ExamDuration, opt => opt.MapFrom(src => src.ExamDuration));
         }
     }
 }

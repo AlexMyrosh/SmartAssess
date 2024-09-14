@@ -16,6 +16,14 @@ namespace Data_Access_Layer.Models
         public bool IsDeleted { get; set; }
 
         [Required]
+        [DefaultValue(false)]
+        public bool IsExamAssessed { get; set; }
+
+        [Required]
+        [DefaultValue(false)]
+        public bool IsAssessedByAi { get; set; }
+
+        [Required]
         public string UserId { get; set; }
         public virtual UserEntity User { get; set; }
 

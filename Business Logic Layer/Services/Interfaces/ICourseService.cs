@@ -9,6 +9,8 @@ namespace Business_Logic_Layer.Services.Interfaces
 
         Task<IEnumerable<CourseModel>> GetAllWithDetailsAsync(bool includeDeleted = false);
 
+        Task<IEnumerable<CourseModel>> GetAllWithTakenUserExamsAsync(ClaimsPrincipal userPrincipal, bool includeDeleted = false);
+
         Task<CourseModel?> GetByIdAsync(Guid id);
 
         Task<CourseModel?> GetByIdWithDetailsAsync(Guid id);

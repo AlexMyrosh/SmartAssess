@@ -30,6 +30,25 @@ namespace Data_Access_Layer.Repositories.Implementations
             return courseEntities;
         }
 
+        public async Task<IEnumerable<CourseEntity>> GetAllByFilterAsync(Expression<Func<CourseEntity, bool>> filter, bool includeDeleted = false)
+        {
+            var courseEntities = await _sqlContext
+                .Courses
+                .Where(course => course.IsDeleted == false || course.IsDeleted == includeDeleted)
+                .Where(filter)
+                .Include(course => course.Exams)
+                .ThenInclude(exam => exam.UserExamAttempts)
+                .ThenInclude(attempt => attempt.User)
+                .Include(course => course.Exams)
+                .ThenInclude(exam => exam.Questions)
+                .Include(course => course.Exams)
+                .ThenInclude(exam => exam.UserExamAttempts)
+                .ThenInclude(attempt => attempt.UserAnswers)
+                .ToListAsync();
+
+            return courseEntities;
+        }
+
         public async Task<PaginationCourseEntity> GetAllByFilterWithPaginationAsync(Expression<Func<CourseEntity, bool>> filter, int pageSize, int pageNumber = 1, bool includeDeleted = false)
         {
             var query = _sqlContext.Courses

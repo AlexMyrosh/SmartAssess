@@ -57,7 +57,7 @@ namespace Business_Logic_Layer.Services.Implementations
             var overallFeedbackResponse = overallFeedbackOpenAiResponse.Value.Choices[0].Message.Content;
             var overallFeedback = ExtractFeedbackFromAiResponse(overallFeedbackResponse);
             userExamAttemptModel.Feedback = overallFeedback;
-            await _userExamPassService.UpdateAsync(userExamAttemptModel);
+            await _userExamPassService.UpdateAsync(userExamAttemptModel, true);
         }
 
         private int ExtractGradeFromAiResponse(string response)
