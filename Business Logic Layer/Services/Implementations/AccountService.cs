@@ -63,16 +63,6 @@ namespace Business_Logic_Layer.Services.Implementations
             return identityResult;
         }
 
-        public async Task UpdateLastLoginDateAsync(ClaimsPrincipal userPrincipal)
-        {
-            var userId = _userManager.GetUserId(userPrincipal);
-            await UpdateAsync(new UserModel
-            {
-                Id = userId,
-                LastLogInDateTime = DateTime.Now
-            });
-        }
-
         public async Task<bool> ResetPasswordEmailAsync(string email, string callbackUrl)
         {
             var user = await _userManager.FindByEmailAsync(email);
@@ -127,6 +117,23 @@ namespace Business_Logic_Layer.Services.Implementations
             }
 
             var result = await _userManager.ResetPasswordAsync(user, code, newPassword);
+            return result;
+        }
+
+        public async Task<bool> VerifyUserTokenAsync(string email, string token)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user is null)
+            {
+                return false;
+            }
+
+            var result = await _userManager.VerifyUserTokenAsync(
+                user, 
+                _userManager.Options.Tokens.PasswordResetTokenProvider,
+                "ResetPassword", 
+                token);
+
             return result;
         }
 

@@ -10,8 +10,6 @@
 
         public string? Email { get; set; }
 
-        public string? PhoneNumber { get; set; }
-
         public string? Country { get; set; }
 
         public string? City { get; set; }
@@ -22,10 +20,8 @@
 
         public string? ImagePath { get; set; }
 
-        public DateTime? LastLogInDateTime { get; set; }
-
         public IEnumerable<string> Roles { get; set; }
 
-        public IEnumerable<CourseViewModel> Courses { get; set; }
+        public List<CourseViewModel> Courses { get; set; }
     }
 }

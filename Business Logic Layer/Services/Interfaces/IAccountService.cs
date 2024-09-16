@@ -16,8 +16,6 @@ namespace Business_Logic_Layer.Services.Interfaces
 
         Task<IdentityResult?> UpdateAsync(UserModel user);
 
-        Task UpdateLastLoginDateAsync(ClaimsPrincipal userPrincipal);
-
         Task<bool> ResetPasswordEmailAsync(string email, string callbackUrl);
 
         Task ResetEmailAsync(string email, string callbackUrl);
@@ -45,5 +43,7 @@ namespace Business_Logic_Layer.Services.Interfaces
         Task<IdentityResult> ChangePasswordAsync(string userId, string currentPassword, string newPassword);
 
         string GetUserId(ClaimsPrincipal claimsPrincipal);
+
+        Task<bool> VerifyUserTokenAsync(string email, string token);
     }
 }

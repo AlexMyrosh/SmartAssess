@@ -100,8 +100,11 @@ namespace Data_Access_Layer.Repositories.Implementations
 
         public async Task<CourseEntity?> GetByIdWithDetailsAsync(Guid id)
         {
+            var currentDateTime = DateTimeOffset.UtcNow;
+
             var courseEntity = await _sqlContext.Courses
-                .Include(course => course.Exams)
+                .Include(course => course.Exams
+                    .Where(exam => exam.ExamStartDateTime <= currentDateTime && exam.ExamEndDateTime >= currentDateTime)) // Filter relevant exams
                 .ThenInclude(exam => exam.UserExamAttempts)
                 .ThenInclude(attempt => attempt.User)
                 .Include(course => course.Users)
@@ -109,6 +112,7 @@ namespace Data_Access_Layer.Repositories.Implementations
 
             return courseEntity;
         }
+
 
         public async Task<bool> HardDeleteAsync(Guid id)
         {

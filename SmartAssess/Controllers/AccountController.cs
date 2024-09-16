@@ -13,15 +13,13 @@ namespace Presentation_Layer.Controllers
     {
         private readonly SignInManager<UserEntity> _signInManager;
         private readonly IAccountService _accountService;
-        private readonly IPhoneMessageSender _phoneMessageSender;
         private readonly IMapper _mapper;
 
-        public AccountController(IAccountService accountService, SignInManager<UserEntity> signInManager, IPhoneMessageSender phoneMessageSender, IMapper mapper)
+        public AccountController(IAccountService accountService, SignInManager<UserEntity> signInManager, IMapper mapper)
         {
             _signInManager = signInManager;
             _mapper = mapper;
             _accountService = accountService;
-            _phoneMessageSender = phoneMessageSender;
         }
 
         [HttpGet]
@@ -70,7 +68,6 @@ namespace Presentation_Layer.Controllers
                 var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, false);
                 if (result.Succeeded)
                 {
-                    await _accountService.UpdateLastLoginDateAsync(User);
                     return RedirectToAction("Index", "Home");
                 }
 
@@ -234,8 +231,13 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpGet]
-        public IActionResult ResetPassword(string userEmail, string code)
+        public async Task<IActionResult> ResetPassword(string userEmail, string code)
         {
+            if (!await _accountService.VerifyUserTokenAsync(userEmail, code))
+            {
+                return RedirectToAction("Error404", "Error");
+            }
+
             var viewModel = new ResetPasswordViewModel
             {
                 Email = userEmail,
@@ -360,26 +362,6 @@ namespace Presentation_Layer.Controllers
 
             TempData["SuccessNotification"] = $"Email confirmed and updated to {email}";
             return RedirectToAction("Details");
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> SendVerificationCode(string phoneNumber)
-        {
-            if (string.IsNullOrWhiteSpace(phoneNumber))
-            {
-                return Json(new { success = false, message = "Enter phone number" });
-            }
-
-            // Generate a verification code
-            var verificationCode = _phoneMessageSender.GenerateVerificationCode();
-            //await _phoneMessageSender.SendSmsAsync(phoneNumber, verificationCode);
-
-            // Store the code and phone number in the session or database
-            //HttpContext.Session.SetString("VerificationCode", verificationCode);
-            //HttpContext.Session.SetString("PhoneNumber", phoneNumber);
-
-            // Redirect to the confirmation page
-            return Json(new { success = true, message = "Confirmation code was send" });
         }
 
         [HttpPost]

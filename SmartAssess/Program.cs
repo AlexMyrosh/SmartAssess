@@ -84,20 +84,19 @@ namespace Presentation_Layer
 
                 // Lockout settings
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
-                options.Lockout.MaxFailedAccessAttempts = 10;
+                options.Lockout.MaxFailedAccessAttempts = 3;
 
                 // User settings
                 options.User.RequireUniqueEmail = true;
 
                 // Add this to enable password reset
-                options.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultEmailProvider;
-                options.Tokens.EmailConfirmationTokenProvider = "Default";
+                options.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultProvider;
             })
                 .AddEntityFrameworkStores<SqlContext>()
                 .AddDefaultTokenProviders();
 
             services.Configure<DataProtectionTokenProviderOptions>(opt =>
-                opt.TokenLifespan = TimeSpan.FromHours(3));
+                opt.TokenLifespan = TimeSpan.FromMinutes(15));
 
             services.AddSingleton(new MapperConfiguration(mc =>
             {
@@ -107,7 +106,6 @@ namespace Presentation_Layer
 
             services.Configure<OpenAiConfig>(configuration.GetSection("OpenAiConfig"));
             services.Configure<EmailConfig>(configuration.GetSection("EmailSettings"));
-            services.Configure<CommunicationServiceConfig>(configuration.GetSection("CommunicationServiceSettings"));
 
             services.AddScoped<IValidator<ExamQuestionViewModel>, ExamQuestionViewModelValidator>();
             services.AddScoped<IValidator<ExamViewModel>, ExamViewModelValidator>();
@@ -126,7 +124,6 @@ namespace Presentation_Layer
             services.AddScoped<IOpenAiService, OpenAiService>();
             services.AddScoped<IEmailSender, EmailSender>();
             services.AddScoped<ICourseService, CourseService>();
-            services.AddScoped<IPhoneMessageSender, PhoneMessageSender>();
 
             services.AddScoped<IExamRepository, ExamRepository>();
             services.AddScoped<IUserExamPassRepository, UserExamAttemptRepository>();

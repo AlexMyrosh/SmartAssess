@@ -88,10 +88,6 @@
                                             <i class="far fa-envelope display-25 me-3 text-secondary"></i>
                                             <span id="emailText">@Model.Email</span>
                                         </li>
-                                        <li class="mb-3" title="Phone number">
-                                            <i class="fas fa-mobile-alt display-25 me-3 text-secondary"></i>
-                                            <span id="phoneNumberText">@Model.PhoneNumber</span>
-                                        </li>
                                         <li id="userLocationInfo" class="mb-3" title="Location">
                                             <i class="fas fa-map-marker-alt display-25 me-3 text-secondary"></i>
                                             <span id="locationText">@Model.City, @Model.Country</span>
@@ -99,10 +95,6 @@
                                         <li id="EducationInstitution" class="mb-3" title="Educational institution">
                                             <i class="fas fa-university display-25 me-3 text-secondary"></i>
                                             <span id="educationalInstitutionText">@Model.EducationalInstitution</span>
-                                        </li>
-                                        <li title="Last login">
-                                            <i class="fas fa-clock display-25 me-3 text-secondary"></i>
-                                            <span id="lastLogInDateTimeText">@Model.LastLogInDateTime</span>
                                         </li>
                                     </div>
                                     <div class="col-1">
@@ -118,7 +110,6 @@
                         <ul class="list-unstyled mb-4">
                             <div class="mb-1 wow fadeIn">
                                 <li class="mb-3" title="Email"><i class="far fa-envelope display-25 me-3 text-secondary"></i>@Model.Email</li>
-                                <li class="mb-3" title="Phone number"><i class="fas fa-mobile-alt display-25 me-3 text-secondary"></i>@Model.PhoneNumber</li>
 
                                 <li class="mb-3" title="Location">
                                     <div class="row">
@@ -151,7 +142,6 @@
                                         </div>
                                     </div>
                                 </li>
-                                <li class=" mb-3" title="Last login"><i class="fas fa-clock display-25 me-3 text-secondary"></i>@Model.LastLogInDateTime</li>
                                 <button id="saveUserInfoButton" class="btn btn-success">Save</button>
                                 <button id="cancelUserInfoButton" class="btn btn-warning">Cancel</button>
                             </div>
@@ -160,10 +150,6 @@
                     <div>
                         <button type="button" class="link-button" data-bs-toggle="modal" data-bs-target="#passwordChangeModal">
                             Change password
-                        </button>
-                        <br />
-                        <button type="button" class="link-button" data-bs-toggle="modal" data-bs-target="#phoneNumberChangeModal">
-                            Change phone number
                         </button>
                         <br />
                         <button type="button" class="link-button" data-bs-toggle="modal" data-bs-target="#emailChangeModal">
@@ -197,18 +183,33 @@
                     <div class="text-start mb-1-6 wow fadeIn">
                         <h2 class="mb-0 text-primary">#Applied courses</h2>
                     </div>
-                    <div class="row mt-n4">
-                        @foreach (var course in Model.Courses)
+                    <div class="row mt-n4" style="width: 98%">
+                        @for(var i = 0; i < Model.Courses.Count; i++)
                         {
                             <div class="col-sm-6 col-xl-4 mt-4">
                                 <div class="card text-center border-0 rounded-3">
                                     <div class="card-body">
                                         <i class="ti-bookmark-alt icon-box medium rounded-3 mb-4"></i>
-                                        <h3 class="h5 mb-3">@Html.ActionLink(course.Name, "Details", "Course", new { id = course.Id }, new {style="text-decoration: none; color: black;"})</h3>
-                                        <p class="mb-0">@course.ShortDescription</p>
+                                        <h3 class="h5 mb-3">@Html.ActionLink(Model.Courses[i].Name, "Details", "Course", new { id = Model.Courses[i].Id }, new { style = "text-decoration: none; color: black;" })</h3>
+                                        <p class="mb-0">@Model.Courses[i].ShortDescription</p>
                                     </div>
                                 </div>
                             </div>
+
+                            if (Model.Courses.Count > 6 && i == 4)
+                            {
+                                <div class="col-sm-6 col-xl-4 mt-4">
+                                    <div class="card text-center border-0 rounded-3" style="height: 100%;">
+                                        <div class="card-body d-flex justify-content-center align-items-center" style="height: 100%;">
+                                            <a asp-controller="Course" asp-action="AppliedCourses">
+                                                <h3 class="h5 mb-3">See all courses...</h3>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                break;
+                            }
                         }
                     </div>
                 </div>
@@ -290,68 +291,6 @@
     </div>
 </div>
 
-<!-- Modal for phone number change -->
-<div class="modal fade" id="phoneNumberChangeModal" tabindex="-1" aria-labelledby="phoneNumberChangeModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="phoneNumberChangeModalLabel">Phone number change</h1>
-                <button id="verifyPhoneNumberCloseCrossButton" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div id="phoneNumberContainer">
-                    <div class="form-floating">
-                        <input id="phoneNumberField" type="text" class="form-control" placeholder="Phone number"/>
-                        <label for="phoneNumberField" class="form-label">Phone number</label>
-                    </div>
-                </div>
-
-                <div id="verificationCodeContainer" style="display: none;">
-                    <span class="mobile-text">Enter the code we just sent on <b id="confirmationCodePhoneNumber" class="text-danger"></b></span>
-                    <div class="d-flex flex-row mt-4">
-                        <input type="text" class="form-control me-2 codeConfirmationInputCell" autofocus=""
-                               inputmode="numeric" pattern="[0-9]*" oninput="handleInput(this, 1)" onkeydown="handleKeyDown(event, this, 0)">
-                        <input type="text" class="form-control me-2 codeConfirmationInputCell"
-                               inputmode="numeric" pattern="[0-9]*" oninput="handleInput(this, 2)" onkeydown="handleKeyDown(event, this, 1)">
-                        <input type="text" class="form-control me-2 codeConfirmationInputCell"
-                               inputmode="numeric" pattern="[0-9]*" oninput="handleInput(this, 3)" onkeydown="handleKeyDown(event, this, 2)">
-                        <input type="text" class="form-control me-2 codeConfirmationInputCell"
-                               inputmode="numeric" pattern="[0-9]*" oninput="handleInput(this, 4)" onkeydown="handleKeyDown(event, this, 3)">
-                        <input type="text" class="form-control me-2 codeConfirmationInputCell"
-                               inputmode="numeric" pattern="[0-9]*" oninput="handleInput(this, 5)" onkeydown="handleKeyDown(event, this, 4)">
-                        <input type="text" class="form-control codeConfirmationInputCell"
-                               inputmode="numeric" pattern="[0-9]*" oninput="handleInput(this, 6)" onkeydown="handleKeyDown(event, this, 5)">
-                    </div>
-                    
-                    <div class="text-center mt-4">
-                        <span class="d-block mobile-text">Don't receive the code?</span>
-                        <span id="resend-button" class="font-weight-bold text-danger cursor" style="pointer-events: none; opacity: 0.5;">Resend</span>
-                        <span class="font-weight-bold timer_text">in</span>
-                        <span id="timer" class="font-weight-bold text-danger">10</span>
-                        <span class="font-weight-bold timer_text">seconds</span>
-                    </div>
-                </div>
-                
-                <div id="phoneNumberChangeErrorContainer" style="display: none;">
-                    <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show mt-3" style="margin-bottom: 0">
-                        <i class="bi-exclamation-octagon-fill" style="font-size: 1.5em; line-height: 1;"></i>
-                        <strong class="mx-2">Error!</strong>
-                        <pre id="phoneNumberChangeErrorText" style="margin-bottom: 0; white-space: pre-wrap;"></pre>
-                        <button id="closeErrorsforPhoneNumberChangeButton" type="button" class="btn-close"></button>
-                    </div>
-                </div>
-
-            </div>
-            <div class="modal-footer">
-                <button id="verifyPhoneNumberBackButton" type="button" class="btn btn-secondary" style="display: none;">Back</button>
-                <button id="verifyPhoneNumberCloseButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="display: none;">Close</button>
-                <button id="sendVerificationCodeButton" type="button" class="btn btn-primary">Send Verification Code</button>
-                <button id="confirmVerificationCodeButton" type="button" class="btn btn-primary" style="display: none;">Confirm</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Modal for email change-->
 <div class="modal fade" id="emailChangeModal" tabindex="-1" aria-labelledby="emailChangeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -398,177 +337,6 @@
 </div>
 
 @section Scripts {
-    
-    @* Update phone number logic *@
-    <script>
-        $(function () {
-            var timerIntervalId;
-
-            $('#sendVerificationCodeButton').on('click', function () {
-                var phoneNumberValue = $('#phoneNumberField').val();
-                $.ajax({
-                    url: '@Url.Action("SendVerificationCode", "Account")',
-                    type: 'POST',
-                    data: { phoneNumber: phoneNumberValue },
-                    success: function (response) {
-                        if (response.success) {
-                            $('#phoneNumberContainer').hide();
-                            $('#verificationCodeContainer').show();
-                            $('#confirmationCodePhoneNumber').text(phoneNumberValue);
-                            $('#sendVerificationCodeButton').hide();
-                            $('#confirmVerificationCodeButton').show();
-                            $('#closeErrorsforPhoneNumberChangeButton').click();
-                            $('#verifyPhoneNumberBackButton').show();
-                            startCountdown(9);
-                        } else {
-                            $('#phoneNumberChangeErrorContainer').show();
-                            $('#phoneNumberChangeErrorText').text(response.message);
-                        }
-                    },
-                    error: function (error) {
-                        $('#phoneNumberChangeErrorContainer').show();
-                        $('#phoneNumberChangeErrorText').text(response.message);
-                    }
-                });
-            });
-
-            $('#confirmVerificationCodeButton').on('click', function () {
-                const fields = document.querySelectorAll('.codeConfirmationInputCell');
-                const fullVerificationCode = Array.from(fields).map(field => field.value).join('');
-
-                $.ajax({
-                    url: '@Url.Action("ConfirmVerificationCode", "Account")',
-                    type: 'POST',
-                    data: { userId: '@Model.Id', code: fullVerificationCode },
-                    success: function (response) {
-                        if (response.success) {
-                            $('#verifyPhoneNumberCloseButton').click();
-                            $('#phoneNumberField').val ('');
-                            $('#phoneNumberContainer').show();
-                            $('#verificationCodeContainer').hide();
-                            $('#sendVerificationCodeButton').show();
-                            $('#confirmVerificationCodeButton').hide();
-                            $('.codeConfirmationInputCell').val('');
-                            $('#closeErrorsforPhoneNumberChangeButton').click();
-                            $('#verifyPhoneNumberBackButton').hide();
-                        } else {
-                            $('#phoneNumberChangeErrorContainer').show();
-                            $('#phoneNumberChangeErrorText').text(response.message);
-                        }
-                    },
-                    error: function (error) {
-                        $('#phoneNumberChangeErrorContainer').show();
-                        $('#phoneNumberChangeErrorText').text(response.message);
-                    }
-                });
-            });
-
-            $('#closeErrorsforPhoneNumberChangeButton').on('click', function () {
-                $('#phoneNumberChangeErrorContainer').hide();
-            });
-
-            $('#verifyPhoneNumberCloseButton').on('click', function () {
-                $('#phoneNumberField').val('');
-                $('.codeConfirmationInputCell').val('');
-                $('#phoneNumberContainer').show();
-                $('#verificationCodeContainer').hide();
-                $('#sendVerificationCodeButton').show();
-                $('#confirmVerificationCodeButton').hide();
-                $('#verifyPhoneNumberBackButton').hide();
-                clearInterval(timerIntervalId);
-            });
-
-            $('#verifyPhoneNumberCloseCrossButton').on('click', function () {
-                $('#phoneNumberField').val('');
-                $('.codeConfirmationInputCell').val('');
-                $('#phoneNumberContainer').show();
-                $('#verificationCodeContainer').hide();
-                $('#sendVerificationCodeButton').show();
-                $('#confirmVerificationCodeButton').hide();
-                $('#verifyPhoneNumberBackButton').hide();
-                $('#closeErrorsforPhoneNumberChangeButton').click();
-                clearInterval(timerIntervalId);
-            });
-
-            $('#verifyPhoneNumberBackButton').on('click', function () {
-                $('.codeConfirmationInputCell').val('');
-                $('#phoneNumberContainer').show();
-                $('#verificationCodeContainer').hide();
-                $('#sendVerificationCodeButton').show();
-                $('#confirmVerificationCodeButton').hide();
-                $('#verifyPhoneNumberBackButton').hide();
-                $('#closeErrorsforPhoneNumberChangeButton').click();
-                clearInterval(timerIntervalId);
-            });
-        });
-
-        function startCountdown(seconds) {
-            $('.timer_text').show();
-            $('#timer').show();
-            let counter = seconds;
-
-            timerIntervalId = setInterval(() => {
-                document.getElementById('timer').innerHTML = `${counter}`;
-                counter--;
-
-                if (counter < 0) {
-                    clearInterval(timerIntervalId);
-                    $('.timer_text').hide();;
-                    $('#timer').hide();
-                }
-            }, 1000);
-        }
-
-        function handleInput(currentField, nextFieldIndex) {
-            if (currentField.value.length > 1) {
-                // Allow only the last character if more than one digit is input
-                currentField.value = currentField.value.slice(-1);
-            }
-
-            if (currentField.value.length === 1) {
-                // Move to the next field
-                const nextField = document.querySelectorAll('.codeConfirmationInputCell')[nextFieldIndex];
-                if (nextField) {
-                    nextField.focus();
-                }
-            }
-            // Move to the previous field if the current field is cleared
-            else if (currentField.value.length === 0) {
-                const fields = document.querySelectorAll('.codeConfirmationInputCell');
-                const currentIndex = Array.from(fields).indexOf(currentField);
-                if (currentIndex > 0) {
-                    const prevField = fields[currentIndex - 1];
-                    if (prevField) {
-                        prevField.focus();
-                    }
-                }
-            }
-        }
-
-        function handleKeyDown(event, currentField, index) {
-            const key = event.key;
-            const fields = document.querySelectorAll('.codeConfirmationInputCell');
-
-            if (key === 'ArrowRight') {
-                // Move to the next field if right arrow is pressed
-                if (index < fields.length - 1) {
-                    fields[index + 1].focus();
-                }
-            } else if (key === 'ArrowLeft') {
-                // Move to the previous field if left arrow is pressed
-                if (index > 0) {
-                    fields[index - 1].focus();
-                }
-            } else if (!isDigit(event)) {
-                event.preventDefault();
-            }
-        }
-
-        function isDigit(event) {
-            const key = event.key;
-            return (key >= '0' && key <= '9') || key === 'Backspace' || key === 'ArrowLeft' || key === 'ArrowRight';
-        }
-    </script>
 
     @* Update user email logic *@
     <script>
