@@ -45,6 +45,138 @@
     }
 </style>
 
+<style>
+    .centered {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        text-align: center;
+        color: white;
+    }
+
+    .image-container {
+        width: calc(100% + 24px);
+        position: relative;
+        overflow: hidden;
+        margin-left: -12px;
+        margin-right: -12px;
+        margin-top: -16px;
+    }
+
+        .image-container img {
+            filter: brightness(50%);
+            width: 100vw;
+            height: auto;
+            object-fit: cover;
+        }
+
+    .straddle-button {
+        position: absolute;
+        left: 92%;
+        transform: translateX(-50%);
+        bottom: 5%;
+        padding: 10px 20px;
+        cursor: pointer;
+        font-size: 1.5vw;
+        width: max-content;
+        border-radius: 35px;
+    }
+
+    .order-card {
+        color: #fff;
+    }
+
+    .bg-c-blue {
+        background: linear-gradient(45deg,#4099ff,#73b4ff);
+    }
+
+    .bg-c-green {
+        background: linear-gradient(45deg,#2ed8b6,#59e0c5);
+    }
+
+    .bg-c-yellow {
+        background: linear-gradient(45deg,#FFB64D,#ffcb80);
+    }
+
+    .bg-c-pink {
+        background: linear-gradient(45deg,#FF5370,#ff869a);
+    }
+
+    .bg-c-purple {
+        background: linear-gradient(45deg, #9b59b6, #be90d4);
+    }
+
+    .bg-c-red {
+        background: linear-gradient(45deg, #e74c3c, #f1948a);
+    }
+
+    .bg-c-orange {
+        background: linear-gradient(45deg, #f39c12, #f9c6c9);
+    }
+
+    .bg-c-teal {
+        background: linear-gradient(45deg, #1abc9c, #48c9b0);
+    }
+
+    .bg-c-indigo {
+        background: linear-gradient(45deg, #34495e, #5d6d7e);
+    }
+
+    .bg-c-gray {
+        background: linear-gradient(45deg, #7f8c8d, #bdc3c7);
+    }
+
+    .bg-c-brown {
+        background: linear-gradient(45deg, #8e44ad, #a569bd);
+    }
+
+    .bg-c-cyan {
+        background: linear-gradient(45deg, #00bcd4, #4dd0e1);
+    }
+
+    .card {
+        border-radius: 5px;
+        -webkit-box-shadow: 0 1px 2.94px 0.06px rgba(4,26,55,0.16);
+        box-shadow: 0 1px 2.94px 0.06px rgba(4,26,55,0.16);
+        border: none;
+        margin-bottom: 30px;
+        -webkit-transition: all 0.3s ease-in-out;
+        transition: all 0.3s ease-in-out;
+    }
+
+        .card .card-block {
+            padding: 25px;
+        }
+
+    .order-card i {
+        font-size: 26px;
+    }
+
+    .f-left {
+        float: left;
+    }
+
+    .f-right {
+        float: right;
+    }
+
+    .card {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Center vertically */
+        align-items: center; /* Center horizontally */
+        height: 100%; /* Ensure it takes up full height of the card */
+    }
+</style>
+
 <div class="container-fluid" style="padding: 0;">
     <div class="decor-default">
         <div class="">
@@ -108,15 +240,53 @@
                                 </div>
                                 <div class="card-body" style="padding-bottom:0;">
                                     <p class="card-text">@exam.Description</p>
-                                    <p class="text-center">
-                                        Attempts: @exam.CurrentUserAttmptNumber/@exam.MaxAttemptsAllowed
-                                    </p>
-                                    <p class="text-center">
-                                        Duration: @exam.ExamDuration
-                                    </p>
-                                    <p class="text-center">
-                                        Threshold score : @exam.MinimumPassGrade/@exam.Questions.Sum(q=>q.MaxGrade)
-                                    </p>
+                                    
+                                    <div class="row">
+                                        <div class="col d-flex align-items-stretch">
+                                            <div class="card bg-c-blue order-card flex-fill">
+                                                <div class="card-body" style="padding: 0">
+                                                    <h4 class="m-b-20 text-center"> Attempts</h4>
+                                                    <h5 class="text-center"><span>@exam.CurrentUserAttmptNumber/@exam.MaxAttemptsAllowed</span></h5>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col d-flex align-items-stretch">
+                                            <div class="card bg-c-blue order-card flex-fill">
+                                                <div class="card-body" style="padding: 0">
+                                                    <h4 class="m-b-20 text-center">Threshold score</h4>
+                                                    <h5 class="text-center"><span>@exam.MinimumPassGrade</span></h5>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col d-flex align-items-stretch">
+                                            <div class="card bg-c-blue order-card flex-fill">
+                                                <div class="card-body" style="padding: 0">
+                                                    <h4 class="m-b-20 text-center">Duration</h4>
+                                                    <h5 class="text-center"><span>@exam.ExamDuration</span></h5>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col d-flex align-items-stretch">
+                                            <div class="card bg-c-blue order-card flex-fill">
+                                                <div class="card-body" style="padding: 0">
+                                                    <h4 class="m-b-20 text-center">Start at</h4>
+                                                    <h5 class="text-center"><span>@exam.ExamStartDateTime.Value.DateTime</span></h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col d-flex align-items-stretch">
+                                            <div class="card bg-c-blue order-card flex-fill">
+                                                <div class="card-body" style="padding: 0">
+                                                    <h4 class="m-b-20 text-center">End at</h4>
+                                                    <h5 class="text-center"><span>@exam.ExamEndDateTime.Value.DateTime</span></h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="card-footer text-muted">
                                     @if (exam.CurrentUserAttmptNumber >= exam.MaxAttemptsAllowed)

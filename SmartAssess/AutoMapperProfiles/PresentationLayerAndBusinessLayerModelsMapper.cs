@@ -14,6 +14,7 @@ namespace Presentation_Layer.AutoMapperProfiles
             CreateMap<ExamQuestionViewModel, ExamQuestionModel>().ReverseMap();
             CreateMap<UserAnswerViewModel, UserAnswerModel>().ReverseMap();
             CreateMap<RegisterViewModel, UserEntity>().ReverseMap();
+            CreateMap<RegisterViewModel, UserModel>().ReverseMap();
             CreateMap<LoginViewModel, UserEntity>().ReverseMap();
             CreateMap<UserViewModel, UserEntity>().ReverseMap();
             CreateMap<UserViewModel, UserModel>().ReverseMap();

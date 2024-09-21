@@ -16,18 +16,18 @@ namespace Data_Access_Layer.Models
         public string LastName { get; set; }
 
         [MaxLength(100)]
-        public string Country { get; set; }
+        public string? Country { get; set; }
 
         [MaxLength(100)]
-        public string City { get; set; }
+        public string? City { get; set; }
 
         [MaxLength(100)]
-        public string EducationalInstitution { get; set; }
+        public string? EducationalInstitution { get; set; }
 
         [MaxLength(5000)]
-        public string AboutUser { get; set; }
+        public string? AboutUser { get; set; }
 
-        public string ImagePath { get; set; }
+        public string? ImagePath { get; set; }
 
         public List<UserExamAttemptEntity> UserExamAttempts { get; set; }
 

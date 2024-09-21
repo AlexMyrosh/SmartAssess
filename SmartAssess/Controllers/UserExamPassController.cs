@@ -85,6 +85,11 @@ namespace Presentation_Layer.Controllers
             var examModel = await _examService.GetByIdWithDetailsAsync(examId);
             var viewModel = _mapper.Map<UserExamAttemptViewModel>(examModel);
 
+            if (viewModel.Exam.ExamEndDateTime.Value.UtcDateTime - DateTime.UtcNow < viewModel.Exam.ExamDuration)
+            {
+                viewModel.Exam.ExamDuration = viewModel.Exam.ExamEndDateTime.Value.UtcDateTime - DateTime.UtcNow;
+            }
+
             // TODO: Move to Business Logic
             var currentUser = await _accountService.GetUserAsync(User);
             viewModel.Exam.CurrentUserAttmptNumber = viewModel.Exam.UserExamAttempts.Count(x => x.User.Id == currentUser.Id);

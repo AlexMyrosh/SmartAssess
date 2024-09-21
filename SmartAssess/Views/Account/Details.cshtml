@@ -24,37 +24,102 @@
     .codeConfirmationInputCell {
         -moz-appearance: textfield; /* Firefox */
     }
+
+    .clickable-icon {
+        cursor: pointer;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .clickable-icon:hover {
+        transform: scale(1.2);
+    }
+
+    .image-container {
+        position: relative;
+        cursor: pointer;
+    }
+
+    .image-container img {
+        transition: opacity 0.3s ease-in-out;
+        width: 100%;
+    }
+
+    .image-container .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        font-size: 20px;
+        opacity: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    .drop-zone {
+        width: 100%;
+        height: 200px;
+        border: 2px dashed #007bff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #007bff;
+        cursor: pointer;
+    }
+
+    .image-container:hover img {
+        transition: filter 0.1s ease;
+        filter: brightness(90%);
+    }
+
+    .image-container:hover .overlay {
+        opacity: 1;
+    }
 </style>
 
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-7 col-lg-4 mb-5 mb-lg-0 wow fadeIn pb-4">
             <div class="card border-0 shadow">
-                <form id="uploadForm" asp-action="UpdateImage" method="post" enctype="multipart/form-data">
-                    <div class="image-container" onclick="document.getElementById('fileUpload').click();">
-                        @if (string.IsNullOrWhiteSpace(Model.ImagePath))
-                        {
-                            <img src="@Url.Content("~/images/default-user-photo.png")" alt="Add user image">
-                        }
-                        else
-                        {
-                            <img src="@Url.Content("~/images/" + System.IO.Path.GetFileName(Model.ImagePath))" alt="User Image"/>
-                        }
+                <div class="image-container">
+                    @if (string.IsNullOrWhiteSpace(Model.ImagePath))
+                    {
+                        <img src="@Url.Content("~/images/default-user-photo.png")" alt="Add user image" class="user-photo" id="userPhoto" onclick="enlargePhoto();" />
+                    }
+                    else
+                    {
+                        <img src="@Url.Content("~/images/" + System.IO.Path.GetFileName(Model.ImagePath))" alt="User Image" class="user-photo" id="userPhoto" onclick="enlargePhoto();" />
+                    }
 
-                        <div class="overlay">Update Photo</div>
-                        <input type="hidden" name="userId" value="@Model.Id" />
-                        <input type="file" id="fileUpload" name="file" style="display: none;" onchange="submitForm();"/>
-                    </div>
-                </form>
-                @if (!string.IsNullOrWhiteSpace(Model.ImagePath))
-                {
-                    <form asp-action="RemoveImage" asp-controller="Account" method="post">
-                        <input type="hidden" name="userId" value="@Model.Id" />
-                        <div class="d-grid justify-content-md-end me-2 mt-2" style="margin-bottom: -1rem;">
-                            <button type="submit" class="link-button">Remove Image</button>
+                    <input type="hidden" name="userId" value="@Model.Id" />
+                </div>
+
+                
+                <div class="row">
+                    <div class="col">
+                        <div class="d-grid justify-content-md-start me-2 mt-2" style="margin-bottom: -1rem; margin-left: 8px;">
+                            <button type="button" class="btn btn-outline-primary" onclick="openUploadModal()">Upload New Photo</button>
                         </div>
-                    </form>
-                }
+                    </div>
+                    @if (!string.IsNullOrWhiteSpace(Model.ImagePath))
+                    {
+                        <div class="col">
+                            <form asp-action="RemoveImage" asp-controller="Account" method="post">
+                                <input type="hidden" name="userId" value="@Model.Id" />
+                                <div class="d-grid justify-content-md-end me-2 mt-2" style="margin-bottom: -1rem;">
+                                    <button type="submit" class="btn btn-outline-primary">Remove Image</button>
+                                </div>
+                            </form>
+                        </div>
+                    }
+                </div>
+                
+                
+                
                 <div class="card-body p-1-9" style="padding: 2rem 2rem 1rem 2rem">
                     <div class="mb-4">
                         <div class="mb-1 wow fadeIn">
@@ -218,6 +283,42 @@
     </div>
 </div>
 
+<!-- Modal for Enlarging Photo -->
+<div id="photoModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document" style="max-width: 50%;">
+        <div class="modal-content">
+            <div class="modal-body" style="padding: 0">
+                <img id="enlargedPhoto" src="" alt="Enlarged Photo" style="width: 100%;" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Uploading Photo -->
+<div id="uploadModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Upload New Photo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Drag-and-drop area or select file -->
+                <div id="dropZone" class="drop-zone" onclick="document.getElementById('fileUploadModal').click();">
+                    <p id="dropZoneText" style="margin: 0;">Click to select a photo</p>
+                </div>
+                <!-- Hidden input to pass the userId -->
+                <input type="hidden" id="userId" value="@Model.Id" />
+            </div>
+            <div class="modal-footer" style="display: flex; justify-content: center;">
+                <input type="file" id="fileUploadModal" name="file" style="display: none" onchange="updateDropZone(this)" />
+                <button type="button" class="btn btn-primary" onclick="uploadPhoto()">Upload Photo</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 <!-- Toast Container -->
 <div class="toast-container position-fixed bottom-0 end-0 p-3">
     @if (!string.IsNullOrEmpty(successNotification))
@@ -336,7 +437,99 @@
     </div>
 </div>
 
+
+
 @section Scripts {
+
+    <script>
+        // Store the selected file
+        let selectedFile = null;
+
+        // Update drop zone text and store the file when selected via input or drag-and-drop
+        function updateDropZone(input) {
+            const file = input.files[0];
+            const dropZoneText = document.getElementById('dropZoneText');
+
+            if (file) {
+                selectedFile = file;
+                dropZoneText.textContent = `File selected: ${file.name}`;
+            } else {
+                dropZoneText.textContent = 'Drag and drop a photo here, or click to select a photo';
+            }
+        }
+
+        // Handle file drop and store the file
+        function dropHandler(event) {
+            event.preventDefault();  // Prevent default behavior (e.g., opening the file)
+            const file = event.dataTransfer.files[0];
+            const input = document.getElementById('fileUploadModal');
+            const dropZoneText = document.getElementById('dropZoneText');
+
+            if (file) {
+                selectedFile = file;
+                dropZoneText.textContent = `File selected: ${file.name}`;
+                input.files = event.dataTransfer.files;  // Assign the dropped file to the input (not used here)
+            }
+        }
+
+        // Prevent default dragover behavior
+        function dragOverHandler(event) {
+            event.preventDefault();  // Prevent default to allow drop
+        }
+
+        // Upload photo function that sends the file using Fetch API
+        function uploadPhoto() {
+            const userId = document.getElementById('userId').value;
+
+            if (!selectedFile) {
+                alert('Please select a photo before uploading.');
+                return;
+            }
+
+            // Create a FormData object to send the file
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+            formData.append('userId', userId);
+
+            // Send the request using Fetch API
+            fetch('/Account/UpdateImage', {
+                method: 'POST',
+                body: formData
+            })
+                .then(data => {
+                    location.reload();
+                })
+        }
+    </script>
+
+    <script>
+        function enlargePhoto() {
+            const photoSrc = document.getElementById("userPhoto").src;
+            document.getElementById("enlargedPhoto").src = photoSrc;
+            $('#photoModal').modal('show');
+        }
+
+        function openUploadModal() {
+            $('#uploadModal').modal('show');
+        }
+
+        function submitForm() {
+            // You can add validation here if necessary before submitting the form
+            document.getElementById('uploadForm').submit();
+        }
+
+        function dropHandler(event) {
+            event.preventDefault();
+            const files = event.dataTransfer.files;
+            document.getElementById('fileUploadModal').files = files;
+            submitForm();
+        }
+
+        function dragOverHandler(event) {
+            event.preventDefault();
+        }
+
+    </script>
 
     @* Update user email logic *@
     <script>
@@ -666,49 +859,3 @@
     </script>
 }
 
-<style>
-    .clickable-icon {
-        cursor: pointer;
-        transition: transform 0.3s ease-in-out;
-    }
-
-    .clickable-icon:hover {
-        transform: scale(1.2);
-    }
-</style>
-
-<style>
-    .image-container {
-        position: relative;
-        cursor: pointer;
-    }
-
-    .image-container img {
-        transition: opacity 0.3s ease-in-out;
-        width: 100%;
-    }
-
-    .image-container:hover img {
-        opacity: 0.5;
-    }
-
-    .image-container:hover .overlay {
-        opacity: 1;
-    }
-
-    .image-container .overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
-        color: white;
-        font-size: 20px;
-        opacity: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: opacity 0.3s ease-in-out;
-    }
-</style>
