@@ -63,6 +63,26 @@ namespace Presentation_Layer.Controllers
             return PartialView("PartialViews/_CourseListAndPagination", viewModel);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> AppliedByTeacherCourses()
+        {
+            var paginationCourseModel = await _courseService.GetAllAppliedByTeacherBySearchQueryWithPaginationAsync(User, PageSize);
+            var viewModel = _mapper.Map<PaginationCourseViewModel>(paginationCourseModel);
+            viewModel.PageSize = PageSize;
+            viewModel.PageNumber = 1;
+            return View("AppliedCourses", viewModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> PaginateAppliedByTeacherCourses(int pageNumber = 1, string searchQuery = "")
+        {
+            var paginationCourseModel = await _courseService.GetAllAppliedByTeacherBySearchQueryWithPaginationAsync(User, PageSize, searchQuery, pageNumber);
+            var viewModel = _mapper.Map<PaginationCourseViewModel>(paginationCourseModel);
+            viewModel.PageSize = PageSize;
+            viewModel.PageNumber = pageNumber;
+            return PartialView("PartialViews/_CourseListAndPagination", viewModel);
+        }
+
         [HttpPost]
         public async Task<IActionResult> ApplyForCourse(Guid courseId)
         {
@@ -71,9 +91,23 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> ApplyForCoursesAsTeacher(Guid courseId)
+        {
+            await _courseService.AddTeacherForCourseAsync(User, courseId);
+            return RedirectToAction("Details", new { id = courseId });
+        }
+
+        [HttpPost]
         public async Task<IActionResult> LeaveCourse(Guid courseId)
         {
             await _courseService.RemoveUserFromCourseAsync(User, courseId);
+            return RedirectToAction("Details", new { id = courseId });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LeaveCourseAsTeacher(Guid courseId)
+        {
+            await _courseService.RemoveTeacherFromCourseAsync(User, courseId);
             return RedirectToAction("Details", new { id = courseId });
         }
 
@@ -138,7 +172,21 @@ namespace Presentation_Layer.Controllers
         public async Task<IActionResult> Delete(Guid id)
         {
             await _courseService.SoftDeleteAsync(id);
-            return RedirectToAction("Index");
+            return RedirectToAction("AppliedByTeacherCourses");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateLongDescription(Guid courseId, string longDescription)
+        {
+            await _courseService.UpdateLongDescriptionAsync(courseId, longDescription);
+            return Json(new { success = true });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveUserFromCourse(string userId, Guid courseId)
+        {
+            await _courseService.RemoveUserFromCourseAsync(userId, courseId);
+            return Json(new { success = true });
         }
     }
 }

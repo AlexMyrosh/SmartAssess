@@ -27,5 +27,7 @@ namespace Data_Access_Layer.Models
         public virtual List<ExamEntity> Exams { get; set; }
 
         public virtual List<UserEntity> Users { get; set; }
+
+        public virtual List<UserEntity> Teachers { get; set; }
     }
 }

@@ -32,5 +32,7 @@ namespace Data_Access_Layer.Models
         public List<UserExamAttemptEntity> UserExamAttempts { get; set; }
 
         public List<CourseEntity> Courses { get; set; }
+
+        public virtual List<CourseEntity> TeachingCourses { get; set; }
     }
 }

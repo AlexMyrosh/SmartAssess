@@ -141,12 +141,89 @@ namespace Business_Logic_Layer.Services.Implementations
             return model.Id;
         }
 
+        public async Task<Guid> UpdateLongDescriptionAsync(Guid courseId, string newLongDescription)
+        {
+            var courseEntityFromDb = await _unitOfWork.CourseRepository.GetByIdWithDetailsAsync(courseId);
+            courseEntityFromDb.LongDescription = newLongDescription;
+            await _unitOfWork.SaveAsync();
+            return courseId;
+        }
+
         public async Task<IEnumerable<CourseModel>> GetAllWithTakenUserExamsAsync(ClaimsPrincipal userPrincipal, bool includeDeleted = false)
         {
             var userId = _accountService.GetUserId(userPrincipal);
             var courseEntities = await _unitOfWork.CourseRepository.GetAllByFilterAsync(course => course.Exams.Any(exam => exam.UserExamAttempts.Any(userAttempt => userAttempt.UserId == userId)));
             var courseModels = _mapper.Map<IEnumerable<CourseModel>>(courseEntities);
             return courseModels;
+        }
+
+        public async Task<PaginationCourseModel> GetAllAppliedByTeacherBySearchQueryWithPaginationAsync(ClaimsPrincipal userPrincipal, int pageSize, string searchQuery = "", int pageNumber = 1, bool includeDeleted = false)
+        {
+            var userModel = await _accountService.GetUserAsync(userPrincipal);
+            if (userModel is null)
+            {
+                throw new ArgumentException("Unable to get user by ClaimsPrincipal", nameof(userPrincipal));
+            }
+
+            var paginationCourseEntity = await _unitOfWork.CourseRepository.GetAllByFilterWithPaginationAsync(
+                course => course.Name.Contains(searchQuery) && course.Teachers.Any(user => user.Id == userModel.Id),
+                pageSize,
+                pageNumber,
+                includeDeleted);
+
+            var paginationCourseModel = _mapper.Map<PaginationCourseModel>(paginationCourseEntity);
+            return paginationCourseModel;
+        }
+
+        public async Task AddTeacherForCourseAsync(ClaimsPrincipal userPrincipal, Guid courseId)
+        {
+            var userId = _accountService.GetUserId(userPrincipal);
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return;
+            }
+
+            var courseModel = await _unitOfWork.CourseRepository.GetByIdWithDetailsAsync(courseId);
+            if (courseModel is null)
+            {
+                return;
+            }
+
+            var userEntity = await _unitOfWork.UserRepository.GetByIdAsync(userId);
+            courseModel.Teachers.Add(userEntity);
+            await _unitOfWork.SaveAsync();
+        }
+
+        public async Task RemoveTeacherFromCourseAsync(ClaimsPrincipal userPrincipal, Guid courseId)
+        {
+            var userId = _accountService.GetUserId(userPrincipal);
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return;
+            }
+
+            var courseModel = await _unitOfWork.CourseRepository.GetByIdWithDetailsAsync(courseId);
+            if (courseModel is null)
+            {
+                return;
+            }
+
+            var userEntity = await _unitOfWork.UserRepository.GetByIdAsync(userId);
+            courseModel.Teachers.Remove(userEntity);
+            await _unitOfWork.SaveAsync();
+        }
+
+        public async Task RemoveUserFromCourseAsync(string userId, Guid courseId)
+        {
+            var courseModel = await _unitOfWork.CourseRepository.GetByIdWithDetailsAsync(courseId);
+            if (courseModel is null)
+            {
+                return;
+            }
+
+            var userEntity = await _unitOfWork.UserRepository.GetByIdAsync(userId);
+            courseModel.Users.Remove(userEntity);
+            await _unitOfWork.SaveAsync();
         }
     }
 }

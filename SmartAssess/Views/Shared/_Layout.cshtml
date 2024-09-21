@@ -46,10 +46,13 @@
                         @if (User.IsInRole(Data_Access_Layer.Roles.Roles.Teacher))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Exam" asp-action="Index">Exams</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="AppliedByTeacherCourses">My courses</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="UserExamPass" asp-action="Index">Passed exams</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="Index">All courses</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Trash" asp-action="Index">Trash</a>
                             </li>
                         }
                     </ul>

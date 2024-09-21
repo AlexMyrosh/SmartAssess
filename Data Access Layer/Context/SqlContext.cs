@@ -69,6 +69,11 @@ namespace Data_Access_Layer.Context
                 .HasMany(c => c.Users)
                 .WithMany(u => u.Courses)
                 .UsingEntity(j => j.ToTable("CourseUsers"));
+
+            modelBuilder.Entity<CourseEntity>()
+                .HasMany(c => c.Teachers)
+                .WithMany(t => t.TeachingCourses)
+                .UsingEntity(j => j.ToTable("CourseTeachers"));
         }
     }
 }

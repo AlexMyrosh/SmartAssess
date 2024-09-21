@@ -13,5 +13,7 @@
         public List<ExamModel> Exams { get; set; }
 
         public List<UserModel> Users { get; set; }
+
+        public List<UserModel> Teachers { get; set; }
     }
 }

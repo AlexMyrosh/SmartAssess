@@ -1,0 +1,65 @@
+﻿@model IEnumerable<Presentation_Layer.ViewModels.UserExamAttemptViewModel>
+
+@{
+    ViewData["Title"] = "ExamStatistic";
+}
+
+<h1>ExamStatistic</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Feedback)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsExamAssessed)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsAssessedByAi)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsDeleted)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalGrade)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Feedback)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsExamAssessed)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsAssessedByAi)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsDeleted)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalGrade)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

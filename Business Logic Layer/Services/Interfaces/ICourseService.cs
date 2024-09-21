@@ -27,8 +27,18 @@ namespace Business_Logic_Layer.Services.Interfaces
 
         Task<PaginationCourseModel> GetAllBySearchQueryWithPaginationAsync(int pageSize, string searchQuery = "", int pageNumber = 1, bool includeDeleted = false);
 
+        Task<PaginationCourseModel> GetAllAppliedByTeacherBySearchQueryWithPaginationAsync(ClaimsPrincipal userPrincipal, int pageSize, string searchQuery = "", int pageNumber = 1, bool includeDeleted = false);
+
         Task AddUserForCourseAsync(ClaimsPrincipal userPrincipal, Guid courseId);
 
+        Task AddTeacherForCourseAsync(ClaimsPrincipal userPrincipal, Guid courseId);
+        
         Task RemoveUserFromCourseAsync(ClaimsPrincipal userPrincipal, Guid courseId);
+
+        Task RemoveTeacherFromCourseAsync(ClaimsPrincipal userPrincipal, Guid courseId);
+
+        Task<Guid> UpdateLongDescriptionAsync(Guid courseId, string newLongDescription);
+
+        Task RemoveUserFromCourseAsync(string userId, Guid courseId);
     }
 }

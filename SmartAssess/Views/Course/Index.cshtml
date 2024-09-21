@@ -4,13 +4,6 @@
     ViewData["Title"] = "All courses";
 }
 
-@if (User.IsInRole(Data_Access_Layer.Roles.Roles.Teacher) || User.IsInRole(Data_Access_Layer.Roles.Roles.Admin))
-{
-    <p>
-        <a asp-action="Create" class="btn btn-outline-primary">Create New</a>
-    </p>
-}
-
 <div class="container-fluid custom-container" style="width: 90%;">
     <h1 class="text-center"> All courses</h1>
     @if (Model.Items.Any())
