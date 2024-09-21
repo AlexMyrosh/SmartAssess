@@ -51,6 +51,8 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="Index">All courses</a>
                             </li>
+                        }
+                        @if(User.IsInRole(Data_Access_Layer.Roles.Roles.Admin)){
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Trash" asp-action="Index">Trash</a>
                             </li>
