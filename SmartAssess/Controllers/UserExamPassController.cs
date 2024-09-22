@@ -72,8 +72,8 @@ namespace Presentation_Layer.Controllers
             if (ModelState.IsValid)
             {
                 var model = _mapper.Map<UserExamAttemptModel>(viewModel);
-                var updateEntityId = await _userExamPassService.UpdateAsync(model, true);
-                return RedirectToAction("Details", new { id = updateEntityId });
+                await _userExamPassService.UpdateAsync(model, true);
+                return RedirectToAction("UsersAnswers", "Exam", new { id = viewModel.Exam.Id });
             }
 
             return View(viewModel);
