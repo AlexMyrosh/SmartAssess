@@ -57,6 +57,7 @@ namespace Business_Logic_Layer.Services.Implementations
             var overallFeedbackResponse = overallFeedbackOpenAiResponse.Value.Choices[0].Message.Content;
             var overallFeedback = ExtractFeedbackFromAiResponse(overallFeedbackResponse);
             userExamAttemptModel.Feedback = overallFeedback;
+            userExamAttemptModel.IsAssessedByAi = true;
             await _userExamPassService.UpdateAsync(userExamAttemptModel, true);
         }
 

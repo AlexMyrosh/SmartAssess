@@ -1,65 +1,289 @@
-﻿@model IEnumerable<Presentation_Layer.ViewModels.UserExamAttemptViewModel>
+﻿@model List<Presentation_Layer.ViewModels.UserExamAttemptViewModel>
 
 @{
     ViewData["Title"] = "UsersAnswers";
 }
 
-<h1>UsersAnswers</h1>
+<style>
+    .passed {
+        color: green;
+        background-color: rgba(185, 255, 218, 0.4);
+        padding: 6px;
+        border-radius: 2px;
+        -webkit-border-radius: 2px;
+        -moz-border-radius: 2px;
+        -ms-border-radius: 2px;
+        -o-border-radius: 2px;
+    }
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Feedback)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsExamAssessed)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsAssessedByAi)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsDeleted)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalGrade)
-            </th>
-            <th></th>
+    .failed {
+        color: red;
+        background-color: rgba(241, 172, 172, 0.25);
+        padding: 6px;
+        border-radius: 2px;
+        -webkit-border-radius: 2px;
+        -moz-border-radius: 2px;
+        -ms-border-radius: 2px;
+        -o-border-radius: 2px;
+    }
+
+    .not-assessed{
+        color: gray;
+        background-color: rgba(200, 200, 200, 0.4);
+        padding: 6px;
+        border-radius: 2px;
+        -webkit-border-radius: 2px;
+        -moz-border-radius: 2px;
+        -ms-border-radius: 2px;
+        -o-border-radius: 2px;
+    }
+
+    .AI-button{
+        border-radius: 25px;
+        border: 0;
+        background: rgb(2,0,36);
+        background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(138,14,135,1) 0%, rgba(0,212,255,1) 100%);
+        padding: 10px;
+        font-size: 20px;
+        color: white;
+    }
+</style>
+
+
+<div class="d-flex justify-content-between align-items-center">
+    <h1 class="display-4 mx-auto text-center">
+        Users answers for exam "@Model.First().Exam.Name"
+    </h1>
+    <button type="button" class="AI-button">
+        Check all by AI
+    </button>
+</div>
+
+@* Filters *@
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
+    <div class="form-floating flex-grow-1">
+        <input type="text" id="searchInput" name="searchQuery" class="form-control" placeholder="Search by student's name">
+        <label for="searchInput">Search by student's name</label>
+    </div>
+    <div style="display: flex; flex-shrink: 0; gap: 10px;">
+        <div class="dropdown ">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="statusButton">
+                Status - All
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#" onclick="updateButtonText('statusButton', 'Status - All'); filterData();">All</a></li>
+                <li><a class="dropdown-item" href="#" onclick="updateButtonText('statusButton', 'Status - Passed'); filterData();">Passed</a></li>
+                <li><a class="dropdown-item" href="#" onclick="updateButtonText('statusButton', 'Status - Failed'); filterData();">Failed</a></li>
+                <li><a class="dropdown-item" href="#" onclick="updateButtonText('statusButton', 'Status - Not assessed'); filterData();">Not assessed</a></li>
+            </ul>
+        </div>
+        <div class="dropdown ">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="sortByGradeButton">
+                Sort by grade - Default
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#" onclick="updateButtonText('sortByGradeButton', 'Sort by grade - Default'); filterData();">Default</a></li>
+                <li><a class="dropdown-item" href="#" onclick="updateButtonText('sortByGradeButton', 'Sort by grade - From min to max'); filterData();">From min to max</a></li>
+                <li><a class="dropdown-item" href="#" onclick="updateButtonText('sortByGradeButton', 'Sort by grade - From max to min'); filterData();">From max to min</a></li>
+            </ul>
+        </div>
+        <div class="dropdown ">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="isCheckedButton">
+                Is checked - All
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#" onclick="updateButtonText('isCheckedButton', 'Is checked - All'); filterData();">All</a></li>
+                <li><a class="dropdown-item" href="#" onclick="updateButtonText('isCheckedButton', 'Is checked - Yes'); filterData();">Yes</a></li>
+                <li><a class="dropdown-item" href="#" onclick="updateButtonText('isCheckedButton', 'Is checked - No'); filterData();">No</a></li>
+            </ul>
+        </div>
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="isCheckedByAIBtn">
+                Is checked by AI - All
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#" onclick="updateButtonText('isCheckedByAIBtn', 'Is checked by AI - All'); filterData();">All</a></li>
+                <li><a class="dropdown-item" href="#" onclick="updateButtonText('isCheckedByAIBtn', 'Is checked by AI - Yes'); filterData();">Yes</a></li>
+                <li><a class="dropdown-item" href="#" onclick="updateButtonText('isCheckedByAIBtn', 'Is checked by AI - No'); filterData();">No</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="table-responsivep-4 wrapper rounded-3">
+    <table class="table table-scrollable">
+        <thead class="bg-light text-center">
+        <tr class="align-middle">
+            <th>Student name</th>
+            <th>Grade</th>
+            <th>Threshold grade</th>
+            <th>Is checked</th>
+            <th>Is checked by AI</th>
+            <th>Status</th>
+            <th>Actions</th>
         </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Feedback)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsExamAssessed)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsAssessedByAi)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsDeleted)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalGrade)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
+        </thead>
+        <tbody class="table-hover text-center" id="userDetails">
+        @for (var i = 0; i < Model.Count; i++)
+        {
+            <tr class="align-middle" style="height: 50px;">
+                <td class="student-name">
+                    @Model[i].User.FirstName @Model[i].User.LastName
+                </td>
+                <td>
+                    <span class="grade">@Model[i].TotalGrade</span>/@Model[i].Exam.Questions.Sum(q => q.MaxGrade)
+                </td>
+                <td>
+                        @Model[i].Exam.MinimumPassGrade
+                </td>
+                <td>
+                    @if (Model[i].IsExamAssessed)
+                    {
+                        <i class="fas fa-check" style="color: green; font-size: 25px;"></i>
+                    }
+                    else
+                    {
+                        <i class="fa fa-close" style="font-size:30px;color:red"></i>
+                    }
+                </td>
+                <td>
+                        @if (Model[i].IsExamAssessed)
+                        {
+                            @if (Model[i].IsAssessedByAi)
+                            {
+                                <i class="fas fa-check" style="color: green; font-size: 25px;"></i>
+                            }
+                            else
+                            {
+                                <i class="fa fa-close" style="font-size:30px;color:red"></i>
+                            }
+                        }
+                </td>
+                <td>
+                    @if (!Model[i].IsExamAssessed)
+                    {
+                        <span class="not-assessed">Not assessed</span>
+                    }
+                    else if (Model[i].TotalGrade >= Model[i].Exam.MinimumPassGrade)
+                    {
+                        <span class="passed">Passed</span>
+                    }
+                    else
+                    {
+                        <span class="failed">Failed</span>
+                    }
+                </td>
+                <td>
+                    <div class="d-flex justify-content-center align-items-center">
+                        <form id="aiEvaluationForm" asp-controller="UserExamPass" asp-action="AiEvaluation">
+                            <input type="hidden" name="userExamAttemptId" value="@Model[i].Id" />
+                            <button type="submit" class="btn btn-outline-info me-2">Assess by AI</button>
+                        </form>
+
+                        @Html.ActionLink("Assess manually", "Evaluation", "UserExamPass", new { examId = Model[i].Id }, new { @class = "btn btn-outline-info me-2" })
+                        @Html.ActionLink("View answers", "Details", "UserExamPass", new { id = Model[i].Id }, new { @class = "btn btn-outline-info" })
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('searchInput');
+
+            searchInput.addEventListener('keyup', function (event) {
+                let searchQuery = event.target.value.toLowerCase();
+                const tableRows = document.querySelectorAll('#userDetails tr');
+
+                tableRows.forEach(row => {
+                    const studentName = row.querySelector('.student-name').textContent.toLowerCase();
+                    if (studentName.includes(searchQuery)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script>
+        function filterData() {
+            var statusValue = document.getElementById('statusButton').innerText.replace('Status - ', '');
+            var isCheckedValue = document.getElementById('isCheckedButton').innerText.replace('Is checked - ', '');
+            var isCheckedByAIValue = document.getElementById('isCheckedByAIBtn').innerText.replace('Is checked by AI - ', '');
+            const sortByGrade = document.getElementById('sortByGradeButton').innerText.replace('Sort by grade - ', '');
+
+            const tbody = document.getElementById("userDetails");
+            let rows = Array.from(tbody.rows);
+
+            // Sorting logic
+            if (sortByGrade === 'From min to max') {
+                rows.sort((a, b) => {
+                    return extractGrade(a) - extractGrade(b);
+                });
+            } else if (sortByGrade === 'From max to min') {
+                rows.sort((a, b) => {
+                    return extractGrade(b) - extractGrade(a);
+                });
+            }
+
+            // Filtering logic
+            rows.forEach(row => {
+                var statusColumnValue = row.cells[5].innerText.trim();
+                var isChecked = row.cells[3].innerHTML.includes('fa-check');
+                var isCheckedByAI = row.cells[4].innerHTML.includes('fa-check');
+
+                var shouldDisplay = true;
+
+                if (statusValue === 'Passed' && !statusColumnValue.includes(statusValue)) {
+                    shouldDisplay = false;
+                }
+
+                if (statusValue === 'Failed' && !statusColumnValue.includes(statusValue)) {
+                    shouldDisplay = false;
+                }
+
+                if (statusValue === 'Not assessed' && !statusColumnValue.includes(statusValue)) {
+                    shouldDisplay = false;
+                }
+
+                if (isCheckedValue === 'Yes' && !isChecked) {
+                    shouldDisplay = false;
+                }
+
+                if (isCheckedValue === 'No' && isChecked) {
+                    shouldDisplay = false;
+                }
+
+                if (isCheckedByAIValue === 'Yes' && !isCheckedByAI) {
+                    shouldDisplay = false;
+                }
+
+                if (isCheckedByAIValue === 'No' && (isCheckedByAI || !isChecked)) {
+                    shouldDisplay = false;
+                }
+
+                row.style.display = shouldDisplay ? '' : 'none';
+            });
+
+            // Re-append rows in sorted or original order
+            rows.forEach(row => tbody.appendChild(row));
+        }
+
+        function extractGrade(row) {
+            const gradeCellText = row.cells[1].childNodes[1].innerText;
+            return parseFloat(gradeCellText.split('/')[0]) || 0;
+        }
+    </script>
+
+    <script>
+        function updateButtonText(buttonId, newText) {
+            document.getElementById(buttonId).textContent = newText;
+        }
+    </script>
 }
-    </tbody>
-</table>

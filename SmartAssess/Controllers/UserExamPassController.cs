@@ -111,10 +111,10 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AiEvaluation(UserExamAttemptViewModel viewModel)
+        public async Task<IActionResult> AiEvaluation(Guid userExamAttemptId)
         {
-            await _openAiService.ExamEvaluationAsync(viewModel.Id.Value);
-            return RedirectToAction("Details", new { id = viewModel.Id.Value });
+            await _openAiService.ExamEvaluationAsync(userExamAttemptId);
+            return RedirectToAction("Details", new { id = userExamAttemptId });
         }
     }
 }

@@ -54,6 +54,8 @@ namespace Data_Access_Layer.Repositories.Implementations
                 .Include(exam => exam.Course)
                 .Include(exam => exam.UserExamAttempts)
                 .ThenInclude(x=>x.User)
+                .Include(exam => exam.UserExamAttempts)
+                .ThenInclude(x => x.UserAnswers)
                 .FirstOrDefaultAsync(exam => exam.Id == id);
 
             return examEntity;
