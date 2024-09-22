@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Business_Logic_Layer.Models;
+using Business_Logic_Layer.Services.Implementations;
 using Business_Logic_Layer.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -128,44 +129,17 @@ namespace Presentation_Layer.Controllers
             return View(courseViewModel);
         }
 
-        [HttpGet]
-        public IActionResult Create()
-        {
-            return View();
-        }
-
         [HttpPost]
-        public async Task<IActionResult> Create(CourseViewModel viewModel)
+        public async Task<JsonResult> Create(CourseViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
                 var courseModel = _mapper.Map<CourseModel>(viewModel);
-                var createdCourseId = await _courseService.CreateAsync(courseModel);
-                return RedirectToAction("Details", new { id = createdCourseId });
+                var createdCourseId = await _courseService.CreateAsync(courseModel, _accountService.GetUserId(User));
+                return Json(new { success = true, courseId = createdCourseId });
             }
 
-            return View(viewModel);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Update(Guid id)
-        {
-            var courseModel = await _courseService.GetByIdWithDetailsAsync(id);
-            var courseViewModel = _mapper.Map<CourseViewModel>(courseModel);
-            return View(courseViewModel);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Update(CourseViewModel viewModel)
-        {
-            if (ModelState.IsValid)
-            {
-                var courseModel = _mapper.Map<CourseModel>(viewModel);
-                var updatedCourseId = await _courseService.UpdateAsync(courseModel);
-                return RedirectToAction("Details", new { id = updatedCourseId });
-            }
-
-            return View(viewModel);
+            return Json(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors) });
         }
 
         [HttpPost]

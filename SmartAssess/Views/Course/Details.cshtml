@@ -283,7 +283,10 @@
                         <div class="text-center">
                             <h1 class="display-4">
                                 Course description
-                                <i id="editCourseDescriptionButton" class="fas fa-pencil-alt display-25 ms-3 me-3 clickable-icon" style="font-size:50%;"></i>
+                                @if (isUserAppliedForCourse && User.IsInRole(Data_Access_Layer.Roles.Roles.Teacher))
+                                {
+                                    <i id="editCourseDescriptionButton" class="fas fa-pencil-alt display-25 ms-3 me-3 clickable-icon" style="font-size:50%;"></i>
+                                }
                             </h1>
                            
                         </div>

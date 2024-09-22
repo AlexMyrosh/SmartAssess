@@ -39,9 +39,11 @@ namespace Business_Logic_Layer.Services.Implementations
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task<Guid> CreateAsync(CourseModel model)
+        public async Task<Guid> CreateAsync(CourseModel model, string createdByTeacherId)
         {
             var courseEntity = _mapper.Map<CourseEntity>(model);
+            var createdByUser = await _unitOfWork.UserRepository.GetByIdAsync(createdByTeacherId);
+            courseEntity.Teachers.Add(createdByUser);
             var createdCourseId = await _unitOfWork.CourseRepository.CreateAsync(courseEntity);
             await _unitOfWork.SaveAsync();
             return createdCourseId;

@@ -8,7 +8,6 @@ namespace Presentation_Layer.FluentValidator
         public CourseViewModelValidator()
         {
             RuleFor(x => x.Name).NotEmpty().WithMessage("Course name is required");
-            RuleFor(x => x.ShortDescription).NotEmpty().WithMessage("Course short description is required");
             RuleFor(x => x.LongDescription).NotEmpty().WithMessage("Course long description is required");
         }
     }

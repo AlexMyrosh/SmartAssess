@@ -10,7 +10,7 @@
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">@course.Name</h5>
                     <p class="card-text">
-                        @course.ShortDescription
+                        @(course.LongDescription?.Substring(0, Math.Min(100, @course.LongDescription.Length)) + "...")
                     </p>
                 </div>
             </a>

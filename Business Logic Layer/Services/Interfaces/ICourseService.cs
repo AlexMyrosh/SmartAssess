@@ -15,7 +15,7 @@ namespace Business_Logic_Layer.Services.Interfaces
 
         Task<CourseModel?> GetByIdWithDetailsAsync(Guid id);
 
-        Task<Guid> CreateAsync(CourseModel model);
+        Task<Guid> CreateAsync(CourseModel model, string createdByTeacherId);
 
         Task<bool> SoftDeleteAsync(Guid id);
 
