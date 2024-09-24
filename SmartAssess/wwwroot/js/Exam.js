@@ -5,25 +5,12 @@ $(document).ready(function () {
 
     function UpdateQuestionAttributesIndexes() {
         $(".question").each(function (index, question) {
-
-            $(question).find("label").attr('for', function (_, forAttr) {
-                return forAttr.replace(/Questions_\d+__/, 'Questions_' + index + '__');
-            });
-
             $(question).find("textarea").attr('id', function (_, idAttr) {
                 return idAttr.replace(/Questions_\d+__/, 'Questions_' + index + '__');
             });
 
             $(question).find("textarea").attr('name', function (_, nameAttr) {
                 return nameAttr.replace(/Questions\[\d+\]/, 'Questions[' + index + ']');
-            });
-
-            $(question).find("span").attr('data-valmsg-for', function (_, valmsgforAttr) {
-                return valmsgforAttr.replace(/Questions\[\d+\]/, 'Questions[' + index + ']');
-            });
-
-            $(question).find("input").attr('id', function (_, idAttr) {
-                return idAttr.replace(/Questions_\d+__/, 'Questions_' + index + '__');
             });
 
             $(question).find("input").attr('name', function (_, nameAttr) {
@@ -42,8 +29,10 @@ $(document).ready(function () {
 
         // In case if first question has some text, then added question field should be empty
         clone.find('textarea').val('');
+        clone.find('input').val('');
         clone.find('input[type=hidden]').val('');
-
+        clone.find('span.question-title').text(`Question ${questionCounter + 1}`)
+       
         $questionsContainer.append(clone);
         questionCounter++;
     });

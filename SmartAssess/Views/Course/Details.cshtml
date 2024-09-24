@@ -378,6 +378,15 @@
                                         <div class="col d-flex align-items-stretch">
                                             <div class="card bg-c-blue order-card flex-fill">
                                                 <div class="card-body" style="padding: 0">
+                                                    <h4 class="m-b-20 text-center">Questions</h4>
+                                                    <h5 class="text-center"><span>@Model.Exams[i].Questions.Count</span></h5>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col d-flex align-items-stretch">
+                                            <div class="card bg-c-blue order-card flex-fill">
+                                                <div class="card-body" style="padding: 0">
                                                     <h4 class="m-b-20 text-center">Start at</h4>
                                                     <h5 class="text-center"><span>@Model.Exams[i].ExamStartDateTime.Value.DateTime</span></h5>
                                                 </div>
@@ -411,6 +420,7 @@
                                         <div class="d-flex align-items-stretch justify-content-center">
                                             @Html.ActionLink("Check answers", "UsersAnswers", "Exam", new { id = Model.Exams[i].Id }, new { @class = "btn btn-success me-2 d-flex align-items-center justify-content-center" })
                                             @Html.ActionLink("Statistics", "ExamStatistic", "Exam", new { id = Model.Exams[i].Id }, new { @class = "btn btn-info me-2 d-flex align-items-center justify-content-center" })
+                                            @Html.ActionLink("Details", "Details", "Exam", new { id = Model.Exams[i].Id }, new { @class = "btn btn-secondary me-2 d-flex align-items-center justify-content-center" })
                                             @Html.ActionLink("Update", "Update", "Exam", new { id = Model.Exams[i].Id }, new { @class = "btn btn-warning me-2 d-flex align-items-center justify-content-center" })
     
                                             <form asp-action="Delete" asp-controller="Exam" method="post" class="mb-0 d-flex">

@@ -4,7 +4,9 @@
     ViewData["Title"] = "Update";
 }
 
-<h1>Update</h1>
+<div class="text-center">
+    <h1 class="display-4">Update exam for course "@Html.DisplayFor(model => model.Course.Name)"</h1>
+</div>
 
 <div class="container">
     <form asp-action="Update">
@@ -13,8 +15,7 @@
         <div class="container">
             <div class="row">
                 <div class="col text-center">
-                    <input type="submit" value="Save" class="btn btn-outline-success" />
-                    <a asp-action="Index" class="btn btn-outline-warning">Back to List</a>
+                    <input type="submit" value="Save" class="btn btn-outline-success"/>
                 </div>
                 <div asp-validation-summary="All" class="text-danger"></div>
             </div>

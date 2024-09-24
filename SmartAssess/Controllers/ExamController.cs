@@ -60,8 +60,8 @@ namespace Presentation_Layer.Controllers
             if (ModelState.IsValid)
             {
                 var examModel = _mapper.Map<ExamModel>(examViewModel);
-                var createdExamId = await _examService.CreateAsync(examModel);
-                return RedirectToAction("Index", new { id = createdExamId });
+                await _examService.CreateAsync(examModel);
+                return RedirectToAction("Details", "Course", new { id = examViewModel.Course.Id });
             }
 
             return View(examViewModel);
@@ -88,8 +88,8 @@ namespace Presentation_Layer.Controllers
             if (ModelState.IsValid)
             {
                 var examModel = _mapper.Map<ExamModel>(examViewModel);
-                var updatedExamId = await _examService.UpdateAsync(examModel);
-                return RedirectToAction("Details", new { id = updatedExamId });
+                await _examService.UpdateAsync(examModel);
+                return RedirectToAction("Details", "Course", new { id = examViewModel.Course.Id });
             }
 
             return View(examViewModel);

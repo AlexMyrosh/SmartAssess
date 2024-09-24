@@ -1,106 +1,110 @@
-﻿@using Presentation_Layer.Enums
-@using Microsoft.AspNetCore.Mvc.TagHelpers
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model Presentation_Layer.ViewModels.ExamViewModel
 
-<div class="row">
-    <div class="col">
-        <div class="form-group">
-            <label asp-for="Name" class="control-label"></label>
-            <input asp-for="Name" class="form-control" />
-        </div>
-    </div>
-    <div class="col">
-        <div class="form-group">
-            <label asp-for="Description" class="control-label"></label>
-            <input asp-for="Description" class="form-control" />
-        </div>
-    </div>
-</div>
+<style>
+    .circle-btn {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        color: #333;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        text-decoration: none;
+        border: 1px solid #16a085;
+    }
 
-<div class="row">
-    <div class="col">
-        <div class="form-group">
-            <label asp-for="ExamStartDateTime" class="control-label"></label>
-            <input type="datetime-local" asp-for="ExamStartDateTime" class="form-control" />
-        </div>
-    </div>
-    <div class="col">
-        <div class="form-group">
-            <label asp-for="ExamEndDateTime" class="control-label"></label>
-            <input type="datetime-local" asp-for="ExamEndDateTime" class="form-control" />
-        </div>
-    </div>
-</div>
+    .circle-btn:hover {
+        background-color: #16a085;
+        color: white;
+    }
+</style>
 
-<div class="row">
-    <div class="col">
-        <div class="form-group">
-            <label asp-for="ExamDuration" class="control-label"></label>
-            <input asp-for="ExamDuration" type="time" class="form-control" />
-        </div>
+<div class="container">
+    <div class="form-floating mb-3">
+        <input for="examNameForm" asp-for="Name" class="form-control" placeholder="Exam name" />
+        <label id="examNameForm" asp-for="Name" class="form-label" ></label>
     </div>
-    <div class="col">
-        <div class="form-group">
-            <label asp-for="MinimumPassGrade" class="control-label"></label>
-            <input asp-for="MinimumPassGrade" type="number" class="form-control" />
-        </div>
+    <div class="form-floating mb-3">
+        <textarea for="examDescriptionForm" asp-for="Description" class="form-control" placeholder="Exam description" style="height: 150px;"></textarea>
+        <label id="examDescriptionForm" asp-for="Description" class="form-label"></label>
     </div>
-    <div class="col">
-        <div class="form-group">
-            <label asp-for="MaxAttemptsAllowed" class="control-label"></label>
-            <input asp-for="MaxAttemptsAllowed" type="number" class="form-control" />
-        </div>
-    </div>
-</div>
 
-<br />
-<div class="form-group">
-    <input asp-for="IsAssessedByAi" class="form-check-input" />
-    <label asp-for="IsAssessedByAi" class="control-label"></label>
-</div>
-
-<h5>Questions</h5>
-<div id="questionsContainer">
-    @for (var i = 0; i < Model.Questions?.Count; i++)
-    {
-        <div class="container">
-            <div class="row question">
-                <div class="col-6">
-                    <div class="form-group">
-                        <label asp-for="Questions[i].QuestionText" class="control-label"></label>
-                        <textarea asp-for="Questions[i].QuestionText" class="form-control" rows="5"></textarea>
-                        <span asp-validation-for="Questions[i].QuestionText" class="text-danger"></span>
-                        <input type="hidden" asp-for="Questions[i].Id" />
-                    </div>
-                    <br />
-                </div>
-                <div class="col-6">
-                    <div class="form-group">
-                        <label asp-for="Questions[i].TeacherNoteForAssessment" class="control-label"></label>
-                        <textarea asp-for="Questions[i].TeacherNoteForAssessment" class="form-control" rows="5"></textarea>
-                        <span asp-validation-for="Questions[i].TeacherNoteForAssessment" class="text-danger"></span>
-                    </div>
-                    <br />
-                </div>
-                <div class="col-4">
-                    <div class="form-group">
-                        <label asp-for="Questions[i].MaxGrade" class="control-label"></label>
-                        <input asp-for="Questions[i].MaxGrade" class="form-control" rows="5"></input>
-                        <span asp-validation-for="Questions[i].MaxGrade" class="text-danger"></span>
-                    </div>
-                    <br />
-                </div>
-                
-                <a class="btn btn-outline-danger delete-question" type="button">Remove Question</a>
-                <br />
+    <div class="row">
+        <div class="col">
+            <div class="form-floating mb-3">
+                <input for="examStartDateTimeForm" type="datetime-local" asp-for="ExamStartDateTime" class="form-control" />
+                <label id="examStartDateTimeForm" asp-for="ExamStartDateTime" class="form-label"></label>
             </div>
         </div>
-    }
-</div>
-
-<br />
-<div class="container">
-    <div class="row">
-        <a class="btn btn-outline-success" id="addQuestion">Add Question</a>
+        <div class="col">
+            <div class="form-floating mb-3">
+                <input for="examEndDateTimeForm" type="datetime-local" asp-for="ExamEndDateTime" class="form-control" />
+                <label id="examEndDateTimeForm" asp-for="ExamEndDateTime" class="form-label"></label>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-floating mb-3">
+                <input for="examDurationForm" asp-for="ExamDuration" type="time" class="form-control"/>
+                <label id="examDurationForm" asp-for="ExamDuration" class="form-label"></label>
+            </div>
+        </div>
+        
+        <div class="col">
+            <div class="form-floating mb-3">
+                <input for="examThresholdGradeForm" asp-for="MinimumPassGrade" type="number" class="form-control" />
+                <label id="examThresholdGradeForm" asp-for="MinimumPassGrade" class="form-label"></label>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-floating mb-3">
+                <input for="examMaxAttemptAllowedForm" asp-for="MaxAttemptsAllowed" type="number" class="form-control" />
+                <label id="examMaxAttemptAllowedForm" asp-for="MaxAttemptsAllowed" class="form-label"></label>
+            </div>
+        </div>
     </div>
+
+    <div class="text-center">
+        <h1 class="display-4">Questions</h1>
+    </div>
+    <div id="questionsContainer">
+        @for (var i = 0; i < Model.Questions?.Count; i++)
+        {
+            <div class="question mb-4">
+                <div class="card text-center">
+                    <div class="card-header d-flex justify-content-between align-items-center" style="font-size: large;">
+                        <span style="margin: 0 auto;" class="question-title">Question @(i + 1)</span>
+                        <i class="fas fa-trash delete-question" style="cursor: pointer; color: red;"></i>
+                    </div>
+
+                    <div class="card-body" style="padding: 0;">
+                        <div class="form-floating">
+                            <textarea for="questionTextForm-@i" asp-for="Questions[i].QuestionText" class="form-control" placeholder="Question @(i + 1)" style="height: 150px;"></textarea>
+                            <label id="questionTextForm-@i" class="form-label">Question text</label>
+                            <input type="hidden" asp-for="Questions[i].Id" />
+                        </div>
+                    </div>
+                    <div class="card-footer text-body-secondary">
+                        <div class="form-floating">
+                            <input for="questionMaxGradeForm-@i" asp-for="Questions[i].MaxGrade" class="form-control" placeholder="Question @(i + 1) max grade"></input>
+                            <label id="questionMaxGradeForm-@i" asp-for="Questions[i].MaxGrade" class="form-label"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-auto">
+            <a class="circle-btn" id="addQuestion">
+                <i class="fas fa-plus"></i>
+            </a>
+        </div>
+    </div>
+    @Html.HiddenFor(model => model.Course.Id)
 </div>

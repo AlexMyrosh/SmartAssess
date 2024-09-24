@@ -4,7 +4,9 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create exam for course "@Html.DisplayFor(model => model.Course.Name)"</h1>
+<div class="text-center">
+    <h1 class="display-4">Create exam for course "@Html.DisplayFor(model => model.Course.Name)"</h1>
+</div>
 
 <div class="container">
     <form asp-action="Create">
@@ -15,7 +17,6 @@
                 <div class="col text-center">
                     @Html.HiddenFor(model=>model.Course.Id)
                     <input type="submit" value="Create" class="btn btn-outline-success" />
-                    <a asp-action="Index" class="btn btn-outline-warning">Back to List</a>
                 </div>
                 <div asp-validation-summary="All" class="text-danger"></div>
             </div>
