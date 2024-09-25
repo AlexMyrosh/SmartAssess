@@ -160,108 +160,106 @@
 
 <div class="container-fluid" style="padding: 0;">
     <div class="decor-default">
-        <div class="">
-            <div class="contact">
-                <div class="controls">
-                    <div class="image-container">
-                        <img src="https://static.vecteezy.com/system/resources/previews/023/494/340/non_2x/back-to-school-icons-set-green-or-blackboard-background-school-office-supplies-doodle-icons-and-chalk-inscription-simple-design-banner-poster-template-flat-style-illustration-vector.jpg">
-                        <div class="centered">
-                            <h1 class="display-1" style="font-size: 6vw; font-weight: 400;">
-                                @Model.Name
-                            </h1>
-                        </div>
-                        <div class="btn-group dropleft updateExamButton">
-                            <a asp-controller="Exam" asp-action="Update" asp-route-id="@Model.Id" class="circle-btn">
-                                <i class="fa fa-pencil"></i>
-                            </a>
-                        </div>
+        <div class="contact">
+            <div class="controls">
+                <div class="image-container">
+                    <img src="https://static.vecteezy.com/system/resources/previews/023/494/340/non_2x/back-to-school-icons-set-green-or-blackboard-background-school-office-supplies-doodle-icons-and-chalk-inscription-simple-design-banner-poster-template-flat-style-illustration-vector.jpg">
+                    <div class="centered">
+                        <h1 class="display-1" style="font-size: 6vw; font-weight: 400;">
+                            @Model.Name
+                        </h1>
+                    </div>
+                    <div class="btn-group dropleft updateExamButton">
+                        <a asp-controller="Exam" asp-action="Update" asp-route-id="@Model.Id" class="circle-btn">
+                            <i class="fa fa-pencil"></i>
+                        </a>
                     </div>
                 </div>
+            </div>
 
-                <div class="container" style="margin-top: 30px;">
-                    <div class="container">
-                        <div class="text-center">
-                            <h1 class="display-4">Exam description</h1>
-                        </div>
-                        <pre style="white-space: pre-line; font-family: 'Montserrat'; font-size: 16px;">
+            <div class="container" style="margin-top: 30px;">
+                <div class="container">
+                    <div class="text-center">
+                        <h1 class="display-4">Exam description</h1>
+                    </div>
+                    <pre style="white-space: pre-line; font-family: 'Montserrat'; font-size: 16px;">
                             @Model.Description
                         </pre>
-                    </div>
-                    <div class="container-fluid mt-5 ">
-                        <div class="row">
-                            <div class="col d-flex align-items-stretch">
-                                <div class="card bg-c-blue order-card flex-fill">
-                                    <div class="card-body" style="padding: 5px;">
-                                        <h3 class="m-b-20 text-center">Max grade</h3>
-                                        <h5 class="text-center"><span>@Model.Questions.Sum(q => q.MaxGrade)</span></h5>
-                                    </div>
+                </div>
+                <div class="container-fluid mt-5 ">
+                    <div class="row">
+                        <div class="col d-flex align-items-stretch">
+                            <div class="card bg-c-blue order-card flex-fill">
+                                <div class="card-body" style="padding: 5px;">
+                                    <h3 class="m-b-20 text-center">Max grade</h3>
+                                    <h5 class="text-center"><span>@Model.Questions.Sum(q => q.MaxGrade)</span></h5>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="col d-flex align-items-stretch">
-                                <div class="card bg-c-green order-card flex-fill">
-                                    <div class="card-body" style="padding: 5px;">
-                                        <h3 class="m-b-20 text-center">Threshold grade</h3>
-                                        <h5 class="text-center"><span>@Model.MinimumPassGrade</span></h5>
-                                    </div>
+                        <div class="col d-flex align-items-stretch">
+                            <div class="card bg-c-green order-card flex-fill">
+                                <div class="card-body" style="padding: 5px;">
+                                    <h3 class="m-b-20 text-center">Threshold grade</h3>
+                                    <h5 class="text-center"><span>@Model.MinimumPassGrade</span></h5>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="col d-flex align-items-stretch">
-                                <div class="card bg-c-yellow order-card flex-fill">
-                                    <div class="card-body" style="padding: 5px;">
-                                        <h3 class="m-b-20 text-center">Allowed attempts</h3>
-                                        <h5 class="text-center"><span>@Model.MaxAttemptsAllowed</span></h5>
-                                    </div>
+                        <div class="col d-flex align-items-stretch">
+                            <div class="card bg-c-yellow order-card flex-fill">
+                                <div class="card-body" style="padding: 5px;">
+                                    <h3 class="m-b-20 text-center">Allowed attempts</h3>
+                                    <h5 class="text-center"><span>@Model.MaxAttemptsAllowed</span></h5>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="col d-flex align-items-stretch">
-                                <div class="card bg-c-gray order-card flex-fill">
-                                    <div class="card-body" style="padding: 5px;">
-                                        <h3 class="m-b-20 text-center">Duration</h3>
-                                        <h5 class="text-center"><span>@Model.ExamDuration</span></h5>
-                                    </div>
+                        <div class="col d-flex align-items-stretch">
+                            <div class="card bg-c-gray order-card flex-fill">
+                                <div class="card-body" style="padding: 5px;">
+                                    <h3 class="m-b-20 text-center">Duration</h3>
+                                    <h5 class="text-center"><span>@Model.ExamDuration</span></h5>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="col d-flex align-items-stretch">
-                                <div class="card bg-c-purple order-card flex-fill">
-                                    <div class="card-body" style="padding: 5px;">
-                                        <h3 class="m-b-20 text-center">Start date</h3>
-                                        <h5 class="text-center"><span>@Model.ExamStartDateTime.Value.DateTime</span></h5>
-                                    </div>
+                        <div class="col d-flex align-items-stretch">
+                            <div class="card bg-c-purple order-card flex-fill">
+                                <div class="card-body" style="padding: 5px;">
+                                    <h3 class="m-b-20 text-center">Start date</h3>
+                                    <h5 class="text-center"><span>@Model.ExamStartDateTime.Value.DateTime</span></h5>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="col d-flex align-items-stretch">
-                                <div class="card bg-c-indigo order-card flex-fill">
-                                    <div class="card-body" style="padding: 5px;">
-                                        <h3 class="m-b-20 text-center">End date</h3>
-                                        <h5 class="text-center"><span>@Model.ExamEndDateTime.Value.DateTime</span></h5>
-                                    </div>
+                        <div class="col d-flex align-items-stretch">
+                            <div class="card bg-c-indigo order-card flex-fill">
+                                <div class="card-body" style="padding: 5px;">
+                                    <h3 class="m-b-20 text-center">End date</h3>
+                                    <h5 class="text-center"><span>@Model.ExamEndDateTime.Value.DateTime</span></h5>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="container" style="=margin-bottom: 30px;">
-                    <div class="text-center">
-                        <h1 class="display-4">Questions & Answers</h1>
-                    </div>
-                    @for (var i = 0; i < Model.Questions.Count; i++)
-                    {
-                        <div class="card" style="background-color: #f2f2f2; border-radius: 15px;">
-                            <div class="card-body question">
-                                <h5 class="card-title" style="display: flex; justify-content: center; align-items: center;">
-                                    Question @(i + 1)
-                                </h5>
-                                <p class="card-text">@Model.Questions[i].QuestionText</p>
-                                <p style="margin-bottom: 0;"><strong>Max grade:</strong> @Model.Questions[i].MaxGrade</p>
-                            </div>
-                        </div>
-                    }
+            </div>
+            <div class="container" style="=margin-bottom: 30px;">
+                <div class="text-center">
+                    <h1 class="display-4">Questions & Answers</h1>
                 </div>
+                @for (var i = 0; i < Model.Questions.Count; i++)
+                {
+                    <div class="card" style="background-color: #f2f2f2; border-radius: 15px;">
+                        <div class="card-body question">
+                            <h5 class="card-title" style="display: flex; justify-content: center; align-items: center;">
+                                Question @(i + 1)
+                            </h5>
+                            <p class="card-text">@Model.Questions[i].QuestionText</p>
+                            <p style="margin-bottom: 0;"><strong>Max grade:</strong> @Model.Questions[i].MaxGrade</p>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     </div>
