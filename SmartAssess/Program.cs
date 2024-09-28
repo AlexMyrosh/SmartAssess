@@ -20,6 +20,7 @@ using Business_Logic_Layer.Models;
 using Serilog.Sinks.MSSqlServer;
 using Serilog;
 using Presentation_Layer.Filters;
+using System.Text.Json.Serialization;
 
 namespace Presentation_Layer
 {
@@ -134,10 +135,7 @@ namespace Presentation_Layer
 
             //services.AddScoped<ErrorHandlingFilter>();
 
-            services.AddControllersWithViews(options =>
-            {
-                //options.Filters.AddService(typeof(ErrorHandlingFilter));
-            }).AddFluentValidation();
+            services.AddControllersWithViews().AddFluentValidation();
             services.AddRazorPages();
         }
     }

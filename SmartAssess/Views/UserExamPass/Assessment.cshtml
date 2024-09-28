@@ -3,7 +3,7 @@
     ViewData["Title"] = Model.Exam.Name;
 }
 
-<form asp-controller="UserExamPass" asp-action="Assessment">
+<form asp-controller="UserExamPass" asp-action="Assessment" id="myForm">
     <div class="my-container">
         <div class="row h-100 g-3">
             <!-- Left Block: Pagination -->
@@ -35,6 +35,7 @@
                         <div class="container d-flex align-items-center justify-content-center">
                             <div>
                                 @Html.HiddenFor(model=>model.Exam.Id)
+                                <input type="hidden" id="timerValue" name="TakenTimeToComplete" value="@Model.Id" />
                                 <button id="submitExamButton" class="btn btn-success">Submit exam</button>
                             </div>
                         </div>
@@ -79,8 +80,11 @@
         startTimer(examDurationInSeconds, countdownElement);
     });
 
+    let timer;
+
     function startTimer(duration, display) {
-        var timer = duration, hours, minutes, seconds;
+        timer = duration;
+        var hours, minutes, seconds;
         var endTimer = setInterval(function () {
             hours = parseInt(timer / 3600, 10);
             minutes = parseInt((timer % 3600) / 60, 10);
@@ -94,11 +98,31 @@
 
             if (--timer < 0) {
                 clearInterval(endTimer);
+                // Automatically submit the form when time is up
                 $("#submitExamButton").click();
             }
         }, 1000);
     }
+
+    // Update the form on submit with the time spent
+    document.getElementById("myForm").addEventListener("submit", function () {
+        debugger;
+        var timeSpentInSeconds = @Model.Exam.ExamDuration.Value.TotalSeconds - timer;
+
+        // Convert timeSpentInSeconds to hh:mm:ss format
+        var spentHours = parseInt(timeSpentInSeconds / 3600, 10);
+        var spentMinutes = parseInt((timeSpentInSeconds % 3600) / 60, 10);
+        var spentSeconds = parseInt(timeSpentInSeconds % 60, 10);
+
+        spentHours = spentHours < 10 ? "0" + spentHours : spentHours;
+        spentMinutes = spentMinutes < 10 ? "0" + spentMinutes : spentMinutes;
+        spentSeconds = spentSeconds < 10 ? "0" + spentSeconds : spentSeconds;
+
+        // Set the time spent in the hidden field
+        document.getElementById("timerValue").value = spentHours + ":" + spentMinutes + ":" + spentSeconds;
+    });
 </script>
+
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {

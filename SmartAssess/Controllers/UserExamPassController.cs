@@ -45,6 +45,10 @@ namespace Presentation_Layer.Controllers
             foreach (var courseViewModel in courseViewModels)
             {
                 courseViewModel.Exams = courseViewModel.Exams.Where(x => x.UserExamAttempts.Count(x => x.User.Id == currentUser.Id) > 0).ToList();
+                foreach (var exam in courseViewModel.Exams)
+                {
+                    exam.UserExamAttempts = exam.UserExamAttempts.Where(s => s.User.Id == currentUser.Id).ToList();
+                }
             }
 
             return View(courseViewModels);

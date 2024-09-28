@@ -7,9 +7,12 @@
 <div class="container-fluid custom-container" style="width: 90%;">
     <div class="d-flex justify-content-between align-items-center">
         <h1 class="mx-auto text-center">My courses</h1>
-        <button type="button" class="btn btn-primary" style="border-radius: 25px;" data-bs-toggle="modal" data-bs-target="#newCourseCreationModal">
-            Create new course
-        </button>
+        @if (User.IsInRole(Data_Access_Layer.Roles.Roles.Teacher))
+        {
+            <button type="button" class="btn btn-primary" style="border-radius: 25px;" data-bs-toggle="modal" data-bs-target="#newCourseCreationModal">
+                Create new course
+            </button>
+        }
     </div>
 
     @if (Model.Items.Any())

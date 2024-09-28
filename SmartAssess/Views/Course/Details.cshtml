@@ -258,46 +258,53 @@
                                     <i class="fa fa-gear" style="font-size: 40px;"></i>
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <form asp-controller="Exam" asp-action="Create" method="get" class="dropdown-item">
+                                    <div class="dropdown-item">
                                         <input type="hidden" name="courseId" value="@Model.Id" />
-                                        <button type="submit" class="btn btn-link" style="text-decoration: none; color: inherit;">Add exam</button>
-                                    </form>
-                                    <form class="dropdown-item">
+                                        <a asp-action="Create" asp-controller="Exam" type="submit" class="btn btn-link" style="text-decoration: none; color: inherit;">Add exam</a>
+                                    </div>
+                                    <div class="dropdown-item">
                                         <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#exampleModal" style="text-decoration: none; color: inherit;">List of students</button>
                                         <span class="badge text-bg-primary rounded-pill" style="background-color: grey;">@Model.Users.Count</span>
-                                    </form>
-                                    <form asp-controller="Course" asp-action="Delete" method="post" class="dropdown-item">
-                                        <input type="hidden" name="id" value="@Model.Id" />
-                                        <button type="submit" class="btn btn-link" style="text-decoration: none; color: inherit;">Remove this course</button>
-                                    </form>
+                                    </div>
+                                    <div class="dropdown-item">
+                                        <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#RemoveCourse" style="text-decoration: none; color: inherit;">Remove this course</button>
+                                    </div>
+
                                 </div>
                             </div>
-
                         }
                     </div>
                 </div>
-                
-                @if (!string.IsNullOrWhiteSpace(Model.LongDescription))
-                {
-                    <div class="container" style="margin-top: 30px; margin-bottom: 30px;">
-                        <div class="text-center">
-                            <h1 class="display-4">
-                                Course description
-                                @if (isUserAppliedForCourse && User.IsInRole(Data_Access_Layer.Roles.Roles.Teacher))
-                                {
-                                    <i id="editCourseDescriptionButton" class="fas fa-pencil-alt display-25 ms-3 me-3 clickable-icon" style="font-size:50%;"></i>
-                                }
-                            </h1>
-                           
-                        </div>
+
+                <div class="container" style="margin-top: 30px; margin-bottom: 30px;">
+                    <div class="text-center">
+                        <h1 class="display-4">
+                            Course description
+                            @if (isUserAppliedForCourse && User.IsInRole(Data_Access_Layer.Roles.Roles.Teacher))
+                            {
+                                <i id="editCourseDescriptionButton" class="fas fa-pencil-alt display-25 ms-3 me-3 clickable-icon" style="font-size:50%;"></i>
+                            }
+                        </h1>
+                    </div>
+                    @if (!string.IsNullOrWhiteSpace(Model.LongDescription))
+                    {
                         <pre id="courseLongDescriptionDisplay" style="white-space: pre-line; font-family: 'Montserrat'; font-size: 16px;">
                             @Model.LongDescription
                         </pre>
-                        <textarea class="form-control mb-2" id="courseLongDescriptionEdit" rows="4" style="display:none;"></textarea>
-                        <button id="courseLongDescriptionSaveButton" style="display:none;" class="btn btn-success">Save</button>
-                        <button id="courseLongDescriptionCancelButton" style="display:none;" class="btn btn-warning">Cancel</button>
-                    </div>
-                }
+                    }
+                    else
+                    {
+                        <pre id="courseLongDescriptionDisplay" style="white-space: pre-line; font-family: 'Montserrat'; font-size: 16px; text-align: center;">
+                            <i>
+                                Description is absent
+                            </i>
+                        </pre>
+                    }
+
+                    <textarea class="form-control mb-2" id="courseLongDescriptionEdit" rows="4" style="display:none;"></textarea>
+                    <button id="courseLongDescriptionSaveButton" style="display:none;" class="btn btn-success">Save</button>
+                    <button id="courseLongDescriptionCancelButton" style="display:none;" class="btn btn-warning">Cancel</button>
+                </div>
 
                 @if (isUserAppliedForCourse)
                 {
@@ -315,9 +322,7 @@
                         
                         @for (var i = 0; i < Model.Exams.Count; i++)
                         {
-                            if (User.IsInRole(Data_Access_Layer.Roles.Roles.Student) && 
-                                Model.Exams[i].ExamStartDateTime <= currentDateTime &&
-                                Model.Exams[i].ExamEndDateTime >= currentDateTime)
+                            if (User.IsInRole(Data_Access_Layer.Roles.Roles.Student) && (Model.Exams[i].ExamStartDateTime > currentDateTime || Model.Exams[i].ExamEndDateTime < currentDateTime))
                             {
                                 continue;
                             }
@@ -422,11 +427,11 @@
                                             @Html.ActionLink("Statistics", "ExamStatistic", "Exam", new { id = Model.Exams[i].Id }, new { @class = "btn btn-info me-2 d-flex align-items-center justify-content-center" })
                                             @Html.ActionLink("Details", "Details", "Exam", new { id = Model.Exams[i].Id }, new { @class = "btn btn-secondary me-2 d-flex align-items-center justify-content-center" })
                                             @Html.ActionLink("Update", "Update", "Exam", new { id = Model.Exams[i].Id }, new { @class = "btn btn-warning me-2 d-flex align-items-center justify-content-center" })
-    
-                                            <form asp-action="Delete" asp-controller="Exam" method="post" class="mb-0 d-flex">
+                                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#RemoveExam-@Model.Exams[i].Id">Remove</button>
+                                            <form asp-action="Delete" asp-controller="Exam" method="post">
                                                 <input type="hidden" name="examId" value="@Model.Exams[i].Id" />
-                                                <input type="hidden" name="courseId" value="@Model.Id" />
-                                                <button class="btn btn-danger d-flex align-items-center justify-content-center" type="submit" style="flex-grow: 1;">Remove</button>
+                                                <input type="hidden" name="courseId" value="@Model.Id"/>
+                                                @await Html.PartialAsync("_DeleteConfirmationModal", ($"RemoveExam-{Model.Exams[i].Id}", $"\"{Model.Exams[i].Name}\" exam"))
                                             </form>
                                         </div>
                                     }
@@ -476,6 +481,11 @@
     </div>
 </div>
 
+<form asp-controller="Course" asp-action="Delete" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+    @await Html.PartialAsync("_DeleteConfirmationModal", ("RemoveCourse", $"\"{Model.Name}\" course"))
+</form>
+
 @section Scripts {
     <script>
     function removeStudent(button) {
@@ -508,15 +518,14 @@
             $('#editCourseDescriptionButton').on('click', function () {
                 var descriptionHeight = $('#courseLongDescriptionDisplay').height();
                 $('#courseLongDescriptionDisplay').hide();
-                $('#courseLongDescriptionEdit').val($('#courseLongDescriptionDisplay').text()).show().height(descriptionHeight + 20);
+                $('#courseLongDescriptionEdit').val($('#courseLongDescriptionDisplay').text().trim()).show().height(descriptionHeight + 20);
                 $('#courseLongDescriptionSaveButton').show();
                 $('#courseLongDescriptionCancelButton').show();
                 $(this).hide();
             });
 
             $('#courseLongDescriptionSaveButton').on('click', function () {
-                var newLongDescription = $('#courseLongDescriptionEdit').val();
-                console.log(newLongDescription);
+                var newLongDescription = $('#courseLongDescriptionEdit').val().trim();;
                 $.ajax({
                     url: '@Url.Action("UpdateLongDescription", "Course")',
                     type: 'POST',

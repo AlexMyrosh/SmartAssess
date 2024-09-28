@@ -36,11 +36,10 @@
 
     .image-container {
         position: relative;
-        cursor: pointer;
     }
 
     .image-container img {
-        transition: opacity 0.3s ease-in-out;
+        
         width: 100%;
     }
 
@@ -71,11 +70,6 @@
         cursor: pointer;
     }
 
-    .image-container:hover img {
-        transition: filter 0.1s ease;
-        filter: brightness(90%);
-    }
-
     .image-container:hover .overlay {
         opacity: 1;
     }
@@ -88,11 +82,11 @@
                 <div class="image-container">
                     @if (string.IsNullOrWhiteSpace(Model.ImagePath))
                     {
-                        <img src="@Url.Content("~/images/default-user-photo.png")" alt="Add user image" class="user-photo" id="userPhoto" onclick="enlargePhoto();" />
+                        <img src="@Url.Content("~/images/default-user-photo.png")" alt="Add user image" class="user-photo"  />
                     }
                     else
                     {
-                        <img src="@Url.Content("~/images/" + System.IO.Path.GetFileName(Model.ImagePath))" alt="User Image" class="user-photo" id="userPhoto" onclick="enlargePhoto();" />
+                        <img src="@Url.Content("~/images/" + System.IO.Path.GetFileName(Model.ImagePath))" alt="User Image"/>
                     }
 
                     <input type="hidden" name="userId" value="@Model.Id" />
@@ -111,7 +105,7 @@
                             <form asp-action="RemoveImage" asp-controller="Account" method="post">
                                 <input type="hidden" name="userId" value="@Model.Id" />
                                 <div class="d-grid justify-content-md-end me-2 mt-2" style="margin-bottom: -1rem;">
-                                    <button type="submit" class="btn btn-outline-primary">Remove Image</button>
+                                    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#RemoveUserImage">Remove image</button>
                                 </div>
                             </form>
                         </div>
@@ -244,7 +238,15 @@
                 </div>
                 <div class="mb-5 wow fadeIn">
                     <div class="text-start mb-1-6 wow fadeIn">
-                        <h2 class="mb-0 text-primary">#Applied courses</h2>
+                        @if (User.IsInRole(Data_Access_Layer.Roles.Roles.Student))
+                        {
+                            <h2 class="mb-0 text-primary">#Applied courses</h2>
+                        }
+                        else if (User.IsInRole(Data_Access_Layer.Roles.Roles.Teacher))
+                        {
+                            <h2 class="mb-0 text-primary">#Teacher-led courses</h2>
+                        }
+                        
                     </div>
                     <div class="row mt-n4" style="width: 98%">
                         @for(var i = 0; i < Model.Courses.Count; i++)
@@ -254,7 +256,6 @@
                                     <div class="card-body">
                                         <i class="ti-bookmark-alt icon-box medium rounded-3 mb-4"></i>
                                         <h3 class="h5 mb-3">@Html.ActionLink(Model.Courses[i].Name, "Details", "Course", new { id = Model.Courses[i].Id }, new { style = "text-decoration: none; color: black;" })</h3>
-                                <p class="mb-0">@Model.Courses[i].LongDescription?.Substring(0, Math.Min(100, Model.Courses[i].LongDescription.Length)) + "...")</p>
                                     </div>
                                 </div>
                             </div>
@@ -276,17 +277,6 @@
                         }
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal for Enlarging Photo -->
-<div id="photoModal" class="modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document" style="max-width: 50%;">
-        <div class="modal-content">
-            <div class="modal-body" style="padding: 0">
-                <img id="enlargedPhoto" src="" alt="Enlarged Photo" style="width: 100%;" />
             </div>
         </div>
     </div>
@@ -435,6 +425,11 @@
     </div>
 </div>
 
+<form asp-action="RemoveImage" asp-controller="Account" method="post">
+    <input type="hidden" name="userId" value="@Model.Id" />
+    @await Html.PartialAsync("_DeleteConfirmationModal", ("RemoveUserImage", "your photo"))
+</form>
+
 
 
 @section Scripts {
@@ -501,12 +496,6 @@
     </script>
 
     <script>
-        function enlargePhoto() {
-            const photoSrc = document.getElementById("userPhoto").src;
-            document.getElementById("enlargedPhoto").src = photoSrc;
-            $('#photoModal').modal('show');
-        }
-
         function openUploadModal() {
             $('#uploadModal').modal('show');
         }

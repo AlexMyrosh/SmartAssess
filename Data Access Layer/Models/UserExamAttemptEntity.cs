@@ -23,6 +23,8 @@ namespace Data_Access_Layer.Models
         [DefaultValue(false)]
         public bool IsAssessedByAi { get; set; }
 
+        public TimeSpan TakenTimeToComplete { get; set; }
+
         [Required]
         public string UserId { get; set; }
         public virtual UserEntity User { get; set; }

@@ -99,7 +99,7 @@ namespace Presentation_Layer.Controllers
         public async Task<IActionResult> UsersAnswers(Guid id)
         {
             var exam = await _examService.GetByIdWithDetailsAsync(id);
-            var viewModel = _mapper.Map<List<UserExamAttemptViewModel>>(exam.UserExamAttempts);
+            var viewModel = _mapper.Map<ExamViewModel>(exam);
             return View(viewModel);
         }
 

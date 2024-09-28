@@ -29,9 +29,10 @@ namespace Data_Access_Layer.Repositories.Implementations
         public async Task<UserEntity?> GetByIdWithDetailsAsync(string id)
         {
             var userEntity = await _sqlContext.Set<UserEntity>()
-                .Include(exam => exam.Courses)
+                .Include(exam => exam.Courses.Where(course => course.IsDeleted == false))
                 .Include(exam => exam.UserExamAttempts)
-                .FirstOrDefaultAsync();
+                .Include(course => course.TeachingCourses.Where(teachingCourse => teachingCourse.IsDeleted == false))
+                .FirstOrDefaultAsync(user => user.Id == id);
 
             return userEntity;
         }

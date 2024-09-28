@@ -47,6 +47,11 @@ namespace Business_Logic_Layer.Services.Implementations
             var userEntity = await _unitOfWork.UserRepository.GetByIdWithDetailsAsync(userEntityId);
             var userModel = _mapper.Map<UserModel>(userEntity);
             userModel.Roles = await _userManager.GetRolesAsync(userEntity);
+            if (userModel.Roles.Contains(Data_Access_Layer.Roles.Roles.Teacher))
+            {
+                userModel.Courses = _mapper.Map<List<CourseModel>>(userEntity.TeachingCourses);
+            }
+
             return userModel;
         }
 

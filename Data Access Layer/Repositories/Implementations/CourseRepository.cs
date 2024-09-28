@@ -113,8 +113,6 @@ namespace Data_Access_Layer.Repositories.Implementations
             return courseEntity;
         }
 
-
-
         public async Task<bool> HardDeleteAsync(Guid id)
         {
             var courseEntity = await _sqlContext.Courses.FindAsync(id);

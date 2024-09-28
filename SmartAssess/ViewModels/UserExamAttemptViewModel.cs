@@ -14,6 +14,8 @@
 
         public int? TotalGrade { get; set; }
 
+        public TimeSpan TakenTimeToComplete { get; set; }
+
         public UserViewModel? User { get; set; }
 
         public ExamViewModel? Exam { get; set; }

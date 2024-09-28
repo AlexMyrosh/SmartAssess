@@ -1,4 +1,4 @@
-﻿@model List<Presentation_Layer.ViewModels.UserExamAttemptViewModel>
+﻿@model Presentation_Layer.ViewModels.ExamViewModel
 
 @{
     ViewData["Title"] = "UsersAnswers";
@@ -51,16 +51,13 @@
 
 
 <div class="d-flex justify-content-between align-items-center">
-    <h1 class="display-4 mx-auto text-center">
-        Users answers for exam "@Model.First().Exam.Name"
+    <h1 class="display-1 mx-auto text-center">
+        Users answers for exam "@Model.Name"
     </h1>
-    <button type="button" class="AI-button">
-        Check all by AI
-    </button>
 </div>
 
 @* Filters *@
-<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;" class="mb-3">
     <div class="form-floating flex-grow-1">
         <input type="text" id="searchInput" name="searchQuery" class="form-control" placeholder="Search by student's name">
         <label for="searchInput">Search by student's name</label>
@@ -117,6 +114,7 @@
             <th>Student name</th>
             <th>Grade</th>
             <th>Threshold grade</th>
+            <th>Time to complete</th>
             <th>Is checked</th>
             <th>Is checked by AI</th>
             <th>Status</th>
@@ -124,20 +122,23 @@
         </tr>
         </thead>
         <tbody class="table-hover text-center" id="userDetails">
-        @for (var i = 0; i < Model.Count; i++)
+        @for (var i = 0; i < Model.UserExamAttempts?.Count; i++)
         {
             <tr class="align-middle" style="height: 50px;">
                 <td class="student-name">
-                    @Model[i].User.FirstName @Model[i].User.LastName
+                    @Model.UserExamAttempts[i].User.FirstName @Model.UserExamAttempts[i].User.LastName
                 </td>
                 <td>
-                    <span class="grade">@Model[i].TotalGrade</span>/@Model[i].Exam.Questions.Sum(q => q.MaxGrade)
+                    <span class="grade">@Model.UserExamAttempts[i].TotalGrade</span>/@Model.Questions.Sum(q => q.MaxGrade)
                 </td>
                 <td>
-                        @Model[i].Exam.MinimumPassGrade
+                    @Model.UserExamAttempts[i].Exam.MinimumPassGrade
                 </td>
                 <td>
-                    @if (Model[i].IsExamAssessed)
+                    @Model.UserExamAttempts[i].TakenTimeToComplete
+                </td>
+                <td>
+                    @if (Model.UserExamAttempts[i].IsExamAssessed)
                     {
                         <i class="fas fa-check" style="color: green; font-size: 25px;"></i>
                     }
@@ -147,24 +148,24 @@
                     }
                 </td>
                 <td>
-                        @if (Model[i].IsExamAssessed)
+                    @if (Model.UserExamAttempts[i].IsExamAssessed)
+                    {
+                        @if (Model.UserExamAttempts[i].IsAssessedByAi)
                         {
-                            @if (Model[i].IsAssessedByAi)
-                            {
-                                <i class="fas fa-check" style="color: green; font-size: 25px;"></i>
-                            }
-                            else
-                            {
-                                <i class="fa fa-close" style="font-size:30px;color:red"></i>
-                            }
+                            <i class="fas fa-check" style="color: green; font-size: 25px;"></i>
                         }
+                        else
+                        {
+                            <i class="fa fa-close" style="font-size:30px;color:red"></i>
+                        }
+                    }
                 </td>
                 <td>
-                    @if (!Model[i].IsExamAssessed)
+                    @if (!Model.UserExamAttempts[i].IsExamAssessed)
                     {
                         <span class="not-assessed">Not assessed</span>
                     }
-                    else if (Model[i].TotalGrade >= Model[i].Exam.MinimumPassGrade)
+                    else if (Model.UserExamAttempts[i].TotalGrade >= Model.UserExamAttempts[i].Exam.MinimumPassGrade)
                     {
                         <span class="passed">Passed</span>
                     }
@@ -176,18 +177,26 @@
                 <td>
                     <div class="d-flex justify-content-center align-items-center">
                         <form id="aiEvaluationForm" asp-controller="UserExamPass" asp-action="AiEvaluation">
-                            <input type="hidden" name="userExamAttemptId" value="@Model[i].Id" />
+                            <input type="hidden" name="userExamAttemptId" value="@Model.UserExamAttempts[i].Id" />
                             <button type="submit" class="btn btn-outline-info me-2">Assess by AI</button>
                         </form>
 
-                        @Html.ActionLink("Assess manually", "Evaluation", "UserExamPass", new { examId = Model[i].Id }, new { @class = "btn btn-outline-info me-2" })
-                        @Html.ActionLink("View answers", "Details", "UserExamPass", new { id = Model[i].Id }, new { @class = "btn btn-outline-info" })
+                        @Html.ActionLink("Assess manually", "Evaluation", "UserExamPass", new { examId = Model.UserExamAttempts[i].Id }, new { @class = "btn btn-outline-info me-2" })
+                        @Html.ActionLink("View answers", "Details", "UserExamPass", new { id = Model.UserExamAttempts[i].Id }, new { @class = "btn btn-outline-info" })
                     </div>
                 </td>
             </tr>
         }
         </tbody>
     </table>
+    @if (Model.UserExamAttempts.Count == 0)
+    {
+        <div class="text-center mb-5 mt-5">
+            <h1 class="display-4">
+                No one has passed the exam yet
+            </h1>
+        </div>
+    }
 </div>
 
 @section Scripts {

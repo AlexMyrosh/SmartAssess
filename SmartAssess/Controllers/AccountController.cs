@@ -222,6 +222,10 @@ namespace Presentation_Layer.Controllers
                     var callbackUrl = Url.Action("ResetPassword", "Account", new { userEmail = model.Email, code = resetToken }, protocol: Request.Scheme);
                     await _accountService.ResetPasswordEmailAsync(model.Email, callbackUrl);
                 }
+                else
+                {
+                    Thread.Sleep(5000);
+                }
 
                 TempData["Notification"] = "If the email address is found in our system, we have sent a recovery email";
                 return RedirectToAction("Login");

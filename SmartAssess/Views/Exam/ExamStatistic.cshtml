@@ -5,32 +5,23 @@
     var orderedByGradeFromMaxToMin = Model.OrderByDescending(x => x.TotalGrade).ToList();
     var orderedByGradeFromMinToMax = Model.OrderBy(x => x.TotalGrade).ToList();
 
-    var examMaxGrade = Model[0].Exam.Questions.Sum(q => q.MaxGrade).Value;
-    int categoryCount;
-    if (examMaxGrade <= 5)
+
+    //TODO: move all these variables to new model
+    int examMaxGrade = 0;
+    if (Model.Count > 0)
     {
-        categoryCount = 2;
+        examMaxGrade = Model.First().Exam.Questions.Sum(q => q.MaxGrade).Value;
     }
-    else if (examMaxGrade <= 15)
+
+    var categoryCount = examMaxGrade switch
     {
-        categoryCount = 5;
-    }
-    else if (examMaxGrade <= 30)
-    {
-        categoryCount = 6;
-    }
-    else if (examMaxGrade <= 45)
-    {
-        categoryCount = 7;
-    }
-    else if (examMaxGrade <= 60)
-    {
-        categoryCount = 8;
-    }
-    else
-    {
-        categoryCount = 10;
-    }
+        <= 5 => 2,
+        <= 15 => 5,
+        <= 30 => 6,
+        <= 45 => 7,
+        <= 60 => 8,
+        _ => 10
+    };
 
     var categoryStep = (int)Math.Ceiling((float)examMaxGrade / categoryCount);
 
@@ -47,6 +38,10 @@
         var categoryIndex = student.TotalGrade / categoryStep;
         counts[categoryIndex.Value]++;
     }
+
+    // Assuming 's' is your collection of entities
+    var averageTakenTime = @Model.Average(item => item.TakenTimeToComplete.TotalSeconds);
+    var averageTimeSpan = TimeSpan.FromSeconds(averageTakenTime);
 }
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -184,17 +179,17 @@
                     <div class="col d-flex align-items-stretch">
                         <div class="card bg-c-pink order-card flex-fill">
                             <div class="card-body">
-                                <h2 class="m-b-20 text-center">Min grade</h2>
-                                <h3 class="text-center"><span>@Model.Min(s => s.TotalGrade)</span></h3>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col d-flex align-items-stretch">
-                        <div class="card bg-c-green order-card flex-fill">
-                            <div class="card-body">
-                                <h2 class="m-b-20 text-center">Max grade</h2>
-                                <h3 class="text-center"><span>@Model.Max(s => s.TotalGrade)</span></h3>
+                                <h2 class="m-b-20 text-center">Average time to complete</h2>
+                                @if (Model.Count > 0)
+                                {
+                                    <h3 class="text-center">
+                                        <span>@averageTimeSpan.ToString(@"hh\:mm\:ss")</span>
+                                    </h3>
+                                }
+                                else
+                                {
+                                    <h3 class="text-center"><span>@TimeSpan.Zero</span></h3>
+                                }
                             </div>
                         </div>
                     </div>
@@ -203,151 +198,221 @@
                         <div class="card bg-c-purple order-card flex-fill">
                             <div class="card-body">
                                 <h2 class="m-b-20 text-center">Average grade</h2>
-                                <h3 class="text-center"><span>@Model.Average(s => s.TotalGrade)</span></h3>
+                                @if (Model.Count > 0)
+                                {
+                                    <h3 class="text-center"><span>@Model.Average(s => s.TotalGrade)</span></h3>
+                                }
+                                else
+                                {
+                                    <h3 class="text-center"><span>0</span></h3>
+                                }
                             </div>
                         </div>
                     </div>
                 </div>
+                
+                @if (Model.Count > 0)
+                {
+                    <div class="row justify-content-center">
+                        <div class="col-md-6">
+                            <div class="card ccard radius-t-0 h-100">
+                                <div class="card-header pb-3 brc-secondary-l3">
+                                    <h5 class="card-title mb-2 mb-md-0 text-dark-m3">
+                                        Top 5 students with best grades
+                                    </h5>
+                                </div>
+                                @for (var i = 0; i < Model.Count; i++)
+                                {
+                                    <div class="card-body d-flex justify-content-between" style="background-color: #f2f4f6; margin: 10px; border-radius: 10px;">
+                                        <span>
+                                            @(i + 1). @orderedByGradeFromMaxToMin[i].User.FirstName @orderedByGradeFromMaxToMin[i].User.LastName
+                                        </span>
 
-                <div class="row justify-content-center">
-                    <div class="col-md-6">
-                        <div class="card ccard radius-t-0 h-100">
-                            <div class="card-header pb-3 brc-secondary-l3">
-                                <h5 class="card-title mb-2 mb-md-0 text-dark-m3">
-                                    Top 5 students with best grades
-                                </h5>
+                                        <span>
+                                            @orderedByGradeFromMaxToMin[i].TotalGrade/@orderedByGradeFromMaxToMin[i].Exam.Questions.Sum(q => q.MaxGrade)
+                                        </span>
+                                    </div>
+
+                                    @if (i == 4)
+                                    {
+                                        break;
+                                    }
+                                }
                             </div>
-                            @for (var i = 0; i < Model.Count; i++)
-                            {
-                                <div class="card-body d-flex justify-content-between" style="background-color: #f2f4f6; margin: 10px; border-radius: 10px;">
-                                    <span>
-                                        @(i + 1). @orderedByGradeFromMaxToMin[i].User.FirstName @orderedByGradeFromMaxToMin[i].User.LastName
-                                    </span>
+                        </div>
 
-                                    <span>
-                                        @orderedByGradeFromMaxToMin[i].TotalGrade/@orderedByGradeFromMaxToMin[i].Exam.Questions.Sum(q => q.MaxGrade)
-                                    </span>
+                        <div class="col-md-6">
+                            <div class="card ccard radius-t-0 h-100">
+
+                                <div class="card-header pb-3 brc-secondary-l3">
+                                    <h5 class="card-title mb-2 mb-md-0 text-dark-m3">
+                                        Top 5 students with worse grades
+                                    </h5>
                                 </div>
 
-                                @if (i == 4)
+                                @for (var i = 0; i < Model.Count; i++)
                                 {
-                                    break;
+                                    <div class="card-body d-flex justify-content-between" style="background-color: #f2f4f6; margin: 10px; border-radius: 10px;">
+                                        <span>
+                                            @(i + 1). @orderedByGradeFromMinToMax[i].User.FirstName @orderedByGradeFromMinToMax[i].User.LastName
+                                        </span>
+
+                                        <span>
+                                            @orderedByGradeFromMinToMax[i].TotalGrade/@orderedByGradeFromMinToMax[i].Exam.Questions.Sum(q => q.MaxGrade)
+                                        </span>
+                                    </div>
+
+                                    @if (i == 4)
+                                    {
+                                        break;
+                                    }
                                 }
-                            }
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="card ccard radius-t-0 h-100">
-
-                            <div class="card-header pb-3 brc-secondary-l3">
-                                <h5 class="card-title mb-2 mb-md-0 text-dark-m3">
-                                    Top 5 students with worse grades
-                                </h5>
                             </div>
-
-                            @for (var i = 0; i < Model.Count; i++)
-                            {
-                                <div class="card-body d-flex justify-content-between" style="background-color: #f2f4f6; margin: 10px; border-radius: 10px;">
-                                    <span>
-                                        @(i + 1). @orderedByGradeFromMinToMax[i].User.FirstName @orderedByGradeFromMinToMax[i].User.LastName
-                                    </span>
-
-                                    <span>
-                                        @orderedByGradeFromMinToMax[i].TotalGrade/@orderedByGradeFromMinToMax[i].Exam.Questions.Sum(q => q.MaxGrade)
-                                    </span>
-                                </div>
-
-                                @if (i == 4)
-                                {
-                                    break;
-                                }
-                            }
                         </div>
                     </div>
-                </div>
+                }
+                else
+                {
+                    <div class="text-center mb-5">
+                        <h1 class="display-1">
+                            No one has passed the exam yet
+                        </h1>
+                    </div>
+                }
+                
+                @if (Model.Count > 0)
+                {
+                    <div class="row">
+                        <div class="col-md-6 d-flex flex-column align-items-center justify-content-center  mb-5 mt-5" style="height: 50vh;">
+                            <h5 class="text-center">Passed vs Not Passed</h5>
+                            <canvas id="passedNotPasssedDoughnutChart"></canvas>
+                        </div>
+                        <div class="col-md-6 d-flex flex-column align-items-center justify-content-center  mb-5 mt-5" style="height: 50vh;">
+                            <h5 class="text-center">Checked Manually vs With AI</h5>
+                            <canvas id="checkedManuallyOrWithAIDoughnutChart"></canvas>
+                        </div>
+                    </div>
 
-                <div class="row mt-5 mb-5">
-                    <div class="col-md-6 d-flex align-items-center justify-content-center" style="height: 50vh;">
-                        <canvas id="doughnutChart"></canvas>
+                    <div class="row">
+                        <div class="col-md-6 justify-content-center d-block mx-auto mb-5">
+                            <h5 class="text-center">Grade Distribution of Students</h5>
+                            <canvas id="gradeWithNumberOfStudentsCategoriesChart"></canvas>
+                        </div>
                     </div>
-                    <div class="col-md-6 d-flex align-items-center justify-content-center">
-                        <canvas id="categoriesChart"></canvas>
-                    </div>
-                </div>
+                }
             </div>
         </div>
     </div>
 </div>
 
-<script>
-    var ctx = document.getElementById('categoriesChart').getContext('2d');
-    var chart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: @Html.Raw(Json.Serialize(categories)),
-            datasets: [{
-                data: @Html.Raw(Json.Serialize(counts)),
-                backgroundColor: 'rgba(75, 192, 192, 0.5)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Grade'
-                    },
-                    beginAtZero: true
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Number of Students'
-                    },
-                    beginAtZero: true,
-                    ticks: {
-                        stepSize: 1
-                    },
-                }
+@section Scripts
+{
+    <script>
+        var ctx = document.getElementById('passedNotPasssedDoughnutChart').getContext('2d');
+
+        var myChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Passed', 'Failed'],
+                datasets: [{
+                    data: [@Model.Count(s => s.TotalGrade >= s.Exam.MinimumPassGrade), @Model.Count(s => s.TotalGrade < s.Exam.MinimumPassGrade)],
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(255, 99, 132, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(255, 99, 132, 1)'
+                    ],
+                    borderWidth: 1
+                }]
             },
-            plugins: {
-                legend: {
-                    display: false
+            options: {
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
                 }
             }
-        }
-    });
-</script>
+        });
+    </script>
 
-<script>
-    var ctx = document.getElementById('doughnutChart').getContext('2d');
+    <script>
+        var ctx = document.getElementById('checkedManuallyOrWithAIDoughnutChart').getContext('2d');
 
-    var myChart = new Chart(ctx, {
-       type: 'doughnut',
-       data: {
-           labels: ['Passed', 'Failed'],
-           datasets: [{
-                data: [@Model.Count(s => s.TotalGrade >= s.Exam.MinimumPassGrade), @Model.Count(s => s.TotalGrade < s.Exam.MinimumPassGrade)],
-               backgroundColor: [
-                   'rgba(75, 192, 192, 0.2)',
-                   'rgba(255, 99, 132, 0.2)'
-               ],
-               borderColor: [
-                   'rgba(75, 192, 192, 1)',
-                   'rgba(255, 99, 132, 1)'
-               ],
-               borderWidth: 1
-           }]
-       },
-        options: {
-            plugins: {
-                legend: {
-                    position: 'bottom'
+        var myChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Checked by AI', 'Checked manually', 'Not checked'],
+                datasets: [{
+                    data: [
+        @Model.Count(s => s.IsAssessedByAi && s.IsExamAssessed),
+        @Model.Count(s => !s.IsAssessedByAi && s.IsExamAssessed),
+        @Model.Count(s => !s.IsExamAssessed)
+                        ],
+                    backgroundColor: [
+                        'rgba(76, 175, 80, 0.2)',  // Checked by AI (Light Green)
+                        'rgba(33, 150, 243, 0.2)',  // Checked manually (Light Blue)
+                        'rgba(128, 128, 128, 0.2)'     // Not checked (Light Red)
+                    ],
+                    borderColor: [
+                        'rgba(76, 175, 80, 1)',  // Checked by AI (Green)
+                        'rgba(33, 150, 243, 1)',  // Checked manually (Blue)
+                        'rgba(128, 128, 128, 1)'     // Not checked (Red)
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
                 }
             }
-        }
-    });
-</script>
+        });
+    </script>
+
+    <script>
+        debugger;
+        var ctx = document.getElementById('gradeWithNumberOfStudentsCategoriesChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(Json.Serialize(categories)),
+                datasets: [{
+                    data: @Html.Raw(Json.Serialize(counts)),
+                    backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Grade'
+                        },
+                        beginAtZero: true
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Number of Students'
+                        },
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        },
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    </script>
+}

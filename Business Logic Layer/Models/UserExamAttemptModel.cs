@@ -10,6 +10,8 @@
 
         public bool IsAssessedByAi { get; set; }
 
+        public TimeSpan TakenTimeToComplete { get; set; }
+
         public bool? IsDeleted { get; set; }
 
         public int? TotalGrade { get; set; }

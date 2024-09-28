@@ -1,4 +1,7 @@
 ﻿@model IEnumerable<CourseViewModel>
+@{
+    const int descriptionSubStringLength = 200;
+}
 
 @foreach (var course in Model)
 {
@@ -9,9 +12,16 @@
                      alt="Hollywood Sign on The Hill"/>
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">@course.Name</h5>
-                    <p class="card-text">
-                        @(course.LongDescription?.Substring(0, Math.Min(100, @course.LongDescription.Length)) + "...")
-                    </p>
+                    @if (!string.IsNullOrWhiteSpace(course.LongDescription))
+                    {
+                        <p class="card-text">
+                            @(course.LongDescription?.Substring(0, Math.Min(descriptionSubStringLength, course.LongDescription.Length)))
+                            @if (course.LongDescription?.Length > descriptionSubStringLength)
+                            {
+                                <span>...</span>
+                            }
+                        </p>
+                    }
                 </div>
             </a>
         </div>
