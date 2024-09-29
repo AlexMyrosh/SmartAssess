@@ -1,4 +1,5 @@
-﻿@model Presentation_Layer.ViewModels.ExamViewModel
+﻿@using Presentation_Layer.ViewModels.Enums
+@model Presentation_Layer.ViewModels.ExamViewModel
 
 @{
     ViewData["Title"] = "UsersAnswers";
@@ -176,11 +177,15 @@
                 </td>
                 <td>
                     <div class="d-flex justify-content-center align-items-center">
-                        <form id="aiEvaluationForm" asp-controller="UserExamPass" asp-action="AiEvaluation">
-                            <input type="hidden" name="userExamAttemptId" value="@Model.UserExamAttempts[i].Id" />
-                            <button type="submit" class="btn btn-outline-info me-2">Assess by AI</button>
-                        </form>
-
+                        @if (Model.UserExamAttempts[i].Status == ExamAttemptStatusViewModel.AssessingByAI)
+                        {
+                            <button class="btn btn-outline-info me-2" disabled="disabled">Assessing by AI</button>
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-outline-info me-2 assessByAiButton" data-question-count="@Model.UserExamAttempts[i].Exam.Questions.Count" data-userExamAttemptId="@Model.UserExamAttempts[i].Id">Assess by AI</button>
+                        }
+                        
                         @Html.ActionLink("Assess manually", "Evaluation", "UserExamPass", new { examId = Model.UserExamAttempts[i].Id }, new { @class = "btn btn-outline-info me-2" })
                         @Html.ActionLink("View answers", "Details", "UserExamPass", new { id = Model.UserExamAttempts[i].Id }, new { @class = "btn btn-outline-info" })
                     </div>
@@ -199,7 +204,77 @@
     }
 </div>
 
+<!-- Notification message -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="testToast" class="toast bg-success text-white" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-body">
+            <div class="d-flex gap-4">
+                <span> <i class="fa fa-check-circle fa-lg"></i></span>
+                <div class="d-flex flex-grow-1 align-items-center">
+                    <span class="fw-semibold" id="testToastMessage" style="font-size: initial;"></span>
+                </div>
+                <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
+    <script>
+        $('.assessByAiButton').on('click', function (e) {
+            e.preventDefault(); // Prevent the default form submission behavior
+
+            var userExamAttemptId = $(this).data('userexamattemptid'); // Get the userExamAttemptId from the button
+
+            $.ajax({
+                url: '@Url.Action("AiEvaluation", "UserExamPass")',
+                type: 'POST',
+                data: { userExamAttemptId: userExamAttemptId }, // Pass the ID to the controller
+                success: function (response) {
+                    alert("AI evaluation completed");
+                },
+                error: function (error) {
+                    // Handle error response
+                    alert("Error during AI evaluation");
+                }
+            });
+
+            var numberOfQuestions = $(this).data('question-count');
+            var timeToComplete = numberOfQuestions * 14;
+
+            var toastEl = $('#testToast');
+            var toastMessage = $('#testToastMessage');
+            toastMessage.text(`Execution started. It can take about ${formatTime(timeToComplete)} to finish`);
+            var toast = new bootstrap.Toast(toastEl);
+            toast.show();
+
+            $(this).addClass('disabled');
+            $(this).text('Assessing by AI');
+        });
+
+        function formatTime(seconds) {
+            // Calculate hours, minutes, and remaining seconds
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const remainingSeconds = seconds % 60;
+
+            // Construct the time string
+            let timeString = '';
+
+            if (hours > 0) {
+                timeString += `${hours} hour${hours > 1 ? 's' : ''}`;
+            }
+            if (minutes > 0) {
+                timeString += (timeString ? ' and ' : '') + `${minutes} minute${minutes > 1 ? 's' : ''}`;
+            }
+            if (remainingSeconds > 0 || timeString === '') {
+                timeString += (timeString ? ' and ' : '') + `${remainingSeconds} second${remainingSeconds !== 1 ? 's' : ''}`;
+            }
+
+            return timeString;
+        }
+    </script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const searchInput = document.getElementById('searchInput');

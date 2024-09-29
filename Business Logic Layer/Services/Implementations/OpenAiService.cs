@@ -1,6 +1,7 @@
 ﻿using Azure;
 using Azure.AI.OpenAI;
 using Business_Logic_Layer.Models;
+using Business_Logic_Layer.Models.Enums;
 using Business_Logic_Layer.Services.Interfaces;
 using Microsoft.Extensions.Options;
 
@@ -22,6 +23,7 @@ namespace Business_Logic_Layer.Services.Implementations
 
         public async Task ExamEvaluationAsync(Guid examAttemptId)
         {
+            await _userExamPassService.SetStatusAsync(examAttemptId, ExamAttemptStatusModel.AssessingByAI);
             var allFeedbacks = new List<string>();
             var userExamAttemptModel = await _userExamPassService.GetByIdWithDetailsAsync(examAttemptId);
             var completionOptions = new ChatCompletionsOptions();
@@ -29,7 +31,7 @@ namespace Business_Logic_Layer.Services.Implementations
             foreach (var userAnswerModel in userExamAttemptModel.UserAnswers)
             {
                 var message = $"Here is a student's response to a question. " +
-                                                   $"Please provide a grade from 1 to {userAnswerModel.Question.MaxGrade} " +
+                                                   $"Please provide a grade from 0 to {userAnswerModel.Question.MaxGrade} " +
                                                    $"and also give some feedback.\n\nQuestion: {userAnswerModel.Question.QuestionText}\n\n" +
                                                    $"Student's Answer: {(string.IsNullOrEmpty(userAnswerModel.AnswerText) ? "<MISS>" : userAnswerModel.AnswerText)}\n\n" +
                                                    $"Teacher's Notes: {(string.IsNullOrEmpty(userAnswerModel.Question.TeacherNoteForAssessment) ? "<MISS>" : userAnswerModel.Question.TeacherNoteForAssessment)}\n\n" +
@@ -58,7 +60,9 @@ namespace Business_Logic_Layer.Services.Implementations
             var overallFeedback = ExtractFeedbackFromAiResponse(overallFeedbackResponse);
             userExamAttemptModel.Feedback = overallFeedback;
             userExamAttemptModel.IsAssessedByAi = true;
-            await _userExamPassService.UpdateAsync(userExamAttemptModel, true);
+            userExamAttemptModel.IsExamAssessed = true;
+            userExamAttemptModel.Status = ExamAttemptStatusModel.Completed;
+            await _userExamPassService.UpdateAsync(userExamAttemptModel);
         }
 
         private int ExtractGradeFromAiResponse(string response)

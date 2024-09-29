@@ -76,7 +76,8 @@ namespace Presentation_Layer.Controllers
             if (ModelState.IsValid)
             {
                 var model = _mapper.Map<UserExamAttemptModel>(viewModel);
-                await _userExamPassService.UpdateAsync(model, true);
+                model.IsExamAssessed = true;
+                await _userExamPassService.UpdateAsync(model);
                 return RedirectToAction("UsersAnswers", "Exam", new { id = viewModel.Exam.Id });
             }
 
@@ -115,10 +116,9 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AiEvaluation(Guid userExamAttemptId)
+        public async Task AiEvaluation(Guid userExamAttemptId)
         {
             await _openAiService.ExamEvaluationAsync(userExamAttemptId);
-            return RedirectToAction("Details", new { id = userExamAttemptId });
         }
     }
 }

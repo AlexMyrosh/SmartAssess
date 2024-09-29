@@ -1,4 +1,6 @@
-﻿namespace Business_Logic_Layer.Models
+﻿using Business_Logic_Layer.Models.Enums;
+
+namespace Business_Logic_Layer.Models
 {
     public class UserExamAttemptModel
     {
@@ -15,6 +17,8 @@
         public bool? IsDeleted { get; set; }
 
         public int? TotalGrade { get; set; }
+
+        public ExamAttemptStatusModel Status { get; set; }
 
         public UserModel? User { get; set; }
 

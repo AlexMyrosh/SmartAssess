@@ -73,6 +73,22 @@
     .image-container:hover .overlay {
         opacity: 1;
     }
+
+    .image-container {
+        display: flex;
+        justify-content: center; /* Center horizontally */
+        align-items: center; /* Center vertically */
+        width: 100%; /* Example block width */
+        height: 300px; /* Example block height */
+        background-color: #f0f0f0; /* Optional: Background color for visual effect */
+        overflow: hidden; /* Hide overflowing parts of the image */
+    }
+
+        .image-container img {
+            max-width: 100%; /* Ensure image does not exceed block width */
+            max-height: 100%; /* Ensure image does not exceed block height */
+            object-fit: contain; /* Keep the aspect ratio, prevent cropping */
+        }
 </style>
 
 <div class="container">
@@ -82,7 +98,7 @@
                 <div class="image-container">
                     @if (string.IsNullOrWhiteSpace(Model.ImagePath))
                     {
-                        <img src="@Url.Content("~/images/default-user-photo.png")" alt="Add user image" class="user-photo"  />
+                        <img src="@Url.Content("~/images/default-user-photo.png")" alt="Add user image" class="user-photo"/>
                     }
                     else
                     {
@@ -147,11 +163,34 @@
                                         </li>
                                         <li id="userLocationInfo" class="mb-3" title="Location">
                                             <i class="fas fa-map-marker-alt display-25 me-3 text-secondary"></i>
-                                            <span id="locationText">@Model.City, @Model.Country</span>
+                                            @if (string.IsNullOrWhiteSpace(Model.City) && string.IsNullOrWhiteSpace(Model.Country))
+                                            {
+                                                <span id="locationText">City not specified, Country not specified</span>
+                                            }
+                                            else if (string.IsNullOrWhiteSpace(Model.City) && !string.IsNullOrWhiteSpace(Model.Country))
+                                            {
+                                                <span id="locationText">@Model.City, Country not specified</span>
+                                            }
+                                            else if (!string.IsNullOrWhiteSpace(Model.City) && string.IsNullOrWhiteSpace(Model.Country))
+                                            {
+                                                <span id="locationText">City not specified, @Model.Country</span>
+                                            }
+                                            else
+                                            {
+                                                <span id="locationText">@Model.City, @Model.Country</span>
+                                            }
+                                            
                                         </li>
                                         <li id="EducationInstitution" class="mb-3" title="Educational institution">
                                             <i class="fas fa-university display-25 me-3 text-secondary"></i>
-                                            <span id="educationalInstitutionText">@Model.EducationalInstitution</span>
+                                            @if (string.IsNullOrWhiteSpace(Model.EducationalInstitution))
+                                            {
+                                                <span>Empty</span>
+                                            }
+                                            else
+                                            {
+                                                <span id="educationalInstitutionText">@Model.EducationalInstitution</span>
+                                            }
                                         </li>
                                     </div>
                                     <div class="col-1">
@@ -679,14 +718,18 @@
 
                 var userCountry = '@Model.Country';
                 var userCity = '@Model.City';
-                $('#country').val(userCountry).change();
+                if (userCountry){
+                    $('#country').val(userCountry).change();
+                }
 
-                var intervalID = setInterval(function () {
-                    if (document.getElementById('city').length > 1) {
-                        clearInterval(intervalID);
-                        $('#city').val(userCity).change();
-                    }
-                }, 100);
+                if (userCity){
+                    var intervalID = setInterval(function () {
+                        if (document.getElementById('city').length > 1) {
+                            clearInterval(intervalID);
+                            $('#city').val(userCity).change();
+                        }
+                    }, 100);
+                }
             });
 
             $('#saveUserInfoButton').on('click', function () {
@@ -700,6 +743,14 @@
                     data: { userId: '@Model.Id', country: newCountryName, city: newCityName, educationalInstitution: newEducationalInstitutionName },
                     success: function (response) {
                         if (response.success) {
+                            if (!newCityName || newCityName.trim() === "") {
+                                newCityName = "City not specified";  // Assign a new value
+                            }
+
+                            if (!newCountryName || newCountryName.trim() === "") {
+                                newCountryName = "Country not specified";  // Assign a new value
+                            }
+
                             $('#locationText').text(`${newCityName}, ${newCountryName}`);
                             $('#educationalInstitutionText').text(`${newEducationalInstitutionName}`);
 

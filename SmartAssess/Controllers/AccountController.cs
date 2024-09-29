@@ -229,7 +229,11 @@ namespace Presentation_Layer.Controllers
                 {
                     var resetToken = await _accountService.GenerateResetTokenAsync(model.Email);
                     var callbackUrl = Url.Action("ResetPassword", "Account", new { userEmail = model.Email, code = resetToken }, protocol: Request.Scheme);
-                    await _accountService.ResetPasswordEmailAsync(model.Email, callbackUrl);
+                    var result = await _accountService.ResetPasswordEmailAsync(model.Email, callbackUrl);
+                    if (!result)
+                    {
+                        Thread.Sleep(5000);
+                    }
                 }
                 else
                 {

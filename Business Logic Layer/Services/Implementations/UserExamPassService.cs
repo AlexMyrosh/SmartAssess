@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Business_Logic_Layer.Models;
+using Business_Logic_Layer.Models.Enums;
 using Business_Logic_Layer.Services.Interfaces;
 using Data_Access_Layer.Models;
+using Data_Access_Layer.Models.Enums;
 using Data_Access_Layer.UnitOfWork.Interfaces;
 
 namespace Business_Logic_Layer.Services.Implementations
@@ -53,7 +55,14 @@ namespace Business_Logic_Layer.Services.Implementations
             return model;
         }
 
-        public async Task<Guid> UpdateAsync(UserExamAttemptModel model, bool isExamChecked)
+        public async Task SetStatusAsync(Guid id, ExamAttemptStatusModel statusToSet)
+        {
+            var entity = await _unitOfWork.UserExamPassRepository.GetByIdAsync(id);
+            entity.Status = (ExamAttemptStatusEntity)statusToSet;
+            await _unitOfWork.SaveAsync();
+        }
+
+        public async Task<Guid> UpdateAsync(UserExamAttemptModel model)
         {
             if (model.Id is null)
             {
@@ -79,10 +88,9 @@ namespace Business_Logic_Layer.Services.Implementations
                 userAttemptEntityFromDb.UserAnswers[i].Feedback = model.UserAnswers[i].Feedback;
             }
 
-            if (isExamChecked)
-            {
-                userAttemptEntityFromDb.IsExamAssessed = true;
-            }
+            userAttemptEntityFromDb.IsExamAssessed = model.IsExamAssessed;
+            userAttemptEntityFromDb.IsAssessedByAi = model.IsAssessedByAi;
+            userAttemptEntityFromDb.Status = (ExamAttemptStatusEntity)model.Status;
 
             await _unitOfWork.SaveAsync();
             return model.Id.Value;

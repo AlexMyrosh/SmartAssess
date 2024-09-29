@@ -1,4 +1,5 @@
 ﻿using Business_Logic_Layer.Models;
+using Business_Logic_Layer.Models.Enums;
 
 namespace Business_Logic_Layer.Services.Interfaces
 {
@@ -14,6 +15,8 @@ namespace Business_Logic_Layer.Services.Interfaces
 
         Task<UserExamAttemptModel?> GetByIdWithDetailsAsync(Guid id);
 
-        Task<Guid> UpdateAsync(UserExamAttemptModel model, bool isExamChecked);
+        Task<Guid> UpdateAsync(UserExamAttemptModel model);
+
+        Task SetStatusAsync(Guid id, ExamAttemptStatusModel statusToSet);
     }
 }

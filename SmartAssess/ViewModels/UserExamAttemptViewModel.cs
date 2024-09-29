@@ -1,4 +1,6 @@
-﻿namespace Presentation_Layer.ViewModels
+﻿using Presentation_Layer.ViewModels.Enums;
+
+namespace Presentation_Layer.ViewModels
 {
     public class UserExamAttemptViewModel
     {
@@ -15,6 +17,8 @@
         public int? TotalGrade { get; set; }
 
         public TimeSpan TakenTimeToComplete { get; set; }
+
+        public ExamAttemptStatusViewModel Status { get; set; }
 
         public UserViewModel? User { get; set; }
 

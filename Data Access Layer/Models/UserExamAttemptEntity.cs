@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Data_Access_Layer.Models.Enums;
 
 namespace Data_Access_Layer.Models
 {
@@ -24,6 +25,8 @@ namespace Data_Access_Layer.Models
         public bool IsAssessedByAi { get; set; }
 
         public TimeSpan TakenTimeToComplete { get; set; }
+
+        public ExamAttemptStatusEntity Status { get; set; }
 
         [Required]
         public string UserId { get; set; }
