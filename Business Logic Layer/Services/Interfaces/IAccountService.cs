@@ -12,6 +12,8 @@ namespace Business_Logic_Layer.Services.Interfaces
 
         Task<UserModel?> GetUserAsync(string id);
 
+        Task<UserModel?> GetUserByEmailAsync(string email);
+
         Task<UserModel?> GetUserWithoutTrackingAsync(string id);
 
         Task<IdentityResult?> UpdateAsync(UserModel user);

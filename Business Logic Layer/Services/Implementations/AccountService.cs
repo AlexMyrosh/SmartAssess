@@ -212,5 +212,12 @@ namespace Business_Logic_Layer.Services.Implementations
             var userId = _userManager.GetUserId(claimsPrincipal);
             return userId;
         }
+
+        public async Task<UserModel?> GetUserByEmailAsync(string email)
+        {
+            var userEntity = await _userManager.FindByEmailAsync(email);
+            var userModel = _mapper.Map<UserModel>(userEntity);
+            return userModel;
+        }
     }
 }

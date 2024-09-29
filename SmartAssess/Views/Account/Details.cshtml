@@ -430,8 +430,6 @@
     @await Html.PartialAsync("_DeleteConfirmationModal", ("RemoveUserImage", "your photo"))
 </form>
 
-
-
 @section Scripts {
 
     <script>
@@ -520,47 +518,46 @@
 
     @* Update user email logic *@
     <script>
-        $(function () {
             $('#updateEmailButton').on('click', function () {
+                debugger;
                 var newEmailValue = $('#newEmailField').val();
 
+                // Validate new email
                 $.ajax({
-                    url: '@Url.Action("ChangeEmail", "Account")',
+                    url: '@Url.Action("ChangeEmailValidation", "Account")',
                     type: 'POST',
-                    data: { userId: '@Model.Id', newEmail: newEmailValue },
+                    data: { newEmail: newEmailValue },
                     success: function (response) {
                         if (response.success) {
+                            debugger;
                             $('#closeEmailUpdateButton').click();
                             $('#closeErrorsforEmailChangeButton').click();
                             $('#newEmailField').val('');
-
                             var toastEl = $('#testToast');
                             var toastMessage = $('#testToastMessage');
                             toastMessage.text(response.message);
                             var toast = new bootstrap.Toast(toastEl);
                             toast.show();
-                        } else {
+
+                            $.ajax({
+                                url: '@Url.Action("ChangeEmail", "Account")',
+                                type: 'POST',
+                                data: { userId: '@Model.Id', newEmail: newEmailValue }
+                            });
+                        }
+                        else{
+                            debugger;
                             $('#emailChangeErrorContainer').show();
                             $('#emailChangeErrorText').text(response.message);
                         }
                     },
                     error: function (error) {
+                        debugger;
                         $('#emailChangeErrorContainer').show();
                         $('#emailChangeErrorText').text(response.message);
                     }
                 });
             });
-
-            $('#closeEmailUpdateButton').on('click', function () {
-                $('#emailChangeErrorContainer').hide();
-                $('#newEmailField').val('');
-            });
-
-            $('#closeEmailUpdateCrossButton').on('click', function () {
-                $('#emailChangeErrorContainer').hide();
-                $('#newEmailField').val('');
-            });
-        });
     </script>
 
     @* Update user password logic *@

@@ -34,13 +34,15 @@ namespace Presentation_Layer.Controllers
             if (ModelState.IsValid)
             {
                 var userModel = _mapper.Map<UserModel>(model);
-                var userEntity = _mapper.Map<UserEntity>(userModel);
                 var result = await _accountService.CreateAsync(userModel, model.Password);
+
                 if (result.Succeeded)
                 {
-                    var confirmationToken = await _accountService.GenerateEmailConfirmationTokenAsync(userModel);
-                    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = userEntity.Id, code = confirmationToken }, protocol: HttpContext.Request.Scheme);
-                    await _accountService.SendConfirmationEmailAsync(userEntity.Email, callbackUrl);
+                    // Start email sending in the background
+                    Task.Run(async () => await SendConfirmationEmailAsync(userModel));
+
+                    var createdUser = await _accountService.GetUserByEmailAsync(model.Email);
+                    var userEntity = _mapper.Map<UserEntity>(createdUser);
                     await _signInManager.SignInAsync(userEntity, isPersistent: false);
                     return RedirectToAction("Index", "Home");
                 }
@@ -52,6 +54,13 @@ namespace Presentation_Layer.Controllers
             }
 
             return View(model);
+        }
+
+        private async Task SendConfirmationEmailAsync(UserModel userEntity)
+        {
+            var confirmationToken = await _accountService.GenerateEmailConfirmationTokenAsync(userEntity);
+            var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = userEntity.Id, code = confirmationToken }, protocol: HttpContext.Request.Scheme);
+            await _accountService.SendConfirmationEmailAsync(userEntity.Email, callbackUrl);
         }
 
         [HttpGet]
@@ -342,6 +351,24 @@ namespace Presentation_Layer.Controllers
             var callbackUrl = Url.Action("ConfirmEmailChange", "Account", new { userId, email = newEmail, token = confirmationToken }, protocol: Request.Scheme);
             await _accountService.ResetEmailAsync(newEmail, callbackUrl);
             return Json(new { success = true, message = "Confirmation email was sent" });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<JsonResult> ChangeEmailValidation(ChangeEmailViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Json(new { success = false, message = string.Join("\n", ModelState.Values.SelectMany(x => x.Errors.Select(y => y.ErrorMessage))) });
+            }
+
+            var isEmailTaken = await _accountService.IsUserExistByEmailAsync(model.NewEmail);
+            if (isEmailTaken)
+            {
+                return Json(new { success = false, message = "Email is taken" });
+            }
+
+            return Json(new { success = true, message = "If email exist - confirmation message was sent" });
         }
 
         public async Task<IActionResult> ConfirmEmailChange(string? token, string? email, string? userId)

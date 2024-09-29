@@ -37,9 +37,8 @@ namespace Business_Logic_Layer.Services.Implementations
             {
                 await client.SendMailAsync(mailMessage);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw new InvalidOperationException("Failed to send email", ex);
             }
         }
     }
