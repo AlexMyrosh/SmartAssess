@@ -6,6 +6,8 @@ namespace Data_Access_Layer.Repositories.Interfaces
     {
         Task<Guid> CreateAsync(UserExamAttemptEntity entity);
 
+        void Update(UserExamAttemptEntity entity);
+
         Task<IEnumerable<UserExamAttemptEntity>> GetAllAsync(bool includeDeleted = false);
 
         Task<IEnumerable<UserExamAttemptEntity>> GetAllWithDetailsAsync(bool includeDeleted = false);

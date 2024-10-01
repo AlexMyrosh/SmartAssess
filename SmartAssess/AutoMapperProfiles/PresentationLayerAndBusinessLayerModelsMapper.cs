@@ -26,7 +26,14 @@ namespace Presentation_Layer.AutoMapperProfiles
             CreateMap<ExamModel, UserExamAttemptViewModel>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.Exam, opt => opt.MapFrom(exam => exam))
-                .ForMember(dest => dest.UserAnswers, opt => opt.MapFrom(src => src.Questions));
+                .ForMember(dest => dest.UserAnswers, opt => opt.MapFrom(src => src.Questions.Select(q => new UserAnswerViewModel
+                {
+                    Question = new ExamQuestionViewModel
+                    {
+                        Id = q.Id
+                    } 
+                })));
+
 
             CreateMap<UserExamAttemptViewModel, UserExamAttemptModel>()
                 .ForMember(dest => dest.UserAnswers, opt => opt.MapFrom(src => src.UserAnswers.Select(sa => new UserAnswerModel
@@ -47,6 +54,7 @@ namespace Presentation_Layer.AutoMapperProfiles
                         Feedback = ua.Feedback,
                         Question = new ExamQuestionViewModel
                         {
+                            Id = ua.QuestionId,
                             QuestionText = ua.Question.QuestionText,
                             MaxGrade = ua.Question.MaxGrade
                         }

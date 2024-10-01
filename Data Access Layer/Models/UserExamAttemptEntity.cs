@@ -26,6 +26,8 @@ namespace Data_Access_Layer.Models
 
         public TimeSpan TakenTimeToComplete { get; set; }
 
+        public DateTimeOffset AttemptStarterAt { get; set; }
+
         public ExamAttemptStatusEntity Status { get; set; }
 
         [Required]

@@ -18,6 +18,8 @@ namespace Presentation_Layer.ViewModels
 
         public TimeSpan TakenTimeToComplete { get; set; }
 
+        public DateTimeOffset AttemptStarterAt { get; set; }
+
         public ExamAttemptStatusViewModel Status { get; set; }
 
         public UserViewModel? User { get; set; }

@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using Business_Logic_Layer.Models;
-using Business_Logic_Layer.Services.Implementations;
+using Business_Logic_Layer.Models.Enums;
 using Business_Logic_Layer.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Presentation_Layer.ViewModels;
+using Presentation_Layer.ViewModels.Enums;
 
 namespace Presentation_Layer.Controllers
 {
@@ -13,15 +14,17 @@ namespace Presentation_Layer.Controllers
     {
         private readonly ICourseService _courseService;
         private readonly IAccountService _accountService;
+        private readonly IUserExamPassService _userExamPassService;
         private readonly IMapper _mapper;
 
         private const int PageSize = 12;
 
-        public CourseController(ICourseService courseService,  IMapper mapper, IAccountService accountService)
+        public CourseController(ICourseService courseService,  IMapper mapper, IAccountService accountService, IUserExamPassService userExamPassService)
         {
             _courseService = courseService;
             _mapper = mapper;
             _accountService = accountService;
+            _userExamPassService = userExamPassService;
         }
 
         [HttpGet]
@@ -117,13 +120,24 @@ namespace Presentation_Layer.Controllers
         {
             var courseModel = await _courseService.GetByIdWithDetailsAsync(id);
             var courseViewModel = _mapper.Map<CourseViewModel>(courseModel);
-            ViewBag.UserId = _accountService.GetUserId(User);
+            var currentUserId = _accountService.GetUserId(User);
+            ViewBag.UserId = currentUserId;
 
             // TODO: Move to Business Logic
             var currentUser = await _accountService.GetUserAsync(User);
             foreach (var exam in courseViewModel.Exams)
             {
                 exam.CurrentUserAttmptNumber = exam.UserExamAttempts.Count(x => x.User.Id == currentUser.Id);
+                var startedExam = exam.UserExamAttempts.FirstOrDefault(x => x.Status == ExamAttemptStatusViewModel.InProgress && x.User.Id == currentUserId);
+                if (startedExam != null && DateTimeOffset.Now - startedExam.AttemptStarterAt > startedExam.Exam?.ExamDuration)
+                {
+                    // set to complete
+                    await _userExamPassService.SetStatusAsync(startedExam.Id.Value, ExamAttemptStatusModel.Completed);
+                }
+                else if(startedExam != null)
+                {
+                    exam.StartedByCurrentUserAttemptId = startedExam?.Id;
+                }
             }
 
             return View(courseViewModel);

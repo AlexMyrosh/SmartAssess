@@ -24,6 +24,8 @@
 
         public int? CurrentUserAttmptNumber { get; set; }
 
+        public Guid? StartedByCurrentUserAttemptId { get; set; }
+
         public CourseViewModel? Course { get; set; }
 
         public List<ExamQuestionViewModel>? Questions { get; set; }

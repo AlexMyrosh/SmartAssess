@@ -21,10 +21,20 @@ namespace Business_Logic_Layer.Services.Implementations
 
         public async Task<Guid> CreateAsync(UserExamAttemptModel model)
         {
+            model.AttemptStarterAt = DateTimeOffset.Now;
             var userExamAttemptEntity = _mapper.Map<UserExamAttemptEntity>(model);
             var createdEntityId = await _unitOfWork.UserExamPassRepository.CreateAsync(userExamAttemptEntity);
             await _unitOfWork.SaveAsync();
             return createdEntityId;
+        }
+
+        public async Task CompleteAttemptAsync(UserExamAttemptModel model)
+        {
+            var userExamAttemptEntity = _mapper.Map<UserExamAttemptEntity>(model);
+            userExamAttemptEntity.Status = ExamAttemptStatusEntity.Completed;
+            _unitOfWork.ClearChangeTracker();
+            _unitOfWork.UserExamPassRepository.Update(userExamAttemptEntity);
+            await _unitOfWork.SaveAsync();
         }
 
         public async Task<IEnumerable<UserExamAttemptModel>> GetAllAsync(bool includeDeleted = false)
@@ -94,6 +104,22 @@ namespace Business_Logic_Layer.Services.Implementations
 
             await _unitOfWork.SaveAsync();
             return model.Id.Value;
+        }
+
+        public async Task SaveIntermediateResultAsync(UserExamAttemptModel model)
+        {
+            if (model.Id is null || model.Id == Guid.Empty)
+            {
+                return;
+            }
+
+            var entityFromDb = await _unitOfWork.UserExamPassRepository.GetByIdWithDetailsAsync(model.Id.Value);
+            foreach (var userAnswer in entityFromDb.UserAnswers)
+            {
+                userAnswer.AnswerText = model.UserAnswers.FirstOrDefault(x => x.Id == userAnswer.Id).AnswerText;
+            }
+            
+            await _unitOfWork.SaveAsync();
         }
     }
 }

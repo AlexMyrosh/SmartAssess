@@ -415,6 +415,10 @@
                                         {
                                             <button class="btn btn-success disabled">Start attempt</button>
                                         }
+                                        else if (Model.Exams[i].StartedByCurrentUserAttemptId != null)
+                                        {
+                                            @Html.ActionLink("Continue attempt", "ContinueAssessments", "UserExamPass", new { startedAttemptId = Model.Exams[i].StartedByCurrentUserAttemptId }, new { @class = "btn btn-success" })
+                                        }
                                         else
                                         {
                                             @Html.ActionLink("Start attempt", "Assessment", "UserExamPass", new { examId = Model.Exams[i].Id }, new { @class = "btn btn-success" })

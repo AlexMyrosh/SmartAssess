@@ -7,6 +7,8 @@ namespace Business_Logic_Layer.Services.Interfaces
     {
         Task<Guid> CreateAsync(UserExamAttemptModel model);
 
+        Task CompleteAttemptAsync(UserExamAttemptModel model);
+
         Task<IEnumerable<UserExamAttemptModel>> GetAllAsync(bool includeDeleted = false);
 
         Task<IEnumerable<UserExamAttemptModel>> GetAllWithDetailsAsync(bool includeDeleted = false);
@@ -18,5 +20,7 @@ namespace Business_Logic_Layer.Services.Interfaces
         Task<Guid> UpdateAsync(UserExamAttemptModel model);
 
         Task SetStatusAsync(Guid id, ExamAttemptStatusModel statusToSet);
+
+        Task SaveIntermediateResultAsync(UserExamAttemptModel model);
     }
 }

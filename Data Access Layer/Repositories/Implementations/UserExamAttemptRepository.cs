@@ -53,6 +53,7 @@ namespace Data_Access_Layer.Repositories.Implementations
         {
             var userExamAttemptEntity = await _sqlContext.Set<UserExamAttemptEntity>()
                 .Include(entity => entity.Exam)
+                .ThenInclude(exam => exam.Course)
                 .Include(entity => entity.User)
                 .Include(entity => entity.UserAnswers)
                 .ThenInclude(sub => sub.Question)
@@ -83,6 +84,11 @@ namespace Data_Access_Layer.Repositories.Implementations
             }
 
             return false;
+        }
+
+        public void Update(UserExamAttemptEntity entity)
+        {
+            _sqlContext.UserExamAttempts.Update(entity);
         }
     }
 }

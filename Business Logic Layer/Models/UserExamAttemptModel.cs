@@ -18,6 +18,8 @@ namespace Business_Logic_Layer.Models
 
         public int? TotalGrade { get; set; }
 
+        public DateTimeOffset AttemptStarterAt { get; set; }
+
         public ExamAttemptStatusModel Status { get; set; }
 
         public UserModel? User { get; set; }

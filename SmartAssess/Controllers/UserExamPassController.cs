@@ -28,14 +28,6 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
-        {
-            var examPassModels = await _userExamPassService.GetAllWithDetailsAsync();
-            var viewModel = _mapper.Map<IEnumerable<UserExamAttemptViewModel>>(examPassModels);
-            return View(viewModel);
-        }
-
-        [HttpGet]
         public async Task<IActionResult> PassedByCurrentUserExams()
         {
             var courseModels = await _courseService.GetAllWithTakenUserExamsAsync(User);
@@ -89,16 +81,30 @@ namespace Presentation_Layer.Controllers
         {
             var examModel = await _examService.GetByIdWithDetailsAsync(examId);
             var viewModel = _mapper.Map<UserExamAttemptViewModel>(examModel);
+            var currentUser = await _accountService.GetUserAsync(User);
+            var examAttemptModel = _mapper.Map<UserExamAttemptModel>(viewModel);
+            examAttemptModel.User = currentUser;
+            var createdAttemptId = await _userExamPassService.CreateAsync(examAttemptModel);
+            viewModel.Id = createdAttemptId;
 
             if (viewModel.Exam.ExamEndDateTime.Value.UtcDateTime - DateTime.UtcNow < viewModel.Exam.ExamDuration)
             {
                 viewModel.Exam.ExamDuration = viewModel.Exam.ExamEndDateTime.Value.UtcDateTime - DateTime.UtcNow;
             }
 
-            // TODO: Move to Business Logic
-            var currentUser = await _accountService.GetUserAsync(User);
             viewModel.Exam.CurrentUserAttmptNumber = viewModel.Exam.UserExamAttempts.Count(x => x.User.Id == currentUser.Id);
             return View(viewModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ContinueAssessments(Guid startedAttemptId)
+        {
+            var model = await _userExamPassService.GetByIdWithDetailsAsync(startedAttemptId);
+            var viewModel = _mapper.Map<UserExamAttemptViewModel>(model);
+
+            viewModel.TakenTimeToComplete = DateTimeOffset.Now - viewModel.AttemptStarterAt;
+
+            return View("Assessment", viewModel);
         }
 
         [HttpPost]
@@ -108,11 +114,18 @@ namespace Presentation_Layer.Controllers
             {
                 var model = _mapper.Map<UserExamAttemptModel>(viewModel);
                 model.User = await _accountService.GetUserAsync(User);
-                var createdItemId = await _userExamPassService.CreateAsync(model);
-                return RedirectToAction("Details", new { id = createdItemId });
+                await _userExamPassService.CompleteAttemptAsync(model);
+                return RedirectToAction("Details", new { id = viewModel.Id });
             }
 
             return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task SaveAssessmentProgress(UserExamAttemptViewModel viewModel)
+        {
+            var model = _mapper.Map<UserExamAttemptModel>(viewModel);
+            await _userExamPassService.SaveIntermediateResultAsync(model);
         }
 
         [HttpPost]
