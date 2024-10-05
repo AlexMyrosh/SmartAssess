@@ -3,7 +3,8 @@ using Business_Logic_Layer.Models;
 using Business_Logic_Layer.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Presentation_Layer.ViewModels;
+using Presentation_Layer.ViewModels.Old;
+using Presentation_Layer.ViewModels.Shared;
 
 namespace Presentation_Layer.Controllers
 {
@@ -22,14 +23,6 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
-        {
-            var examModels = await _examService.GetAllAvailableExamsWithDetailsAsync();
-            var examViewModels = _mapper.Map<IEnumerable<ExamViewModel>>(examModels);
-            return View(examViewModels);
-        }
-
-        [HttpGet]
         public async Task<IActionResult> Details(Guid id)
         {
             var examModel = await _examService.GetByIdWithDetailsAsync(id);
@@ -44,7 +37,7 @@ namespace Presentation_Layer.Controllers
             var courseViewModel = _mapper.Map<CourseViewModel>(courseModel);
             var examViewModel = new ExamViewModel
             {
-                Questions = new List<ExamQuestionViewModel>
+                Questions = new List<QuestionViewModel>
                 {
                     new()
                 },

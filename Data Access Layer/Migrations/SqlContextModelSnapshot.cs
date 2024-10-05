@@ -99,6 +99,9 @@ namespace Data_Access_Layer.Migrations
                     b.Property<DateTimeOffset>("ExamStartDateTime")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<int>("FinalGradeCalculationMethod")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsAssessedByAi")
                         .HasColumnType("bit");
 

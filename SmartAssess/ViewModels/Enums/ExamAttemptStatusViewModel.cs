@@ -1,8 +1,9 @@
-﻿namespace Presentation_Layer.ViewModels.Enums;
-
-public enum ExamAttemptStatusViewModel
+﻿namespace Presentation_Layer.ViewModels.Enums
 {
-    InProgress,
-    AssessingByAI,
-    Completed
+    public enum ExamAttemptStatusViewModel
+    {
+        InProgress,
+        AssessingByAI,
+        Completed
+    }
 }

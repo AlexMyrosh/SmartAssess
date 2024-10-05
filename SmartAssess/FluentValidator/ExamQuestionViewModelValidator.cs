@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
-using Presentation_Layer.ViewModels;
+using Presentation_Layer.ViewModels.Shared;
 
 namespace Presentation_Layer.FluentValidator
 {
-    public class ExamQuestionViewModelValidator : AbstractValidator<ExamQuestionViewModel>
+    public class ExamQuestionViewModelValidator : AbstractValidator<QuestionViewModel>
     {
         public ExamQuestionViewModelValidator()
         {

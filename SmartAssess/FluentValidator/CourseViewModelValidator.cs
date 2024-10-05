@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Presentation_Layer.ViewModels;
+using Presentation_Layer.ViewModels.Old;
 
 namespace Presentation_Layer.FluentValidator
 {

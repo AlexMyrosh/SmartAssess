@@ -1,4 +1,5 @@
-﻿@model PaginationCourseViewModel
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Presentation_Layer.ViewModels.Course.AppliedCoursesViewModel
 
 @{
     ViewData["Title"] = "My courses";
@@ -15,7 +16,7 @@
         }
     </div>
 
-    @if (Model.Items.Any())
+    @if (Model.CourseListWithPagination.Courses.Any())
     {
         <div class="form-floating mb-3">
             <input type="text" id="searchInput" name="searchQuery" class="form-control" placeholder="Search courses..." aria-label="Search courses" onkeyup="filterCourses()">
@@ -23,7 +24,7 @@
         </div>
 
         <div id="courseListAndPagination">
-            @Html.Partial("PartialViews/_CourseListAndPagination", Model)
+            @Html.Partial("PartialViews/_CourseListAndPagination", Model.CourseListWithPagination)
         </div>
     }
     else

@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@model Presentation_Layer.ViewModels.ExamViewModel
+@using Presentation_Layer.ViewModels.Enums
+@model Presentation_Layer.ViewModels.Exam.ExamViewModel
 
 <style>
     .circle-btn {
@@ -41,29 +42,48 @@
                 <label id="examStartDateTimeForm" asp-for="ExamStartDateTime" class="form-label"></label>
             </div>
         </div>
+
         <div class="col">
             <div class="form-floating mb-3">
                 <input for="examEndDateTimeForm" type="datetime-local" asp-for="ExamEndDateTime" class="form-control" />
                 <label id="examEndDateTimeForm" asp-for="ExamEndDateTime" class="form-label"></label>
             </div>
         </div>
+
         <div class="col">
             <div class="form-floating mb-3">
                 <input for="examDurationForm" asp-for="ExamDuration" type="time" class="form-control"/>
                 <label id="examDurationForm" asp-for="ExamDuration" class="form-label"></label>
             </div>
         </div>
-        
+    </div>
+
+    <div class="row">
         <div class="col">
             <div class="form-floating mb-3">
                 <input for="examThresholdGradeForm" asp-for="MinimumPassGrade" type="number" class="form-control" />
                 <label id="examThresholdGradeForm" asp-for="MinimumPassGrade" class="form-label"></label>
             </div>
         </div>
+
         <div class="col">
             <div class="form-floating mb-3">
                 <input for="examMaxAttemptAllowedForm" asp-for="MaxAttemptsAllowed" type="number" class="form-control" />
                 <label id="examMaxAttemptAllowedForm" asp-for="MaxAttemptsAllowed" class="form-label"></label>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="form-floating">
+                @Html.DropDownListFor(model => model.FinalGradeCalculationMethod,
+                         Enum.GetValues(typeof(FinalGradeCalculationMethodViewModel)).Cast<FinalGradeCalculationMethodViewModel>()
+                         .Select(e => new SelectListItem
+                {
+                    Value = e.ToString(),
+                    Text = e.ToString()
+                }),
+                         new { @class = "form-select", id = "finalGradeCalculationMethodForm" })
+                <label for="finalGradeCalculationMethodForm" asp-for="FinalGradeCalculationMethod"></label>
             </div>
         </div>
     </div>
@@ -106,5 +126,5 @@
             </a>
         </div>
     </div>
-    @Html.HiddenFor(model => model.Course.Id)
+    @Html.HiddenFor(model => model.CourseId)
 </div>

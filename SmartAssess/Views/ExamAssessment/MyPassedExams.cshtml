@@ -1,0 +1,222 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Presentation_Layer.ViewModels.ExamAssessment.MyPassedExamsViewModel
+
+@{
+    ViewData["Title"] = "Passed exams";
+}
+
+<style>
+    .image-container {
+        margin-left: -12px;
+        margin-right: -12px;
+    }
+
+    .image-container img {
+        max-width: 100%;
+        min-width: 100%;
+    }
+
+    .first-level-collapse{
+        background-color: #e3e4e6 !important;
+    }
+
+    .second-level-collapse{
+        background-color: #E9EAEC !important;
+    }
+
+    .collapsed {
+        background-color: white !important;
+    }
+
+    .centered {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        text-align: center;
+        color: white;
+    }
+
+    .image-container {
+        width: calc(100% + 24px);
+        position: relative;
+        overflow: hidden;
+        margin-left: -12px;
+        margin-right: -12px;
+        margin-top: -16px;
+    }
+
+        .image-container img {
+            filter: brightness(50%);
+            width: 100vw;
+            height: auto;
+            object-fit: cover;
+        }
+</style>
+
+<div class="panel-group">
+    <div class="container-fluid" style="padding: 0;">
+        <div class="decor-default">
+            <div class="contact">
+                <div class="controls">
+                    <div class="image-container">
+                        <img src="/images/banners/banner-1.jpg">
+                        <div class="centered">
+                            <h1 class="display-1" style="font-size: 6vw; font-weight: 400;">
+                                Course marks
+                            </h1>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container" style="margin-top: 30px; margin-bottom: 30px;">
+                    <div class="mt-5">
+                        @if (Model.TakenExamCourses.Count == 0)
+                        {
+                            <div class="text-center">
+                                <h1 class="display-4">No assessed exams</h1>
+                            </div>
+                        }
+
+                        @foreach (var course in Model.TakenExamCourses)
+                        {
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="course-@course.CourseId-header">
+                                    <button class="accordion-button collapsed first-level-collapse"
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#course-@course.CourseId"
+                                            aria-expanded="false"
+                                            aria-controls="course-@course.CourseId"
+                                            style="box-shadow: none;">
+                                        @course.CourseName
+                                    </button>
+                                </h2>
+
+                                <div id="course-@course.CourseId"
+                                     class="accordion-collapse collapse"
+                                     aria-labelledby="course-@course.CourseId-header">
+                                    @foreach (var exam in course.TakenExams)
+                                    {
+                                        <div class="accordion-item" style="border-left: none;border-right: none;">
+                                            <h2 class="accordion-header" id="course-@course.CourseId-exam-@exam.ExamId-header">
+                                                <button class="accordion-button collapsed second-level-collapse"
+                                                        type="button"
+                                                        data-bs-toggle="collapse"
+                                                        data-bs-target="#course-@course.CourseId-exam-@exam.ExamId"
+                                                        aria-expanded="false"
+                                                        aria-controls="course-@course.CourseId-exam-@exam.ExamId"
+                                                        style="box-shadow: none;">
+                                                    @exam.ExamName
+                                                </button>
+                                            </h2>
+                                            <div id="course-@course.CourseId-exam-@exam.ExamId"
+                                                 class="accordion-collapse collapse"
+                                                 aria-labelledby="course-@course.CourseId-exam-@exam.ExamId-header">
+                                                <div class="accordion-body p-0">
+                                                    <section class="intro">
+                                                        <div class="gradient-custom-1 h-100">
+                                                            <div class="mask d-flex align-items-center h-100">
+                                                                <div class="container" style="padding: 0;">
+                                                                    <div class="row justify-content-center">
+                                                                        <div class="col-12">
+                                                                            <div class="table-responsive bg-white">
+                                                                                <table class="table mb-0">
+                                                                                    <thead>
+                                                                                    <tr>
+                                                                                        <th class="text-center" scope="col">Attempt</th>
+                                                                                        <th class="text-center" scope="col">Grade</th>
+                                                                                        <th class="text-center" scope="col">Max Grade</th>
+                                                                                        <th class="text-center" scope="col">Min Pass Grade</th>
+                                                                                        <th class="text-center" scope="col">Result</th>
+                                                                                        <th class="text-center" scope="col"></th>
+                                                                                    </tr>
+                                                                                    </thead>
+                                                                                    <tbody>
+                                                                                    @for (var i = 0; i < exam.ExamAttempts.Count; i++)
+                                                                                    {
+                                                                                        <tr>
+                                                                                            <td class="text-center align-middle">@(i + 1)</td>
+                                                                                            <td class="text-center align-middle">
+                                                                                                @if (exam.ExamAttempts[i].IsExamAssessed)
+                                                                                                {
+                                                                                                        @exam.ExamAttempts[i].TotalGrade
+                                                                                                }
+                                                                                                else
+                                                                                                {
+                                                                                                    <span>-</span>
+                                                                                                }
+                                                                                            </td>
+                                                                                                <td class="text-center align-middle">@exam.ExamMaxPossibleExamGrade</td>
+                                                                                                <td class="text-center align-middle">@exam.ExamMinPassGrade</td>
+                                                                                            <td class="text-center align-middle">
+                                                                                                    @if (exam.ExamAttempts[i].IsExamAssessed)
+                                                                                                {
+                                                                                                        @if (exam.ExamAttempts[i].TotalGrade >= exam.ExamMinPassGrade)
+                                                                                                    {
+                                                                                                        <span class="text-success">Passed</span>
+                                                                                                    }
+                                                                                                    else
+                                                                                                    {
+                                                                                                        <span class="text-danger">Failed</span>
+                                                                                                    }
+                                                                                                }
+                                                                                                else
+                                                                                                {
+                                                                                                    <span class="text-warning">Not Assessed Yet</span>
+                                                                                                }
+                                                                                            </td>
+                                                                                            <td class="text-center align-middle">
+                                                                                                    <a class="btn btn-outline-primary" asp-controller="ExamAssessment" asp-action="Details" asp-route-id="@exam.ExamAttempts[i].AttemptId">
+                                                                                                    Details
+                                                                                                </a>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    }
+                                                                                    @if (exam.FinalAttempt != null)
+                                                                                    {
+                                                                                        <tr style="background-color: #DAF7A6;">
+                                                                                            <td class="text-center align-middle">Final grade (@exam.FinalGradeCalculationMethod)</td>
+                                                                                            <td class="text-center align-middle">
+                                                                                                    @exam.FinalAttempt.TotalGrade
+                                                                                            </td>
+                                                                                            <td class="text-center align-middle">@exam.ExamMaxPossibleExamGrade</td>
+                                                                                            <td class="text-center align-middle">@exam.ExamMinPassGrade</td>
+                                                                                            <td class="text-center align-middle">
+                                                                                                @if (exam.FinalAttempt.TotalGrade >= exam.ExamMinPassGrade)
+                                                                                                {
+                                                                                                    <span class="text-success">Passed</span>
+                                                                                                }
+                                                                                                else
+                                                                                                {
+                                                                                                    <span class="text-danger">Failed</span>
+                                                                                                }
+                                                                                            </td>
+                                                                                            <td class="text-center align-middle">
+                                                                                                
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    }
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </section>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -5,7 +5,9 @@ using Data_Access_Layer.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Presentation_Layer.ViewModels;
+using Presentation_Layer.ViewModels.Account;
+using Presentation_Layer.ViewModels.Old;
+using Presentation_Layer.ViewModels.Shared;
 
 namespace Presentation_Layer.Controllers
 {

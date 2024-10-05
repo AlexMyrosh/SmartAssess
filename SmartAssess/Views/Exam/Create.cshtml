@@ -1,11 +1,11 @@
-﻿@model Presentation_Layer.ViewModels.ExamViewModel
+﻿@model Presentation_Layer.ViewModels.Exam.ExamViewModel
 
 @{
     ViewData["Title"] = "Create";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Create exam for course "@Html.DisplayFor(model => model.Course.Name)"</h1>
+    <h1 class="display-4">Create exam for course "@Html.DisplayFor(model => model.CourseName)"</h1>
 </div>
 
 <div class="container">
@@ -15,7 +15,7 @@
         <div class="container">
             <div class="row">
                 <div class="col text-center">
-                    @Html.HiddenFor(model=>model.Course.Id)
+                    @Html.HiddenFor(model => model.CourseId)
                     <input type="submit" value="Create" class="btn btn-outline-success" />
                 </div>
                 <div asp-validation-summary="All" class="text-danger"></div>

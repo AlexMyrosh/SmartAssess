@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Business_Logic_Layer.Models;
 using Data_Access_Layer.Models;
-using Presentation_Layer.ViewModels;
+using Presentation_Layer.ViewModels.Account;
+using Presentation_Layer.ViewModels.Old;
+using Presentation_Layer.ViewModels.Shared;
 
 namespace Presentation_Layer.AutoMapperProfiles
 {
@@ -11,7 +13,7 @@ namespace Presentation_Layer.AutoMapperProfiles
         {
             CreateMap<PaginationCourseModel, PaginationCourseViewModel>().ReverseMap();
             CreateMap<ExamViewModel, ExamModel>().ReverseMap();
-            CreateMap<ExamQuestionViewModel, ExamQuestionModel>().ReverseMap();
+            CreateMap<QuestionViewModel, ExamQuestionModel>().ReverseMap();
             CreateMap<UserAnswerViewModel, UserAnswerModel>().ReverseMap();
             CreateMap<RegisterViewModel, UserEntity>().ReverseMap();
             CreateMap<RegisterViewModel, UserModel>().ReverseMap();
@@ -28,7 +30,7 @@ namespace Presentation_Layer.AutoMapperProfiles
                 .ForMember(dest => dest.Exam, opt => opt.MapFrom(exam => exam))
                 .ForMember(dest => dest.UserAnswers, opt => opt.MapFrom(src => src.Questions.Select(q => new UserAnswerViewModel
                 {
-                    Question = new ExamQuestionViewModel
+                    Question = new QuestionViewModel
                     {
                         Id = q.Id
                     } 
@@ -52,7 +54,7 @@ namespace Presentation_Layer.AutoMapperProfiles
                         AnswerText = ua.AnswerText,
                         Grade = ua.Grade,
                         Feedback = ua.Feedback,
-                        Question = new ExamQuestionViewModel
+                        Question = new QuestionViewModel
                         {
                             Id = ua.QuestionId,
                             QuestionText = ua.Question.QuestionText,

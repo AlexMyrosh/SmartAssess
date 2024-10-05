@@ -4,8 +4,8 @@ using Business_Logic_Layer.Models.Enums;
 using Business_Logic_Layer.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Presentation_Layer.ViewModels;
 using Presentation_Layer.ViewModels.Enums;
+using Presentation_Layer.ViewModels.Shared;
 
 namespace Presentation_Layer.Controllers
 {
@@ -124,11 +124,10 @@ namespace Presentation_Layer.Controllers
             ViewBag.UserId = currentUserId;
 
             // TODO: Move to Business Logic
-            var currentUser = await _accountService.GetUserAsync(User);
             foreach (var exam in courseViewModel.Exams)
             {
-                exam.CurrentUserAttmptNumber = exam.UserExamAttempts.Count(x => x.User.Id == currentUser.Id);
-                var startedExam = exam.UserExamAttempts.FirstOrDefault(x => x.Status == ExamAttemptStatusViewModel.InProgress && x.User.Id == currentUserId);
+                exam.CurrentUserAttmptNumber = exam.UsersExamPasses.FirstOrDefault(x => x.User.Id == currentUserId).UserExamAttempts.Count;
+                var startedExam = exam.UsersExamPasses.FirstOrDefault(x => x.User.Id == currentUserId).UserExamAttempts.FirstOrDefault(y => y.Status == ExamAttemptStatusViewModel.InProgress);
                 if (startedExam != null && DateTimeOffset.Now - startedExam.AttemptStarterAt > startedExam.Exam?.ExamDuration)
                 {
                     // set to complete

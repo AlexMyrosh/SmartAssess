@@ -1,56 +1,9 @@
-﻿@model List<Presentation_Layer.ViewModels.UserExamAttemptViewModel>
+﻿@model Presentation_Layer.ViewModels.Exam.ExamStatisticViewModel
 
 @{
-    var assessedUserAttempts = Model.Where(x => x.IsExamAssessed).ToList();
-
     ViewData["Title"] = "ExamStatistic";
-    var orderedByGradeFromMaxToMin = assessedUserAttempts.OrderByDescending(x => x.TotalGrade).ToList();
-    var orderedByGradeFromMinToMax = assessedUserAttempts.OrderBy(x => x.TotalGrade).ToList();
-
-
-    //TODO: move all these variables to new model
-    int examMaxGrade = 0;
-    if (Model.Count > 0)
-    {
-        examMaxGrade = Model.First().Exam.Questions.Sum(q => q.MaxGrade).Value;
-    }
-
-    var categoryCount = examMaxGrade switch
-    {
-        <= 5 => 2,
-        <= 15 => 5,
-        <= 30 => 6,
-        <= 45 => 7,
-        <= 60 => 8,
-        _ => 10
-    };
-
-    var categoryStep = (int)Math.Ceiling((float)examMaxGrade / categoryCount);
-
-    var categories = Enumerable.Range(0, categoryCount)
-        .Select(n => n == categoryCount - 1 
-            ? $"{n * categoryStep}-{examMaxGrade}"
-            : $"{n * categoryStep}-{(n + 1) * categoryStep - 1}")
-        .ToList();
-
-    var counts = new int[categoryCount];
-
-    foreach (var student in Model.Where(x=>x.IsExamAssessed))
-    {
-        var categoryIndex = student.TotalGrade / categoryStep;
-        counts[categoryIndex.Value]++;
-    }
-
-    TimeSpan averageTimeSpan;
-    if (Model.Count > 0)
-    {
-        var averageTakenTime = Model.Average(item => item.TakenTimeToComplete.TotalSeconds);
-        averageTimeSpan = TimeSpan.FromSeconds(averageTakenTime);
-    }
-    else
-    {
-        averageTimeSpan = TimeSpan.Zero;
-    }
+    var orderedByGradeFromMaxToMin = Model.AssessedUserAttempts.OrderByDescending(x => x.TotalGrade).ToList();
+    var orderedByGradeFromMinToMax = Model.AssessedUserAttempts.OrderBy(x => x.TotalGrade).ToList();
 }
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -180,7 +133,7 @@
                         <div class="card bg-c-blue order-card flex-fill">
                             <div class="card-body">
                                 <h2 class="m-b-20 text-center">Passed exams</h2>
-                                <h3 class="text-center"><span>@Model.Count students</span></h3>
+                                <h3 class="text-center"><span>@Model.ExamTakerCount students</span></h3>
                             </div>
                         </div>
                     </div>
@@ -189,10 +142,10 @@
                         <div class="card bg-c-pink order-card flex-fill">
                             <div class="card-body">
                                 <h2 class="m-b-20 text-center">Average time to complete</h2>
-                                @if (Model.Count > 0)
+                                @if (Model.UserAttempts.Count > 0)
                                 {
                                     <h3 class="text-center">
-                                        <span>@averageTimeSpan.ToString(@"hh\:mm\:ss")</span>
+                                        <span>@Model.AverageTimeSpentToCompleteExam.ToString(@"hh\:mm\:ss")</span>
                                     </h3>
                                 }
                                 else
@@ -207,9 +160,9 @@
                         <div class="card bg-c-purple order-card flex-fill">
                             <div class="card-body">
                                 <h2 class="m-b-20 text-center">Average grade</h2>
-                                @if (Model.Count > 0)
+                                @if (Model.UserAttempts.Count > 0)
                                 {
-                                    <h3 class="text-center"><span>@Model.Where(x=>x.IsExamAssessed).Average(s => s.TotalGrade)</span></h3>
+                                    <h3 class="text-center"><span>@Model.ExamTakerAverageGrade</span></h3>
                                 }
                                 else
                                 {
@@ -220,7 +173,7 @@
                     </div>
                 </div>
                 
-                @if (assessedUserAttempts.Count > 0)
+                @if (Model.AssessedUserAttempts.Count > 0)
                 {
                     <div class="row justify-content-center">
                         <div class="col-md-6">
@@ -230,15 +183,15 @@
                                         Top 5 students with best grades
                                     </h5>
                                 </div>
-                                @for (var i = 0; i < assessedUserAttempts.Count; i++)
+                                @for (var i = 0; i < Model.AssessedUserAttempts.Count; i++)
                                 {
                                     <div class="card-body d-flex justify-content-between" style="background-color: #f2f4f6; margin: 10px; border-radius: 10px;">
                                         <span>
-                                            @(i + 1). @orderedByGradeFromMaxToMin[i].User.FirstName @orderedByGradeFromMaxToMin[i].User.LastName
+                                            @(i + 1). @orderedByGradeFromMaxToMin[i].UserFirstName @orderedByGradeFromMaxToMin[i].UserLastName
                                         </span>
 
                                         <span>
-                                            @orderedByGradeFromMaxToMin[i].TotalGrade/@orderedByGradeFromMaxToMin[i].Exam.Questions.Sum(q => q.MaxGrade)
+                                            @orderedByGradeFromMaxToMin[i].TotalGrade/@Model.MaxPossibleExamGrade
                                         </span>
                                     </div>
 
@@ -259,15 +212,15 @@
                                     </h5>
                                 </div>
 
-                                @for (var i = 0; i < assessedUserAttempts.Count; i++)
+                                @for (var i = 0; i < Model.AssessedUserAttempts.Count; i++)
                                 {
                                     <div class="card-body d-flex justify-content-between" style="background-color: #f2f4f6; margin: 10px; border-radius: 10px;">
                                         <span>
-                                            @(i + 1). @orderedByGradeFromMinToMax[i].User.FirstName @orderedByGradeFromMinToMax[i].User.LastName
+                                            @(i + 1). @orderedByGradeFromMinToMax[i].UserFirstName @orderedByGradeFromMinToMax[i].UserLastName
                                         </span>
 
                                         <span>
-                                            @orderedByGradeFromMinToMax[i].TotalGrade/@orderedByGradeFromMinToMax[i].Exam.Questions.Sum(q => q.MaxGrade)
+                                            @orderedByGradeFromMinToMax[i].TotalGrade/@Model.MaxPossibleExamGrade
                                         </span>
                                     </div>
 
@@ -281,7 +234,7 @@
                     </div>
                 }
                 
-                @if (assessedUserAttempts.Count == 0)
+                @if (Model.AssessedUserAttempts.Count == 0)
                 {
                     <div class="text-center mb-5">
                         <h1 class="display-1">
@@ -290,7 +243,7 @@
                     </div>
                 }
 
-                @if (Model.Count > 0)
+                @if (Model.UserAttempts.Count > 0)
                 {
                     <div class="row">
                         <div class="col-md-6 d-flex flex-column align-items-center justify-content-center  mb-5 mt-5" style="height: 50vh;">
@@ -326,9 +279,9 @@
                 labels: ['Passed', 'Failed', 'Not assessed'],
                 datasets: [{
                     data: [
-                        @Model.Count(s => s.IsAssessedByAi &&  s.TotalGrade >= s.Exam.MinimumPassGrade),
-                        @Model.Count(s => s.IsAssessedByAi && s.TotalGrade < s.Exam.MinimumPassGrade),
-                        @Model.Count(s => !s.IsExamAssessed)
+                        @Model.PassedExamNumberOfUsers,
+                        @Model.FailedExamNumberOfUsers,
+                        @Model.WaitingForAssessmentNumberOfUserAttempts
                     ],
                     backgroundColor: [
                         'rgba(75, 192, 192, 0.2)',
@@ -362,9 +315,9 @@
                 labels: ['Checked by AI', 'Checked manually', 'Not assessed'],
                 datasets: [{
                     data: [
-                        @Model.Count(s => s.IsAssessedByAi && s.IsExamAssessed),
-                        @Model.Count(s => !s.IsAssessedByAi && s.IsExamAssessed),
-                        @Model.Count(s => !s.IsExamAssessed)
+                        @Model.ExamAssessedByAiNumberOfUserAttempts,
+                        @Model.ExamAssessedManuallyNumberOfUserAttempts,
+                        @Model.WaitingForAssessmentNumberOfUserAttempts
                         ],
                     backgroundColor: [
                         'rgba(76, 175, 80, 0.2)',  // Checked by AI (Light Green)
@@ -395,9 +348,9 @@
         var chart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: @Html.Raw(Json.Serialize(categories)),
+                labels: @Html.Raw(Json.Serialize(Model.ExamGradeDistribution)),
                 datasets: [{
-                    data: @Html.Raw(Json.Serialize(counts)),
+                    data: @Html.Raw(Json.Serialize(Model.UserGradeDistribution)),
                     backgroundColor: 'rgba(75, 192, 192, 0.5)',
                     borderColor: 'rgba(75, 192, 192, 1)',
                     borderWidth: 1

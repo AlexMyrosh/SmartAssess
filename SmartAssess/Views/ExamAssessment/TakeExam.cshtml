@@ -1,0 +1,236 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Presentation_Layer.ViewModels.ExamAssessment.TakeExamViewModel
+@{
+    ViewData["Title"] = Model.ExamName;
+}
+
+<form asp-controller="ExamAssessment" asp-action="Assessment" id="myForm">
+    <div class="my-container">
+        <div class="row h-100 g-3">
+            <!-- Left Block: Pagination -->
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Exam info</h4>
+                        <p><strong>Course:</strong> @Model.CourseName</p>
+                        <p><strong>Exam:</strong> @Model.ExamName</p>
+                        <p><strong>Description:</strong> @Model.ExamDescription</p>
+                        <p><strong>Attempt:</strong> @Model.UserAttemptCount of @Model.ExamMaxAttemptsAllowed</p>
+                        <p><strong>Threshold score:</strong> @Model.ExamMinPassGrade</p>
+                        <p><strong>Max score:</strong> @Model.MaxPossibleExamGrade</p>
+                        <p><strong>Time Remaining:</strong> <span id="countdown-timer"></span></p>
+                        <p><strong>Questions:</strong></p>
+                        <div class="container d-flex">
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination" id="pagination-nav">
+                                    @for (int i = 0; i < Model.QuestionAnswers.Count; i++)
+                                    {
+                                        <li class="page-item me-2" data-page="@i">
+                                            <a class="page-link" href="javascript:void(0);" onclick="showQuestion(@i)">
+                                                @(i + 1)
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </nav>
+                        </div>
+                        <div class="container d-flex align-items-center justify-content-center">
+                            <div>
+                                <button id="submitExamButton" class="btn btn-success">Submit exam</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-8">
+                <div class="card">
+                    @for (var i = 0; i < Model.QuestionAnswers.Count; i++)
+                    {
+                        <div class="card-body question" id="question-@i">
+                            <h5 class="card-title">Question @(i + 1)</h5>
+                            <p class="card-text">@Model.QuestionAnswers[i].QuestionText</p>
+                            <p><strong>Max grade for this question:</strong> @Model.QuestionAnswers[i].QuestionMaxGrade</p>
+                            <textarea asp-for="QuestionAnswers[i].AnswerText" class="form-control" style="flex-grow: 1; margin-top: 10px;" placeholder="Enter your answer here..."></textarea>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    window.addEventListener("beforeunload", function (e) {
+        let questions = document.querySelectorAll('.question');
+
+        const dataToSend = {
+            Id: 'id-here',
+            UserAnswers: []
+        };
+        
+        questions.forEach((question, index) => {
+            let studentAnswer = question.querySelector('textarea').value;
+            let hiddenInput = question.querySelector(`#UserAnswers_${index}__Id`);
+            if (hiddenInput) {
+                let userAnswerId = hiddenInput.value;
+
+                // Add each answer's data to the UserAnswers array
+                dataToSend.UserAnswers.push({
+                    Id: userAnswerId,
+                    AnswerText: studentAnswer
+                });
+            }
+        });
+
+        $.ajax({
+            url: '@Url.Action("SaveAssessmentProgress", "ExamAssessment")',
+            type: 'POST',
+            data: { viewModel: dataToSend }
+        });
+    });
+
+    function freezeUI(seconds) {
+        const now = Date.now();
+        const end = now + seconds * 1000;
+
+        while (Date.now() < end) {
+            // Busy-waiting to block the UI
+        }
+    }
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialize the countdown timer:
+        var duration = '@(Model.ExamDuration - Model.TakenTimeToComplete)';
+        var timeParts = duration.split(':');
+        var examDurationInSeconds = (+timeParts[0]) * 3600 + (+timeParts[1]) * 60 + (+timeParts[2]);
+
+        var countdownElement = document.getElementById('countdown-timer');
+        startTimer(examDurationInSeconds, countdownElement);
+    });
+
+    let timer;
+
+    function startTimer(duration, display) {
+        timer = duration;
+        var hours, minutes, seconds;
+        var endTimer = setInterval(function () {
+            hours = parseInt(timer / 3600, 10);
+            minutes = parseInt((timer % 3600) / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+
+            hours = hours < 10 ? "0" + hours : hours;
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            display.textContent = hours + ":" + minutes + ":" + seconds;
+
+            if (--timer < 0) {
+                clearInterval(endTimer);
+                // Automatically submit the form when time is up
+                $("#submitExamButton").click();
+            }
+        }, 1000);
+    }
+
+    // Update the form on submit with the time spent
+    document.getElementById("myForm").addEventListener("submit", function () {
+        var timeSpentInSeconds = @Model.ExamDuration.TotalSeconds - timer;
+
+        // Convert timeSpentInSeconds to hh:mm:ss format
+        var spentHours = parseInt(timeSpentInSeconds / 3600, 10);
+        var spentMinutes = parseInt((timeSpentInSeconds % 3600) / 60, 10);
+        var spentSeconds = parseInt(timeSpentInSeconds % 60, 10);
+
+        spentHours = spentHours < 10 ? "0" + spentHours : spentHours;
+        spentMinutes = spentMinutes < 10 ? "0" + spentMinutes : spentMinutes;
+        spentSeconds = spentSeconds < 10 ? "0" + spentSeconds : spentSeconds;
+
+        // Set the time spent in the hidden field
+        document.getElementById("timerValue").value = spentHours + ":" + spentMinutes + ":" + spentSeconds;
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialize to show the first question
+        showQuestion(0);
+    });
+
+    function showQuestion(currentPage) {
+        let allPageItems = document.querySelectorAll('#pagination-nav .page-item');
+        let allQuestions = document.querySelectorAll(".question");
+
+        // Update the active class on pagination items
+        allPageItems.forEach((item, index) => {
+            if (index === currentPage) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+
+        // Display the corresponding question
+        allQuestions.forEach(question => {
+            if (question.id === `question-${currentPage}`) {
+                question.classList.add('active');
+            } else {
+                question.classList.remove('active');
+            }
+        });
+    }
+</script>
+
+<style>
+    .card {
+        height: 100%;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .my-container {
+        padding: 20px;
+        /* height: calc(100vh - 129px); */
+    }
+
+    #answer-textarea {
+        flex-grow: 1; /* Grow to take up all available space */
+        margin-top: 10px; /* Adjust based on design */
+        resize: none; /* Optional: Prevent manual resizing */
+    }
+
+    .question {
+        display: none;
+        flex-direction: column;
+    }
+
+    .question.active {
+        display: flex;
+    }
+
+    .pagination {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center; /* This centers the pagination items */
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .page-link {
+        padding: 5px 10px;
+        text-decoration: none;
+        color: #007bff;
+        border: 1px solid #dee2e6;
+        background-color: #fff;
+        cursor: pointer;
+    }
+
+    .page-item.active .page-link {
+        color: #fff;
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+</style>

@@ -1,4 +1,6 @@
-﻿namespace Business_Logic_Layer.Models
+﻿using Business_Logic_Layer.Models.Enums;
+
+namespace Business_Logic_Layer.Models
 {
     public class ExamModel
     {
@@ -19,6 +21,8 @@
         public bool? IsAssessedByAi { get; set; }
 
         public int? MinimumPassGrade { get; set; }
+
+        public FinalGradeCalculationMethodModel FinalGradeCalculationMethod { get; set; }
 
         public bool? IsDeleted { get; set; }
 

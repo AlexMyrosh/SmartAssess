@@ -1,0 +1,571 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Presentation_Layer.ViewModels.Course.CourseDetailsViewModel
+
+@{
+    ViewData["Title"] = Model.Name;
+    bool isUserAppliedForCourse = false;
+
+    if (User.IsInRole(Data_Access_Layer.Roles.Roles.Student))
+    {
+        isUserAppliedForCourse = Model.AppliedUsers.Any(user => user.Id == ViewBag.UserId);
+    }
+    else if (User.IsInRole(Data_Access_Layer.Roles.Roles.Teacher))
+    {
+        isUserAppliedForCourse = Model.TeacherIds.Any(userId => userId == ViewBag.UserId);
+    }
+
+    var currentDateTime = DateTimeOffset.UtcNow;
+}
+
+<style>
+    .centered {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        text-align: center;
+        color: white;
+    }
+
+    .image-container {
+        width: calc(100% + 24px);
+        position: relative;
+        overflow: hidden;
+        margin-left: -12px;
+        margin-right: -12px;
+        margin-top: -16px;
+    }
+
+    .image-container img {
+        filter: brightness(50%);
+        width: 100vw;
+        height: auto;
+        object-fit: cover;
+    }
+
+    .straddle-button {
+        position: absolute;
+        right: 2%;
+        bottom: 5%;
+        font-size: 1.5vw;
+        border-radius: 35px;
+    }
+
+    .course-dropdown-menu {
+        position: absolute;
+        right: 2%;
+        top: 5%;
+    }
+</style>
+
+<style>
+    .centered {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        text-align: center;
+        color: white;
+    }
+
+    .image-container {
+        width: calc(100% + 24px);
+        position: relative;
+        overflow: hidden;
+        margin-left: -12px;
+        margin-right: -12px;
+        margin-top: -16px;
+    }
+
+        .image-container img {
+            filter: brightness(50%);
+            width: 100vw;
+            height: auto;
+            object-fit: cover;
+        }
+
+    .order-card {
+        color: #fff;
+    }
+
+    .bg-c-blue {
+        background: linear-gradient(45deg,#4099ff,#73b4ff);
+    }
+
+    .bg-c-green {
+        background: linear-gradient(45deg,#2ed8b6,#59e0c5);
+    }
+
+    .bg-c-yellow {
+        background: linear-gradient(45deg,#FFB64D,#ffcb80);
+    }
+
+    .bg-c-pink {
+        background: linear-gradient(45deg,#FF5370,#ff869a);
+    }
+
+    .bg-c-purple {
+        background: linear-gradient(45deg, #9b59b6, #be90d4);
+    }
+
+    .bg-c-red {
+        background: linear-gradient(45deg, #e74c3c, #f1948a);
+    }
+
+    .bg-c-orange {
+        background: linear-gradient(45deg, #f39c12, #f9c6c9);
+    }
+
+    .bg-c-teal {
+        background: linear-gradient(45deg, #1abc9c, #48c9b0);
+    }
+
+    .bg-c-indigo {
+        background: linear-gradient(45deg, #34495e, #5d6d7e);
+    }
+
+    .bg-c-gray {
+        background: linear-gradient(45deg, #7f8c8d, #bdc3c7);
+    }
+
+    .bg-c-brown {
+        background: linear-gradient(45deg, #8e44ad, #a569bd);
+    }
+
+    .bg-c-cyan {
+        background: linear-gradient(45deg, #00bcd4, #4dd0e1);
+    }
+
+    .card {
+        border-radius: 5px;
+        -webkit-box-shadow: 0 1px 2.94px 0.06px rgba(4,26,55,0.16);
+        box-shadow: 0 1px 2.94px 0.06px rgba(4,26,55,0.16);
+        border: none;
+        margin-bottom: 30px;
+        -webkit-transition: all 0.3s ease-in-out;
+        transition: all 0.3s ease-in-out;
+    }
+
+        .card .card-block {
+            padding: 25px;
+        }
+
+    .order-card i {
+        font-size: 26px;
+    }
+
+    .f-left {
+        float: left;
+    }
+
+    .f-right {
+        float: right;
+    }
+
+    .card {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Center vertically */
+        align-items: center; /* Center horizontally */
+        height: 100%; /* Ensure it takes up full height of the card */
+    }
+</style>
+
+<style>
+    .clickable-icon {
+        cursor: pointer;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .clickable-icon:hover {
+        transform: scale(1.2);
+    }
+</style>
+
+<style>
+    .btn-group .dropdown-toggle::after {
+        display: none; /* Remove the arrow */
+    }
+
+    .btn-group .dropdown-toggle {
+        border: none; /* Optional: remove border */
+        background: none; /* Optional: remove background */
+        padding: 0; /* Optional: adjust padding */
+    }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+<div class="container-fluid" style="padding: 0;">
+    <div class="decor-default">
+        <div class="">
+            <div class="contact">
+                <div class="controls">
+                    <div class="image-container">
+                        <img src="/images/banners/banner-2.jpg">
+                        <div class="centered">
+                            <h1 class="display-1" style="font-size: 6vw; font-weight: 400;">
+                                @Model.Name
+                            </h1>
+                        </div>
+                        @if (isUserAppliedForCourse)
+                        {
+                            @if (User.IsInRole(Data_Access_Layer.Roles.Roles.Student))
+                            {
+                                <form asp-controller="Course" asp-action="LeaveCourse" method="post">
+                                    <input type="hidden" name="courseId" value="@Model.Id" />
+                                    <button class=" btn btn-warning straddle-button">Leave</button>
+                                </form>
+                            }
+                            else if (User.IsInRole(Data_Access_Layer.Roles.Roles.Teacher))
+                            {
+                                <form asp-controller="Course" asp-action="LeaveCourseAsTeacher" method="post">
+                                    <input type="hidden" name="courseId" value="@Model.Id" />
+                                    <button class=" btn btn-warning straddle-button">Leave as a teacher</button>
+                                </form>
+                            }
+                        }
+                        else
+                        {
+                            @if (User.IsInRole(Data_Access_Layer.Roles.Roles.Student))
+                            {
+                                <form asp-controller="Course" asp-action="ApplyForCourse" method="post">
+                                    <input type="hidden" name="courseId" value="@Model.Id" />
+                                    <button class="btn btn-success straddle-button">Apply</button>
+                                </form>
+                            }
+                            else if (User.IsInRole(Data_Access_Layer.Roles.Roles.Teacher))
+                            {
+                                <form asp-controller="Course" asp-action="ApplyForCoursesAsTeacher" method="post">
+                                    <input type="hidden" name="courseId" value="@Model.Id" />
+                                    <button class="btn btn-success straddle-button">Apply as a teacher</button>
+                                </form>
+                            }
+                        }
+                        
+                        @if (isUserAppliedForCourse && User.IsInRole(Data_Access_Layer.Roles.Roles.Teacher))
+                        {
+                            <div class="btn-group dropleft course-dropdown-menu">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-gear" style="font-size: 40px;"></i>
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <div class="dropdown-item">
+                                        <a asp-action="Create" asp-controller="Exam" asp-route-courseId="@Model.Id" class="btn btn-link" style="text-decoration: none; color: inherit;">Add exam</a>
+                                    </div>
+                                    <div class="dropdown-item">
+                                        <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#exampleModal" style="text-decoration: none; color: inherit;">List of students</button>
+                                        <span class="badge text-bg-primary rounded-pill" style="background-color: grey;">@Model.AppliedUsers.Count</span>
+                                    </div>
+                                    <div class="dropdown-item">
+                                        <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#RemoveCourse" style="text-decoration: none; color: inherit;">Remove this course</button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="container" style="margin-top: 30px; margin-bottom: 30px;">
+                    <div class="text-center">
+                        <h1 class="display-4">
+                            Course description
+                            @if (isUserAppliedForCourse && User.IsInRole(Data_Access_Layer.Roles.Roles.Teacher))
+                            {
+                                <i id="editCourseDescriptionButton" class="fas fa-pencil-alt display-25 ms-3 me-3 clickable-icon" style="font-size:50%;"></i>
+                            }
+                        </h1>
+                    </div>
+                    @if (!string.IsNullOrWhiteSpace(Model.LongDescription))
+                    {
+                        <pre id="courseLongDescriptionDisplay" style="white-space: pre-line; font-family: 'Montserrat'; font-size: 16px;">
+                            @Model.LongDescription
+                        </pre>
+                    }
+                    else
+                    {
+                        <pre id="courseLongDescriptionDisplay" style="white-space: pre-line; font-family: 'Montserrat'; font-size: 16px; text-align: center;">
+                            <i>
+                                Description is absent
+                            </i>
+                        </pre>
+                    }
+
+                    <textarea class="form-control mb-2" id="courseLongDescriptionEdit" rows="4" style="display:none;"></textarea>
+                    <button id="courseLongDescriptionSaveButton" style="display:none;" class="btn btn-success">Save</button>
+                    <button id="courseLongDescriptionCancelButton" style="display:none;" class="btn btn-warning">Cancel</button>
+                </div>
+
+                @if (isUserAppliedForCourse)
+                {
+                    <div class="container" style="margin-top: 30px; margin-bottom: 30px;">
+                        <div class="text-center">
+                            <h1 class="display-4">Opened exams</h1>
+                        </div>
+
+                        @if (!Model.Exams.Any())
+                        {
+                            <p class="text-center" style="margin-top: 22px;">
+                                No exams at the moment
+                            </p>
+                        }
+                        
+                        @for (var i = 0; i < Model.Exams.Count; i++)
+                        {
+                            if (User.IsInRole(Data_Access_Layer.Roles.Roles.Student) && (Model.Exams[i].ExamStartDateTime > currentDateTime || Model.Exams[i].ExamEndDateTime < currentDateTime))
+                            {
+                                continue;
+                            }
+
+                            <div class="card text-center mb-4">
+                                <div class="card-header" style="font-size: x-large; font-weight: 500;">
+                                    @Model.Exams[i].Name
+                                    @if (User.IsInRole(Data_Access_Layer.Roles.Roles.Teacher))
+                                    {
+                                        @if (currentDateTime > Model.Exams[i].ExamEndDateTime)
+                                        {
+                                            <span>(the deadline has passed)</span>
+                                        }
+                                        else if (currentDateTime < Model.Exams[i].ExamStartDateTime)
+                                        {
+                                            <span>(the start date has not yet arrived)</span>
+                                        }
+                                        else
+                                        {
+                                            <span>(available for passing)</span>
+                                        }
+                                    }
+                                </div>
+                                <div class="card-body" style="padding-bottom:0;">
+                                    <p class="card-text">@Model.Exams[i].Description</p>
+                                    
+                                    <div class="row">
+                                        @if (User.IsInRole(Data_Access_Layer.Roles.Roles.Student))
+                                        {
+                                            <div class="col d-flex align-items-stretch">
+                                                <div class="card bg-c-blue order-card flex-fill">
+                                                    <div class="card-body" style="padding: 0">
+                                                        <h4 class="m-b-20 text-center"> Attempts</h4>
+                                                        <h5 class="text-center"><span>@Model.Exams[i].UserAttemptCount/@Model.Exams[i].MaxAttemptsAllowed</span></h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+
+                                        <div class="col d-flex align-items-stretch">
+                                            <div class="card bg-c-blue order-card flex-fill">
+                                                <div class="card-body" style="padding: 0">
+                                                    <h4 class="m-b-20 text-center">Threshold score</h4>
+                                                    <h5 class="text-center"><span>@Model.Exams[i].MinimumPassGrade</span></h5>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col d-flex align-items-stretch">
+                                            <div class="card bg-c-blue order-card flex-fill">
+                                                <div class="card-body" style="padding: 0">
+                                                    <h4 class="m-b-20 text-center">Duration</h4>
+                                                    <h5 class="text-center"><span>@Model.Exams[i].ExamDuration</span></h5>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col d-flex align-items-stretch">
+                                            <div class="card bg-c-blue order-card flex-fill">
+                                                <div class="card-body" style="padding: 0">
+                                                    <h4 class="m-b-20 text-center">Questions</h4>
+                                                    <h5 class="text-center"><span>@Model.Exams[i].NumberOfQuestions</span></h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col d-flex align-items-stretch">
+                                            <div class="card bg-c-blue order-card flex-fill">
+                                                <div class="card-body" style="padding: 0">
+                                                    <h4 class="m-b-20 text-center">Final grade method</h4>
+                                                    <h5 class="text-center"><span>@Model.Exams[i].FinalGradeCalculationMethod</span></h5>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col d-flex align-items-stretch">
+                                            <div class="card bg-c-blue order-card flex-fill">
+                                                <div class="card-body" style="padding: 0">
+                                                    <h4 class="m-b-20 text-center">Start at</h4>
+                                                    <h5 class="text-center"><span>@Model.Exams[i].ExamStartDateTime.Value.DateTime</span></h5>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col d-flex align-items-stretch">
+                                            <div class="card bg-c-blue order-card flex-fill">
+                                                <div class="card-body" style="padding: 0">
+                                                    <h4 class="m-b-20 text-center">End at</h4>
+                                                    <h5 class="text-center"><span>@Model.Exams[i].ExamEndDateTime.Value.DateTime</span></h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer text-muted">
+                                    @if (User.IsInRole(Data_Access_Layer.Roles.Roles.Student))
+                                    {
+                                        @if (Model.Exams[i].UserAttemptCount >= Model.Exams[i].MaxAttemptsAllowed)
+                                        {
+                                            <button class="btn btn-success disabled">Start attempt</button>
+                                        }
+                                        else if (Model.Exams[i].StartedAttemptId != null)
+                                        {
+                                            @Html.ActionLink("Continue attempt", "ContinueAssessments", "ExamAssessment", new { startedAttemptId = Model.Exams[i].StartedAttemptId }, new { @class = "btn btn-success" })
+                                        }
+                                        else
+                                        {
+                                            @Html.ActionLink("Start attempt", "Assessment", "ExamAssessment", new { examId = Model.Exams[i].Id }, new { @class = "btn btn-success" })
+                                        }
+                                    }
+                                    else if (User.IsInRole(Data_Access_Layer.Roles.Roles.Teacher))
+                                    {
+                                        <div class="d-flex align-items-stretch justify-content-center">
+                                            @Html.ActionLink("Check answers", "UsersAnswers", "Exam", new { id = Model.Exams[i].Id }, new { @class = "btn btn-success me-2 d-flex align-items-center justify-content-center" })
+                                            @Html.ActionLink("Statistics", "ExamStatistic", "Exam", new { id = Model.Exams[i].Id }, new { @class = "btn btn-info me-2 d-flex align-items-center justify-content-center" })
+                                            @Html.ActionLink("Details", "Details", "Exam", new { id = Model.Exams[i].Id }, new { @class = "btn btn-secondary me-2 d-flex align-items-center justify-content-center" })
+                                            @Html.ActionLink("Update", "Update", "Exam", new { id = Model.Exams[i].Id }, new { @class = "btn btn-warning me-2 d-flex align-items-center justify-content-center" })
+                                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#RemoveExam-@Model.Exams[i].Id">Remove</button>
+                                            <form asp-action="Delete" asp-controller="Exam" method="post">
+                                                <input type="hidden" name="examId" value="@Model.Exams[i].Id" />
+                                                <input type="hidden" name="courseId" value="@Model.Id"/>
+                                                @await Html.PartialAsync("_DeleteConfirmationModal", ($"RemoveExam-{Model.Exams[i].Id}", $"\"{Model.Exams[i].Name}\" exam"))
+                                            </form>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Vertically centered modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Students</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @if (Model.AppliedUsers.Count > 0)
+                {
+                    <ul class="list-group list-group-flush">
+                        @foreach (var student in Model.AppliedUsers)
+                        {
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-9">
+                                        @student.FirstName @student.LastName
+                                    </div>
+                                    <div class="col-3">
+                                        <button data-user-id="@student.Id" class="btn btn-danger" onclick="removeStudent(this)">Remove</button>
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="text-center">No students in this course</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<form asp-controller="Course" asp-action="Delete" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+    @await Html.PartialAsync("_DeleteConfirmationModal", ("RemoveCourse", $"\"{Model.Name}\" course"))
+</form>
+
+@section Scripts {
+    <script>
+    function removeStudent(button) {
+        const listItem = button.closest('li');
+        const userId = button.getAttribute('data-user-id');
+
+        $.ajax({
+            url: '@Url.Action("RemoveUserFromCourse", "Course")',
+            type: 'POST',
+            data: { 
+                courseId: '@Model.Id', 
+                userId: userId
+            },
+            success: function (response) {
+                if (response.success) {
+                    listItem.remove();
+                } else {
+                    console.error('Error removing student:', response.statusText);
+                }
+            },
+            error: function (error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+</script>
+
+    <script>
+        $(function () {
+            $('#editCourseDescriptionButton').on('click', function () {
+                var descriptionHeight = $('#courseLongDescriptionDisplay').height();
+                $('#courseLongDescriptionDisplay').hide();
+                $('#courseLongDescriptionEdit').val($('#courseLongDescriptionDisplay').text().trim()).show().height(descriptionHeight + 20);
+                $('#courseLongDescriptionSaveButton').show();
+                $('#courseLongDescriptionCancelButton').show();
+                $(this).hide();
+            });
+
+            $('#courseLongDescriptionSaveButton').on('click', function () {
+                var newLongDescription = $('#courseLongDescriptionEdit').val().trim();;
+                $.ajax({
+                    url: '@Url.Action("UpdateLongDescription", "Course")',
+                    type: 'POST',
+                    data: { courseId: '@Model.Id', longDescription: newLongDescription },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#courseLongDescriptionDisplay').text(newLongDescription).show();
+                            $('#courseLongDescriptionEdit').hide();
+                            $('#editCourseDescriptionButton').show();
+                            $('#courseLongDescriptionSaveButton').hide();
+                            $('#courseLongDescriptionCancelButton').hide();
+                        } else {
+                            alert('Failed to update long description: ' + response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('Error updating long description.');
+                    }
+                });
+            });
+
+            $('#courseLongDescriptionCancelButton').on('click', function () {
+                $('#courseLongDescriptionDisplay').show();
+                $('#courseLongDescriptionEdit').hide();
+                $('#editCourseDescriptionButton').show();
+                $('#courseLongDescriptionSaveButton').hide();
+                $('#courseLongDescriptionCancelButton').hide();
+            });
+        });
+    </script>
+}

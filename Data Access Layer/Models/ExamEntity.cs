@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Data_Access_Layer.Models.Enums;
 
 namespace Data_Access_Layer.Models
 {
@@ -35,6 +36,9 @@ namespace Data_Access_Layer.Models
 
         [Required]
         public int MinimumPassGrade { get; set; }
+
+        [Required]
+        public FinalGradeCalculationMethodEntity FinalGradeCalculationMethod { get; set; }
 
         [Required]
         [DefaultValue(false)]

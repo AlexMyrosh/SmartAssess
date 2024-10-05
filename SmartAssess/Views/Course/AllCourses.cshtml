@@ -1,0 +1,98 @@
+﻿@model Presentation_Layer.ViewModels.Course.AllCoursesCoursesViewModel
+
+@{
+    ViewData["Title"] = "All courses";
+}
+
+<div class="container-fluid custom-container" style="width: 90%;">
+    <h1 class="text-center"> All courses</h1>
+    @if (Model.CourseListWithPagination.Courses.Any())
+    {
+        <div class="form-floating mb-3">
+            <input type="text" id="searchInput" name="searchQuery" class="form-control" placeholder="Search courses..." aria-label="Search courses" onkeyup="filterCourses()">
+            <label for="searchInput" class="form-label">Search for courses</label>
+        </div>
+
+        <div id="courseListAndPagination">
+            @Html.Partial("PartialViews/_CourseListAndPagination", Model.CourseListWithPagination)
+        </div>
+    }
+    else
+    {
+        <div class="text-center">
+            <h1 style="font-size: 72px;">There is no courses at the moment</h1>
+        </div>
+    }
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function filterCourses() {
+        var searchQuery = $('#searchInput').val();
+        $.ajax({
+            url: '/Course/PaginateCourses',
+            type: 'GET',
+            data: { searchQuery: searchQuery, pageNumber: 1 }, // Reset to first page on search
+            success: function (data) {
+                var parsedData = $.parseHTML(data);
+
+                var courseListHtml = $(parsedData).filter('#courseList').html();
+                var paginationHtml = $(parsedData).filter('#paginationContainer').html();
+                if (courseListHtml !== undefined && !isEmptyRow(courseListHtml)) {
+                    $('#courseList').html(courseListHtml);
+                }else{
+                    $('#courseList').html('<div class="text-center mt-5 mb-5"><h1>Nothing found</h1></div>');
+                }
+
+                if (paginationHtml !== undefined) {
+                    $('#paginationContainer').html(paginationHtml);
+                }
+            },
+            error: function () {
+                alert('Error loading courses.');
+            }
+        });
+    }
+
+    function isEmptyRow(htmlString) {
+        var parsedRowValue = $($.parseHTML(htmlString)).filter('.row').html();
+        return parsedRowValue.trim().length === 0
+    }
+
+    $(document).on('click', '.pagination-button', function (e) {
+        e.preventDefault();
+        var page = $(this).data('page');
+        var searchQuery = $('#searchInput').val();
+
+        $.ajax({
+            url: '/Course/PaginateCourses',
+            type: 'GET',
+            data: { searchQuery: searchQuery, pageNumber: page },
+            success: function (data) {
+                // Parse the HTML response into DOM elements
+                var parsedData = $.parseHTML(data);
+
+                // Extract the course list and pagination content
+                var courseListHtml = $(parsedData).filter('#courseList').html();
+                var paginationHtml = $(parsedData).filter('#paginationContainer').html();
+
+                // Update the HTML content on the page
+                if (courseListHtml !== undefined) {
+                    $('#courseList').html(courseListHtml);
+                }
+
+                if (paginationHtml !== undefined) {
+                    $('#paginationContainer').html(paginationHtml);
+                }
+            },
+            error: function () {
+                alert('Error loading courses.');
+            }
+        });
+    });
+</script>
+<style>
+    .custom-container {
+        min-height: calc(100vh - 129px);
+    }
+</style>
