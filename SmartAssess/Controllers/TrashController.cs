@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Presentation_Layer.ViewModels;
+using Presentation_Layer.ViewModels.Trash;
 
 namespace Presentation_Layer.Controllers
 {

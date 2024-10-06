@@ -8,10 +8,6 @@ namespace Presentation_Layer.ViewModels.Exam
 
         public double ExamTakerAverageGrade { get; set; }
 
-        public List<UserExamAttemptViewModel> UserAttempts { get; set; }
-
-        public List<UserExamAttemptViewModel> AssessedUserAttempts { get; set; }
-
         public int MaxPossibleExamGrade { get; set; }
 
         public int PassedExamNumberOfUsers { get; set; }
@@ -24,10 +20,14 @@ namespace Presentation_Layer.ViewModels.Exam
 
         public int WaitingForAssessmentNumberOfUserAttempts { get; set; }
 
+        public TimeSpan AverageTimeSpentToCompleteExam { get; set; }
+
         public List<string> ExamGradeDistribution { get; set; }
 
         public List<int> UserGradeDistribution { get; set; }
 
-        public TimeSpan AverageTimeSpentToCompleteExam { get; set; }
+        public List<UserExamAttemptViewModel> UserAttempts { get; set; }
+
+        public List<UserExamAttemptViewModel> AssessedUserAttempts { get; set; }
     }
 }

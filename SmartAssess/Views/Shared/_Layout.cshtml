@@ -1,5 +1,4 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using Data_Access_Layer.Models
 @inject UserManager<UserEntity> UserManager;
 @{
@@ -31,28 +30,29 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        @if (User.IsInRole(Data_Access_Layer.Roles.Roles.Student))
+                        @if (User.IsInRole(RoleNames.Student))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="AppliedCourses">My courses</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="Applied">My courses</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="Index">All courses</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="All">All courses</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="UserExamPass" asp-action="PassedByCurrentUserExams">My passed exams</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="ExamAssessment" asp-action="MyPassedExams">My passed exams</a>
                             </li>
                         }
-                        @if (User.IsInRole(Data_Access_Layer.Roles.Roles.Teacher))
+                        @if (User.IsInRole(RoleNames.Teacher))
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="AppliedByTeacherCourses">My courses</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="Index">All courses</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="All">All courses</a>
                             </li>
                         }
-                        @if(User.IsInRole(Data_Access_Layer.Roles.Roles.Admin)){
+                        @if (User.IsInRole(RoleNames.Admin))
+                        {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Trash" asp-action="Index">Trash</a>
                             </li>

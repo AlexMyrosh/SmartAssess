@@ -4,6 +4,7 @@ namespace Presentation_Layer.ViewModels.ExamAssessment
 {
     public class TakeExamViewModel
     {
+        public Guid AttemptId { get; set; }
         public string ExamName { get; set; }
 
         public string CourseName { get; set; }

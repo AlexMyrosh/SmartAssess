@@ -1,59 +1,8 @@
-﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@model Presentation_Layer.ViewModels.ExamAssessment.MyPassedExamsViewModel
+﻿@model Presentation_Layer.ViewModels.ExamAssessment.MyPassedExamsViewModel
 
 @{
     ViewData["Title"] = "Passed exams";
 }
-
-<style>
-    .image-container {
-        margin-left: -12px;
-        margin-right: -12px;
-    }
-
-    .image-container img {
-        max-width: 100%;
-        min-width: 100%;
-    }
-
-    .first-level-collapse{
-        background-color: #e3e4e6 !important;
-    }
-
-    .second-level-collapse{
-        background-color: #E9EAEC !important;
-    }
-
-    .collapsed {
-        background-color: white !important;
-    }
-
-    .centered {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 90%;
-        text-align: center;
-        color: white;
-    }
-
-    .image-container {
-        width: calc(100% + 24px);
-        position: relative;
-        overflow: hidden;
-        margin-left: -12px;
-        margin-right: -12px;
-        margin-top: -16px;
-    }
-
-        .image-container img {
-            filter: brightness(50%);
-            width: 100vw;
-            height: auto;
-            object-fit: cover;
-        }
-</style>
 
 <div class="panel-group">
     <div class="container-fluid" style="padding: 0;">
@@ -168,7 +117,7 @@
                                                                                                 }
                                                                                             </td>
                                                                                             <td class="text-center align-middle">
-                                                                                                    <a class="btn btn-outline-primary" asp-controller="ExamAssessment" asp-action="Details" asp-route-id="@exam.ExamAttempts[i].AttemptId">
+                                                                                                    <a class="btn btn-outline-primary" asp-controller="ExamAssessment" asp-action="TakenExamDetails" asp-route-id="@exam.ExamAttempts[i].AttemptId">
                                                                                                     Details
                                                                                                 </a>
                                                                                             </td>

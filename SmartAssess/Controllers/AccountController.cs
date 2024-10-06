@@ -6,24 +6,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Presentation_Layer.ViewModels.Account;
-using Presentation_Layer.ViewModels.Old;
-using Presentation_Layer.ViewModels.Shared;
 
 namespace Presentation_Layer.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController(
+        IAccountService accountService,
+        SignInManager<UserEntity> signInManager,
+        IMapper mapper)
+        : Controller
     {
-        private readonly SignInManager<UserEntity> _signInManager;
-        private readonly IAccountService _accountService;
-        private readonly IMapper _mapper;
-
-        public AccountController(IAccountService accountService, SignInManager<UserEntity> signInManager, IMapper mapper)
-        {
-            _signInManager = signInManager;
-            _mapper = mapper;
-            _accountService = accountService;
-        }
-
         [HttpGet]
         public IActionResult Register()
         {
@@ -35,17 +26,16 @@ namespace Presentation_Layer.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userModel = _mapper.Map<UserModel>(model);
-                var result = await _accountService.CreateAsync(userModel, model.Password);
+                var userModel = mapper.Map<UserModel>(model);
+                var result = await accountService.CreateAsync(userModel, model.Password);
 
                 if (result.Succeeded)
                 {
-                    // Start email sending in the background
                     Task.Run(async () => await SendConfirmationEmailAsync(userModel));
 
-                    var createdUser = await _accountService.GetUserByEmailAsync(model.Email);
-                    var userEntity = _mapper.Map<UserEntity>(createdUser);
-                    await _signInManager.SignInAsync(userEntity, isPersistent: false);
+                    var createdUser = await accountService.GetUserByEmailAsync(model.Email);
+                    var userEntity = mapper.Map<UserEntity>(createdUser);
+                    await signInManager.SignInAsync(userEntity, isPersistent: false);
                     return RedirectToAction("Index", "Home");
                 }
 
@@ -56,13 +46,6 @@ namespace Presentation_Layer.Controllers
             }
 
             return View(model);
-        }
-
-        private async Task SendConfirmationEmailAsync(UserModel userEntity)
-        {
-            var confirmationToken = await _accountService.GenerateEmailConfirmationTokenAsync(userEntity);
-            var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = userEntity.Id, code = confirmationToken }, protocol: HttpContext.Request.Scheme);
-            await _accountService.SendConfirmationEmailAsync(userEntity.Email, callbackUrl);
         }
 
         [HttpGet]
@@ -76,7 +59,7 @@ namespace Presentation_Layer.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, false);
+                var result = await signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, false);
                 if (result.Succeeded)
                 {
                     return RedirectToAction("Index", "Home");
@@ -91,7 +74,7 @@ namespace Presentation_Layer.Controllers
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
-            await _signInManager.SignOutAsync();
+            await signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
 
@@ -99,17 +82,8 @@ namespace Presentation_Layer.Controllers
         [Authorize]
         public async Task<IActionResult> Details()
         {
-            var currentUser = await _accountService.GetUserAsync(User);
-            var viewModel = _mapper.Map<UserViewModel>(currentUser);
-            return View(viewModel);
-        }
-
-        [HttpGet("Account/Details/{id}")]
-        [Authorize]
-        public async Task<IActionResult> Details(string id)
-        {
-            var currentUser = await _accountService.GetUserAsync(id);
-            var viewModel = _mapper.Map<UserViewModel>(currentUser);
+            var currentUser = await accountService.GetUserAsync(User);
+            var viewModel = mapper.Map<AccountDetailsViewModel>(currentUser);
             return View(viewModel);
         }
 
@@ -122,29 +96,39 @@ namespace Presentation_Layer.Controllers
                 Id = userId,
                 AboutUser = description
             };
-            await _accountService.UpdateAsync(userModel);
-            return Json(new { success = true });
+            var result = await accountService.UpdateAsync(userModel);
+            if (result is { Succeeded: true })
+            {
+                return Json(new { success = true });
+            }
+
+            return Json(new { success = false });
         }
 
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> UpdateFirstAndLastName(string userId, string firstName, string lastName)
         {
-            await _accountService.UpdateAsync(new UserModel
+            var result = await accountService.UpdateAsync(new UserModel
             {
                 Id = userId,
                 FirstName = firstName,
                 LastName = lastName
             });
 
-            return Json(new { success = true });
+            if (result is { Succeeded: true })
+            {
+                return Json(new { success = true });
+            }
+
+            return Json(new { success = false });
         }
 
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> UpdateLocationAndEducationalInstitutionInfo(string userId, string country, string city, string educationalInstitution)
         {
-            await _accountService.UpdateAsync(new UserModel
+            var result = await accountService.UpdateAsync(new UserModel
             {
                 Id = userId,
                 Country = country,
@@ -152,14 +136,19 @@ namespace Presentation_Layer.Controllers
                 EducationalInstitution = educationalInstitution
             });
 
-            return Json(new { success = true });
+            if (result is { Succeeded: true })
+            {
+                return Json(new { success = true });
+            }
+
+            return Json(new { success = false });
         }
 
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> UpdateImage(string userId, IFormFile file)
         {
-            if (file != null && file.Length > 0)
+            if (file.Length > 0)
             {
                 var fileExtension = Path.GetExtension(file.FileName);
                 var fileName = userId + fileExtension;
@@ -175,13 +164,12 @@ namespace Presentation_Layer.Controllers
                     await file.CopyToAsync(stream);
                 }
 
-                await _accountService.UpdateAsync(new UserModel
+                await accountService.UpdateAsync(new UserModel
                 {
                     Id = userId,
                     ImagePath = filePath
                 });
 
-                // Redirect back to user profile page
                 return RedirectToAction("Details");
             }
 
@@ -192,7 +180,7 @@ namespace Presentation_Layer.Controllers
         [Authorize]
         public async Task<IActionResult> RemoveImage(string userId)
         {
-            var user = await _accountService.GetUserWithoutTrackingAsync(userId);
+            var user = await accountService.GetUserWithoutTrackingAsync(userId);
             if (user == null)
             {
                 return NotFound();
@@ -205,7 +193,7 @@ namespace Presentation_Layer.Controllers
                     System.IO.File.Delete(user.ImagePath);
                 }
 
-                await _accountService.UpdateAsync(new UserModel
+                await accountService.UpdateAsync(new UserModel
                 {
                     Id = user.Id,
                     ImagePath = string.Empty 
@@ -226,12 +214,12 @@ namespace Presentation_Layer.Controllers
         {
             if (ModelState.IsValid)
             {
-                var isUserExist = await _accountService.IsUserExistByEmailAsync(model.Email);
+                var isUserExist = await accountService.IsUserExistByEmailAsync(model.Email);
                 if (isUserExist)
                 {
-                    var resetToken = await _accountService.GenerateResetTokenAsync(model.Email);
+                    var resetToken = await accountService.GenerateResetTokenAsync(model.Email);
                     var callbackUrl = Url.Action("ResetPassword", "Account", new { userEmail = model.Email, code = resetToken }, protocol: Request.Scheme);
-                    var result = await _accountService.ResetPasswordEmailAsync(model.Email, callbackUrl);
+                    var result = await accountService.ResetPasswordEmailAsync(model.Email, callbackUrl);
                     if (!result)
                     {
                         Thread.Sleep(5000);
@@ -242,7 +230,7 @@ namespace Presentation_Layer.Controllers
                     Thread.Sleep(5000);
                 }
 
-                TempData["Notification"] = "If the email address is found in our system, we have sent a recovery email";
+                TempData["Notification"] = "If the email address is found in the system - a recovery email has been sent";
                 return RedirectToAction("Login");
             }
 
@@ -252,7 +240,7 @@ namespace Presentation_Layer.Controllers
         [HttpGet]
         public async Task<IActionResult> ResetPassword(string userEmail, string code)
         {
-            if (!await _accountService.VerifyUserTokenAsync(userEmail, code))
+            if (!await accountService.VerifyUserTokenAsync(userEmail, code))
             {
                 return RedirectToAction("Error404", "Error");
             }
@@ -274,7 +262,7 @@ namespace Presentation_Layer.Controllers
                 return View(model);
             }
 
-            var result = await _accountService.ResetPasswordAsync(model.Email, model.Code, model.NewPassword);
+            var result = await accountService.ResetPasswordAsync(model.Email, model.Code, model.NewPassword);
             if (result.Succeeded)
             {
                 TempData["Notification"] = "Password updated";
@@ -291,11 +279,11 @@ namespace Presentation_Layer.Controllers
         [HttpGet]
         public async Task<IActionResult> ConfirmEmail(string userId, string code)
         {
-            var result = await _accountService.ConfirmEmailAsync(userId, code);
+            var result = await accountService.ConfirmEmailAsync(userId, code);
             if (result.Succeeded)
             {
-                var successNotification = "Email confirmed successfully";
-                return View("_SuccessfulNotification", successNotification);
+                TempData["SuccessNotification"] = "Email confirmed successfully";
+                return RedirectToAction("Details");
             }
 
             foreach (var error in result.Errors)
@@ -303,8 +291,8 @@ namespace Presentation_Layer.Controllers
                 ModelState.AddModelError("", error.Description);
             }
 
-            var failedNotification = "Email confirmation failed";
-            return View("_FailedNotification", failedNotification);
+            TempData["ErrorNotification"] = "Email confirmation failed";
+            return RedirectToAction("Details");
         }
 
         [HttpGet]
@@ -321,7 +309,7 @@ namespace Presentation_Layer.Controllers
                 return Json(new { success = false, message = string.Join("\n", ModelState.Values.SelectMany(x => x.Errors.Select(y => y.ErrorMessage))) });
             }
 
-            var result = await _accountService.ChangePasswordAsync(model.UserId, model.CurrentPassword, model.NewPassword);
+            var result = await accountService.ChangePasswordAsync(model.UserId, model.CurrentPassword, model.NewPassword);
             if (result.Succeeded)
             {
                 return Json(new { success = true, message = "Password successfully updated" });
@@ -353,9 +341,9 @@ namespace Presentation_Layer.Controllers
                 return Json(new { success = false, message = string.Join("\n", ModelState.Values.SelectMany(x => x.Errors.Select(y => y.ErrorMessage))) });
             }
 
-            var confirmationToken = await _accountService.GenerateChangeEmailTokenAsync(userId, newEmail);
+            var confirmationToken = await accountService.GenerateChangeEmailTokenAsync(userId, newEmail);
             var callbackUrl = Url.Action("ConfirmEmailChange", "Account", new { userId, email = newEmail, token = confirmationToken }, protocol: Request.Scheme);
-            await _accountService.ResetEmailAsync(newEmail, callbackUrl);
+            await accountService.ResetEmailAsync(newEmail, callbackUrl);
             return Json(new { success = true, message = "Confirmation email was sent" });
         }
 
@@ -368,7 +356,7 @@ namespace Presentation_Layer.Controllers
                 return Json(new { success = false, message = string.Join("\n", ModelState.Values.SelectMany(x => x.Errors.Select(y => y.ErrorMessage))) });
             }
 
-            var isEmailTaken = await _accountService.IsUserExistByEmailAsync(model.NewEmail);
+            var isEmailTaken = await accountService.IsUserExistByEmailAsync(model.NewEmail);
             if (isEmailTaken)
             {
                 return Json(new { success = false, message = "Email is taken" });
@@ -385,7 +373,7 @@ namespace Presentation_Layer.Controllers
                 return RedirectToAction("Details");
             }
 
-            var result = await _accountService.ChangeEmailAsync(userId, email, token);
+            var result = await accountService.ChangeEmailAsync(userId, email, token);
             if (!result.Succeeded)
             {
                 foreach (var error in result.Errors)
@@ -401,31 +389,11 @@ namespace Presentation_Layer.Controllers
             return RedirectToAction("Details");
         }
 
-        [HttpPost]
-        public async Task<JsonResult> ConfirmVerificationCode(string userId, string code)
+        private async Task SendConfirmationEmailAsync(UserModel userEntity)
         {
-            if (code is null || code.Length != 6)
-            {
-                return Json(new { success = false, message = "Enter verification code" });
-            }
-
-            // Redirect to the confirmation page
-            return Json(new { success = true, message = "Phone number updated successfully" });
+            var confirmationToken = await accountService.GenerateEmailConfirmationTokenAsync(userEntity);
+            var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = userEntity.Id, code = confirmationToken }, protocol: HttpContext.Request.Scheme);
+            await accountService.SendConfirmationEmailAsync(userEntity.Email, callbackUrl);
         }
-
-        [HttpGet("validation/username")]
-        public async Task<JsonResult> ValidateUsername(string username)
-        {
-            var exist = await _accountService.IsUserExistByUsernameAsync(username);
-            return !exist ? Json(true) : Json($"User with \"{username}\" username is already exist");
-        }
-
-        [HttpGet("validation/email")]
-        public async Task<JsonResult> ValidateEmail(string email)
-        {
-            var exist = await _accountService.IsUserExistByEmailAsync(email);
-            return !exist ? Json(true) : Json($"User with \"{email}\" email is already exist");
-        }
-
     }
 }

@@ -5,6 +5,6 @@ namespace Presentation_Layer.ViewModels.Account
     public class ForgotPasswordViewModel
     {
         [EmailAddress]
-        public string? Email { get; set; }
+        public string Email { get; set; }
     }
 }

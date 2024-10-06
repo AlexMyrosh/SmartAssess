@@ -18,11 +18,7 @@ using FluentValidation.AspNetCore;
 using Business_Logic_Layer.Models;
 using Serilog.Sinks.MSSqlServer;
 using Serilog;
-using Presentation_Layer.Filters;
-using System.Text.Json.Serialization;
-using Presentation_Layer.ViewModels.Old;
 using Presentation_Layer.ViewModels.Account;
-using Presentation_Layer.ViewModels.Shared;
 
 namespace Presentation_Layer
 {
@@ -57,6 +53,7 @@ namespace Presentation_Layer
             await app.RunAsync();
         }
 
+        [Obsolete]
         private static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
             // Configure connection to sql server
@@ -110,16 +107,7 @@ namespace Presentation_Layer
             services.Configure<OpenAiConfig>(configuration.GetSection("OpenAiConfig"));
             services.Configure<EmailConfig>(configuration.GetSection("EmailSettings"));
 
-            services.AddScoped<IValidator<QuestionViewModel>, ExamQuestionViewModelValidator>();
-            services.AddScoped<IValidator<ExamViewModel>, ExamViewModelValidator>();
-            services.AddScoped<IValidator<LoginViewModel>, LoginViewModelValidator>();
-            services.AddScoped<IValidator<RegisterViewModel>, RegisterViewModelValidator>();
-            services.AddScoped<IValidator<UserViewModel>, UserViewModelValidator>();
-            services.AddScoped<IValidator<ForgotPasswordViewModel>, ForgotPasswordViewModelValidator>();
-            services.AddScoped<IValidator<ResetPasswordViewModel>, ResetPasswordViewModelValidator>();
-            services.AddScoped<IValidator<ChangePasswordViewModel>, ChangePasswordViewModelValidator>();
             services.AddScoped<IValidator<ChangeEmailViewModel>, ChangeEmailViewModelValidator>();
-            services.AddScoped<IValidator<CourseViewModel>, CourseViewModelValidator>();
 
             services.AddScoped<IExamService, ExamService>();
             services.AddScoped<IAccountService, AccountService>();
@@ -137,7 +125,9 @@ namespace Presentation_Layer
 
             //services.AddScoped<ErrorHandlingFilter>();
 
-            services.AddControllersWithViews().AddFluentValidation();
+            services.AddControllersWithViews()
+                .AddMvcOptions(option => option.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true)
+                .AddFluentValidation();
             services.AddRazorPages();
         }
     }

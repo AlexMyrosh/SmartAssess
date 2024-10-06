@@ -4,6 +4,7 @@ using AutoMapper;
 using Business_Logic_Layer.Models;
 using Business_Logic_Layer.Services.Interfaces;
 using Data_Access_Layer.Models;
+using Data_Access_Layer.Roles;
 using Data_Access_Layer.UnitOfWork.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
@@ -35,7 +36,7 @@ namespace Business_Logic_Layer.Services.Implementations
 
             if (identityResult.Succeeded)
             {
-                await _userManager.AddToRoleAsync(userEntity, Data_Access_Layer.Roles.Roles.Student);
+                await _userManager.AddToRoleAsync(userEntity, RoleNames.Student);
             }
 
             return identityResult;
@@ -47,7 +48,7 @@ namespace Business_Logic_Layer.Services.Implementations
             var userEntity = await _unitOfWork.UserRepository.GetByIdWithDetailsAsync(userEntityId);
             var userModel = _mapper.Map<UserModel>(userEntity);
             userModel.Roles = await _userManager.GetRolesAsync(userEntity);
-            if (userModel.Roles.Contains(Data_Access_Layer.Roles.Roles.Teacher))
+            if (userModel.Roles.Contains(RoleNames.Teacher))
             {
                 userModel.Courses = _mapper.Map<List<CourseModel>>(userEntity.TeachingCourses);
             }

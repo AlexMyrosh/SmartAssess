@@ -1,29 +1,5 @@
-﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using Presentation_Layer.ViewModels.Enums
+﻿@using Presentation_Layer.ViewModels.Enums
 @model Presentation_Layer.ViewModels.Exam.ExamViewModel
-
-<style>
-    .circle-btn {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        border: none;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 24px;
-        color: #333;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-        text-decoration: none;
-        border: 1px solid #16a085;
-    }
-
-    .circle-btn:hover {
-        background-color: #16a085;
-        color: white;
-    }
-</style>
 
 <div class="container">
     <div class="form-floating mb-3">
@@ -105,7 +81,7 @@
                         <div class="form-floating">
                             <textarea for="questionTextForm-@i" asp-for="Questions[i].QuestionText" class="form-control" placeholder="Question @(i + 1)" style="height: 150px;"></textarea>
                             <label id="questionTextForm-@i" class="form-label">Question text</label>
-                            <input type="hidden" asp-for="Questions[i].Id" />
+                            <input type="hidden" asp-for="Questions[i].QuestionId" />
                         </div>
                     </div>
                     <div class="card-footer text-body-secondary">

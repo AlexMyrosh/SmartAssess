@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Data_Access_Layer.Roles;
 
 namespace Presentation_Layer.Extensions
 {
@@ -9,19 +10,19 @@ namespace Presentation_Layer.Extensions
             using var serviceScope = host.Services.CreateScope();
             var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-            if (!await roleManager.RoleExistsAsync(Data_Access_Layer.Roles.Roles.Student))
+            if (!await roleManager.RoleExistsAsync(RoleNames.Student))
             {
-                await roleManager.CreateAsync(new IdentityRole(Data_Access_Layer.Roles.Roles.Student));
+                await roleManager.CreateAsync(new IdentityRole(RoleNames.Student));
             }
 
-            if (!await roleManager.RoleExistsAsync(Data_Access_Layer.Roles.Roles.Teacher))
+            if (!await roleManager.RoleExistsAsync(RoleNames.Teacher))
             {
-                await roleManager.CreateAsync(new IdentityRole(Data_Access_Layer.Roles.Roles.Teacher));
+                await roleManager.CreateAsync(new IdentityRole(RoleNames.Teacher));
             }
 
-            if (!await roleManager.RoleExistsAsync(Data_Access_Layer.Roles.Roles.Admin))
+            if (!await roleManager.RoleExistsAsync(RoleNames.Admin))
             {
-                await roleManager.CreateAsync(new IdentityRole(Data_Access_Layer.Roles.Roles.Admin));
+                await roleManager.CreateAsync(new IdentityRole(RoleNames.Admin));
             }
         }
     }

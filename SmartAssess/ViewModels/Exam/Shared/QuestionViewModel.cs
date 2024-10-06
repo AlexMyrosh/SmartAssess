@@ -2,8 +2,10 @@
 {
     public class QuestionViewModel
     {
-        public string? QuestionText { get; set; }
+        public Guid QuestionId { get; set; }
 
-        public int? MaxGrade { get; set; }
+        public string QuestionText { get; set; }
+
+        public int MaxGrade { get; set; }
     }
 }

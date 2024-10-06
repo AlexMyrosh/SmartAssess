@@ -1,15 +1,14 @@
-﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@model Presentation_Layer.ViewModels.ExamAssessment.TakeExamViewModel
+﻿@model Presentation_Layer.ViewModels.ExamAssessment.TakeExamViewModel
 @{
     ViewData["Title"] = Model.ExamName;
 }
 
-<form asp-controller="ExamAssessment" asp-action="Assessment" id="myForm">
+<form asp-controller="ExamAssessment" asp-action="TakeExam" id="myForm">
     <div class="my-container">
         <div class="row h-100 g-3">
             <!-- Left Block: Pagination -->
             <div class="col-4">
-                <div class="card">
+                <div class="card big-card">
                     <div class="card-body">
                         <h4 class="card-title">Exam info</h4>
                         <p><strong>Course:</strong> @Model.CourseName</p>
@@ -42,9 +41,10 @@
                     </div>
                 </div>
             </div>
-
+            
+            <!-- Right Block: Questions -->
             <div class="col-8">
-                <div class="card">
+                <div class="card big-card">
                     @for (var i = 0; i < Model.QuestionAnswers.Count; i++)
                     {
                         <div class="card-body question" id="question-@i">
@@ -184,53 +184,3 @@
         });
     }
 </script>
-
-<style>
-    .card {
-        height: 100%;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .my-container {
-        padding: 20px;
-        /* height: calc(100vh - 129px); */
-    }
-
-    #answer-textarea {
-        flex-grow: 1; /* Grow to take up all available space */
-        margin-top: 10px; /* Adjust based on design */
-        resize: none; /* Optional: Prevent manual resizing */
-    }
-
-    .question {
-        display: none;
-        flex-direction: column;
-    }
-
-    .question.active {
-        display: flex;
-    }
-
-    .pagination {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center; /* This centers the pagination items */
-        list-style-type: none;
-        padding: 0;
-    }
-
-    .page-link {
-        padding: 5px 10px;
-        text-decoration: none;
-        color: #007bff;
-        border: 1px solid #dee2e6;
-        background-color: #fff;
-        cursor: pointer;
-    }
-
-    .page-item.active .page-link {
-        color: #fff;
-        background-color: #007bff;
-        border-color: #007bff;
-    }
-</style>

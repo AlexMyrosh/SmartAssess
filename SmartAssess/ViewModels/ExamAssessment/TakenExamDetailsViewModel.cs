@@ -20,7 +20,7 @@ namespace Presentation_Layer.ViewModels.ExamAssessment
 
         public int MinExamPassGrade { get; set; }
 
-        public string GeneralFeedback { get; set; }
+        public string? GeneralFeedback { get; set; }
 
         public List<QuestionAnswerViewModel> QuestionAnswers { get; set; }
     }

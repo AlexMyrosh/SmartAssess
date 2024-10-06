@@ -3,153 +3,143 @@ using Business_Logic_Layer.Models;
 using Business_Logic_Layer.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Presentation_Layer.ViewModels.Enums;
-using Presentation_Layer.ViewModels.Old;
+using Presentation_Layer.ViewModels.ExamAssessment;
 
 namespace Presentation_Layer.Controllers
 {
     [Authorize]
-    public class ExamAssessmentController : Controller
+    public class ExamAssessmentController(
+        IExamService examService,
+        ICourseService courseService,
+        IUserExamPassService userExamPassService,
+        IOpenAiService openAiService,
+        IAccountService accountService,
+        IMapper mapper)
+        : Controller
     {
-        private readonly IExamService _examService;
-        private readonly ICourseService _courseService;
-        private readonly IUserExamPassService _userExamPassService;
-        private readonly IOpenAiService _openAiService;
-        private readonly IAccountService _accountService;
-        private readonly IMapper _mapper;
-
-        public ExamAssessmentController(IExamService examService, ICourseService courseService, IUserExamPassService userExamPassService, IOpenAiService openAiService, IAccountService accountService, IMapper mapper)
-        {
-            _examService = examService;
-            _userExamPassService = userExamPassService;
-            _openAiService = openAiService;
-            _accountService = accountService;
-            _mapper = mapper;
-            _courseService = courseService;
-        }
-
         [HttpGet]
-        public async Task<IActionResult> PassedByCurrentUserExams()
+        public async Task<IActionResult> MyPassedExams()
         {
-            var courseModels = await _courseService.GetAllWithTakenUserExamsAsync(User);
-            var courseViewModels = _mapper.Map<List<CourseViewModel>>(courseModels);
+            var courseModels = await courseService.GetAllWithTakenUserExamsAsync(User);
+            var viewModel = mapper.Map<MyPassedExamsViewModel>(courseModels);
 
-            var currentUser = await _accountService.GetUserAsync(User);
-            foreach (var courseViewModel in courseViewModels)
-            {
-                courseViewModel.Exams = courseViewModel.Exams.Where(x => x.UserExamAttempts.Count(x => x.User.Id == currentUser.Id) > 0).ToList();
-                foreach (var exam in courseViewModel.Exams)
-                {
-                    exam.UserExamAttempts = exam.UserExamAttempts.Where(s => s.User.Id == currentUser.Id).ToList();
+            //var currentUser = await _accountService.GetUserAsync(User);
+            //foreach (var courseViewModel in viewModel.TakenExamCourses)
+            //{
+            //    courseViewModel.Exams = courseViewModel.Exams.Where(x => x.UserExamAttempts.Count(x => x.User.Id == currentUser.Id) > 0).ToList();
+            //    foreach (var exam in courseViewModel.Exams)
+            //    {
+            //        exam.UserExamAttempts = exam.UserExamAttempts.Where(s => s.User.Id == currentUser.Id).ToList();
 
-                    if (exam.UserExamAttempts.All(x => x.IsExamAssessed))
-                    {
-                        if (exam.FinalGradeCalculationMethod == FinalGradeCalculationMethodViewModel.Average)
-                        {
-                            exam.FinalExamGradeForCurrentStudent = exam.UserExamAttempts.Average(x => x.TotalGrade);
-                        }
-                        else if (exam.FinalGradeCalculationMethod == FinalGradeCalculationMethodViewModel.LastAttempt)
-                        {
-                            exam.FinalExamGradeForCurrentStudent = exam.UserExamAttempts.FirstOrDefault(x =>
-                                x.AttemptStarterAt == exam.UserExamAttempts.Max(y => y.AttemptStarterAt)).TotalGrade;
-                        }
-                        else
-                        {
-                            exam.FinalExamGradeForCurrentStudent = exam.UserExamAttempts.Max(x => x.TotalGrade);
-                        }
-                    }
-                }
-            }
+            //        if (exam.UserExamAttempts.All(x => x.IsExamAssessed))
+            //        {
+            //            if (exam.FinalGradeCalculationMethod == FinalGradeCalculationMethodViewModel.Average)
+            //            {
+            //                exam.FinalExamGradeForCurrentStudent = exam.UserExamAttempts.Average(x => x.TotalGrade);
+            //            }
+            //            else if (exam.FinalGradeCalculationMethod == FinalGradeCalculationMethodViewModel.LastAttempt)
+            //            {
+            //                exam.FinalExamGradeForCurrentStudent = exam.UserExamAttempts.FirstOrDefault(x =>
+            //                    x.AttemptStarterAt == exam.UserExamAttempts.Max(y => y.AttemptStarterAt)).TotalGrade;
+            //            }
+            //            else
+            //            {
+            //                exam.FinalExamGradeForCurrentStudent = exam.UserExamAttempts.Max(x => x.TotalGrade);
+            //            }
+            //        }
+            //    }
+            //}
 
-            return View(courseViewModels);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Details(Guid id)
-        {
-            var examPassModel = await _userExamPassService.GetByIdWithDetailsAsync(id);
-            var viewModel = _mapper.Map<UserExamAttemptViewModel>(examPassModel);
             return View(viewModel);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Evaluation(Guid examId)
+        public async Task<IActionResult> TakenExamDetails(Guid id)
         {
-            var examPassModel = await _userExamPassService.GetByIdWithDetailsAsync(examId);
-            var viewModel = _mapper.Map<UserExamAttemptViewModel>(examPassModel);
+            var examPassModel = await userExamPassService.GetByIdWithDetailsAsync(id);
+            var viewModel = mapper.Map<TakenExamDetailsViewModel>(examPassModel);
+            return View(viewModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ManualEvaluation(Guid examId)
+        {
+            var examPassModel = await userExamPassService.GetByIdWithDetailsAsync(examId);
+            var viewModel = mapper.Map<ExamManualEvaluationViewModel>(examPassModel);
             return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Evaluation(UserExamAttemptViewModel viewModel)
+        public async Task<IActionResult> ManualEvaluation(ExamManualEvaluationViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                var model = _mapper.Map<UserExamAttemptModel>(viewModel);
+                var model = mapper.Map<UserExamAttemptModel>(viewModel);
                 model.IsExamAssessed = true;
-                await _userExamPassService.UpdateAsync(model);
-                return RedirectToAction("UsersAnswers", "Exam", new { id = viewModel.Exam.Id });
+                await userExamPassService.UpdateAsync(model);
+                return RedirectToAction("Result", "Exam", new { id = viewModel.ExamId });
             }
 
             return View(viewModel);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Assessment(Guid examId)
+        public async Task<IActionResult> TakeExam(Guid examId)
         {
-            var examModel = await _examService.GetByIdWithDetailsAsync(examId);
-            var viewModel = _mapper.Map<UserExamAttemptViewModel>(examModel);
-            var currentUser = await _accountService.GetUserAsync(User);
-            var examAttemptModel = _mapper.Map<UserExamAttemptModel>(viewModel);
-            examAttemptModel.User = currentUser;
-            var createdAttemptId = await _userExamPassService.CreateAsync(examAttemptModel);
-            viewModel.Id = createdAttemptId;
+            var examModel = await examService.GetByIdWithDetailsAsync(examId);
+            var viewModel = mapper.Map<TakeExamViewModel>(examModel);
 
-            if (viewModel.Exam.ExamEndDateTime.Value.UtcDateTime - DateTime.UtcNow < viewModel.Exam.ExamDuration)
-            {
-                viewModel.Exam.ExamDuration = viewModel.Exam.ExamEndDateTime.Value.UtcDateTime - DateTime.UtcNow;
-            }
+            //var currentUser = await _accountService.GetUserAsync(User);
+            //var examAttemptModel = _mapper.Map<UserExamAttemptModel>(viewModel);
+            //examAttemptModel.User = currentUser;
+            //var createdAttemptId = await _userExamPassService.CreateAsync(examAttemptModel);
+            //viewModel.Id = createdAttemptId;
 
-            viewModel.Exam.CurrentUserAttmptNumber = viewModel.Exam.UserExamAttempts.Count(x => x.User.Id == currentUser.Id);
+            //if (viewModel.Exam.ExamEndDateTime.Value.UtcDateTime - DateTime.UtcNow < viewModel.Exam.ExamDuration)
+            //{
+            //    viewModel.Exam.ExamDuration = viewModel.Exam.ExamEndDateTime.Value.UtcDateTime - DateTime.UtcNow;
+            //}
+
+            //viewModel.Exam.CurrentUserAttemptNumber = viewModel.Exam.UserExamAttempts.Count(x => x.User.Id == currentUser.Id);
             return View(viewModel);
         }
 
         [HttpGet]
         public async Task<IActionResult> ContinueAssessments(Guid startedAttemptId)
         {
-            var model = await _userExamPassService.GetByIdWithDetailsAsync(startedAttemptId);
-            var viewModel = _mapper.Map<UserExamAttemptViewModel>(model);
+            var model = await userExamPassService.GetByIdWithDetailsAsync(startedAttemptId);
+            var viewModel = mapper.Map<TakeExamViewModel>(model);
 
-            viewModel.TakenTimeToComplete = DateTimeOffset.Now - viewModel.AttemptStarterAt;
+            //viewModel.TakenTimeToComplete = DateTimeOffset.Now - viewModel.AttemptStarterAt;
 
-            return View("Assessment", viewModel);
+            return View("TakeExam", viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Assessment(UserExamAttemptViewModel viewModel)
+        public async Task<IActionResult> TakeExam(TakeExamViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                var model = _mapper.Map<UserExamAttemptModel>(viewModel);
-                model.User = await _accountService.GetUserAsync(User);
-                await _userExamPassService.CompleteAttemptAsync(model);
-                return RedirectToAction("Details", new { id = viewModel.Id });
+                var model = mapper.Map<UserExamAttemptModel>(viewModel);
+                model.User = await accountService.GetUserAsync(User);
+                await userExamPassService.CompleteAttemptAsync(model);
+                return RedirectToAction("TakenExamDetails", new { id = viewModel.AttemptId });
             }
 
             return View(viewModel);
         }
 
         [HttpPost]
-        public async Task SaveAssessmentProgress(UserExamAttemptViewModel viewModel)
+        public async Task SaveAssessmentProgress(TakeExamViewModel viewModel)
         {
-            var model = _mapper.Map<UserExamAttemptModel>(viewModel);
-            await _userExamPassService.SaveIntermediateResultAsync(model);
+            var model = mapper.Map<UserExamAttemptModel>(viewModel);
+            await userExamPassService.SaveIntermediateResultAsync(model);
         }
 
         [HttpPost]
         public async Task AiEvaluation(Guid userExamAttemptId)
         {
-            await _openAiService.ExamEvaluationAsync(userExamAttemptId);
+            await openAiService.ExamEvaluationAsync(userExamAttemptId);
         }
     }
 }

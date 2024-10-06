@@ -1,206 +1,20 @@
-﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@model Presentation_Layer.ViewModels.Course.CourseDetailsViewModel
+﻿@model Presentation_Layer.ViewModels.Course.CourseDetailsViewModel
 
 @{
     ViewData["Title"] = Model.Name;
     bool isUserAppliedForCourse = false;
 
-    if (User.IsInRole(Data_Access_Layer.Roles.Roles.Student))
+    if (User.IsInRole(RoleNames.Student))
     {
         isUserAppliedForCourse = Model.AppliedUsers.Any(user => user.Id == ViewBag.UserId);
     }
-    else if (User.IsInRole(Data_Access_Layer.Roles.Roles.Teacher))
+    else if (User.IsInRole(RoleNames.Teacher))
     {
         isUserAppliedForCourse = Model.TeacherIds.Any(userId => userId == ViewBag.UserId);
     }
 
     var currentDateTime = DateTimeOffset.UtcNow;
 }
-
-<style>
-    .centered {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 90%;
-        text-align: center;
-        color: white;
-    }
-
-    .image-container {
-        width: calc(100% + 24px);
-        position: relative;
-        overflow: hidden;
-        margin-left: -12px;
-        margin-right: -12px;
-        margin-top: -16px;
-    }
-
-    .image-container img {
-        filter: brightness(50%);
-        width: 100vw;
-        height: auto;
-        object-fit: cover;
-    }
-
-    .straddle-button {
-        position: absolute;
-        right: 2%;
-        bottom: 5%;
-        font-size: 1.5vw;
-        border-radius: 35px;
-    }
-
-    .course-dropdown-menu {
-        position: absolute;
-        right: 2%;
-        top: 5%;
-    }
-</style>
-
-<style>
-    .centered {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 90%;
-        text-align: center;
-        color: white;
-    }
-
-    .image-container {
-        width: calc(100% + 24px);
-        position: relative;
-        overflow: hidden;
-        margin-left: -12px;
-        margin-right: -12px;
-        margin-top: -16px;
-    }
-
-        .image-container img {
-            filter: brightness(50%);
-            width: 100vw;
-            height: auto;
-            object-fit: cover;
-        }
-
-    .order-card {
-        color: #fff;
-    }
-
-    .bg-c-blue {
-        background: linear-gradient(45deg,#4099ff,#73b4ff);
-    }
-
-    .bg-c-green {
-        background: linear-gradient(45deg,#2ed8b6,#59e0c5);
-    }
-
-    .bg-c-yellow {
-        background: linear-gradient(45deg,#FFB64D,#ffcb80);
-    }
-
-    .bg-c-pink {
-        background: linear-gradient(45deg,#FF5370,#ff869a);
-    }
-
-    .bg-c-purple {
-        background: linear-gradient(45deg, #9b59b6, #be90d4);
-    }
-
-    .bg-c-red {
-        background: linear-gradient(45deg, #e74c3c, #f1948a);
-    }
-
-    .bg-c-orange {
-        background: linear-gradient(45deg, #f39c12, #f9c6c9);
-    }
-
-    .bg-c-teal {
-        background: linear-gradient(45deg, #1abc9c, #48c9b0);
-    }
-
-    .bg-c-indigo {
-        background: linear-gradient(45deg, #34495e, #5d6d7e);
-    }
-
-    .bg-c-gray {
-        background: linear-gradient(45deg, #7f8c8d, #bdc3c7);
-    }
-
-    .bg-c-brown {
-        background: linear-gradient(45deg, #8e44ad, #a569bd);
-    }
-
-    .bg-c-cyan {
-        background: linear-gradient(45deg, #00bcd4, #4dd0e1);
-    }
-
-    .card {
-        border-radius: 5px;
-        -webkit-box-shadow: 0 1px 2.94px 0.06px rgba(4,26,55,0.16);
-        box-shadow: 0 1px 2.94px 0.06px rgba(4,26,55,0.16);
-        border: none;
-        margin-bottom: 30px;
-        -webkit-transition: all 0.3s ease-in-out;
-        transition: all 0.3s ease-in-out;
-    }
-
-        .card .card-block {
-            padding: 25px;
-        }
-
-    .order-card i {
-        font-size: 26px;
-    }
-
-    .f-left {
-        float: left;
-    }
-
-    .f-right {
-        float: right;
-    }
-
-    .card {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .card-body {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: center; /* Center vertically */
-        align-items: center; /* Center horizontally */
-        height: 100%; /* Ensure it takes up full height of the card */
-    }
-</style>
-
-<style>
-    .clickable-icon {
-        cursor: pointer;
-        transition: transform 0.3s ease-in-out;
-    }
-
-    .clickable-icon:hover {
-        transform: scale(1.2);
-    }
-</style>
-
-<style>
-    .btn-group .dropdown-toggle::after {
-        display: none; /* Remove the arrow */
-    }
-
-    .btn-group .dropdown-toggle {
-        border: none; /* Optional: remove border */
-        background: none; /* Optional: remove background */
-        padding: 0; /* Optional: adjust padding */
-    }
-</style>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
@@ -219,14 +33,14 @@
                         </div>
                         @if (isUserAppliedForCourse)
                         {
-                            @if (User.IsInRole(Data_Access_Layer.Roles.Roles.Student))
+                            @if (User.IsInRole(RoleNames.Student))
                             {
                                 <form asp-controller="Course" asp-action="LeaveCourse" method="post">
                                     <input type="hidden" name="courseId" value="@Model.Id" />
                                     <button class=" btn btn-warning straddle-button">Leave</button>
                                 </form>
                             }
-                            else if (User.IsInRole(Data_Access_Layer.Roles.Roles.Teacher))
+                            else if (User.IsInRole(RoleNames.Teacher))
                             {
                                 <form asp-controller="Course" asp-action="LeaveCourseAsTeacher" method="post">
                                     <input type="hidden" name="courseId" value="@Model.Id" />
@@ -236,14 +50,14 @@
                         }
                         else
                         {
-                            @if (User.IsInRole(Data_Access_Layer.Roles.Roles.Student))
+                            @if (User.IsInRole(RoleNames.Student))
                             {
                                 <form asp-controller="Course" asp-action="ApplyForCourse" method="post">
                                     <input type="hidden" name="courseId" value="@Model.Id" />
                                     <button class="btn btn-success straddle-button">Apply</button>
                                 </form>
                             }
-                            else if (User.IsInRole(Data_Access_Layer.Roles.Roles.Teacher))
+                            else if (User.IsInRole(RoleNames.Teacher))
                             {
                                 <form asp-controller="Course" asp-action="ApplyForCoursesAsTeacher" method="post">
                                     <input type="hidden" name="courseId" value="@Model.Id" />
@@ -252,7 +66,7 @@
                             }
                         }
                         
-                        @if (isUserAppliedForCourse && User.IsInRole(Data_Access_Layer.Roles.Roles.Teacher))
+                        @if (isUserAppliedForCourse && User.IsInRole(RoleNames.Teacher))
                         {
                             <div class="btn-group dropleft course-dropdown-menu">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -279,7 +93,7 @@
                     <div class="text-center">
                         <h1 class="display-4">
                             Course description
-                            @if (isUserAppliedForCourse && User.IsInRole(Data_Access_Layer.Roles.Roles.Teacher))
+                            @if (isUserAppliedForCourse && User.IsInRole(RoleNames.Teacher))
                             {
                                 <i id="editCourseDescriptionButton" class="fas fa-pencil-alt display-25 ms-3 me-3 clickable-icon" style="font-size:50%;"></i>
                             }
@@ -321,7 +135,7 @@
                         
                         @for (var i = 0; i < Model.Exams.Count; i++)
                         {
-                            if (User.IsInRole(Data_Access_Layer.Roles.Roles.Student) && (Model.Exams[i].ExamStartDateTime > currentDateTime || Model.Exams[i].ExamEndDateTime < currentDateTime))
+                            if (User.IsInRole(RoleNames.Student) && (Model.Exams[i].ExamStartDateTime > currentDateTime || Model.Exams[i].ExamEndDateTime < currentDateTime))
                             {
                                 continue;
                             }
@@ -329,7 +143,7 @@
                             <div class="card text-center mb-4">
                                 <div class="card-header" style="font-size: x-large; font-weight: 500;">
                                     @Model.Exams[i].Name
-                                    @if (User.IsInRole(Data_Access_Layer.Roles.Roles.Teacher))
+                                    @if (User.IsInRole(RoleNames.Teacher))
                                     {
                                         @if (currentDateTime > Model.Exams[i].ExamEndDateTime)
                                         {
@@ -349,7 +163,7 @@
                                     <p class="card-text">@Model.Exams[i].Description</p>
                                     
                                     <div class="row">
-                                        @if (User.IsInRole(Data_Access_Layer.Roles.Roles.Student))
+                                        @if (User.IsInRole(RoleNames.Student))
                                         {
                                             <div class="col d-flex align-items-stretch">
                                                 <div class="card bg-c-blue order-card flex-fill">
@@ -401,7 +215,7 @@
                                             <div class="card bg-c-blue order-card flex-fill">
                                                 <div class="card-body" style="padding: 0">
                                                     <h4 class="m-b-20 text-center">Start at</h4>
-                                                    <h5 class="text-center"><span>@Model.Exams[i].ExamStartDateTime.Value.DateTime</span></h5>
+                                                    <h5 class="text-center"><span>@Model.Exams[i].ExamStartDateTime.DateTime</span></h5>
                                                 </div>
                                             </div>
                                         </div>
@@ -410,14 +224,14 @@
                                             <div class="card bg-c-blue order-card flex-fill">
                                                 <div class="card-body" style="padding: 0">
                                                     <h4 class="m-b-20 text-center">End at</h4>
-                                                    <h5 class="text-center"><span>@Model.Exams[i].ExamEndDateTime.Value.DateTime</span></h5>
+                                                    <h5 class="text-center"><span>@Model.Exams[i].ExamEndDateTime.DateTime</span></h5>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="card-footer text-muted">
-                                    @if (User.IsInRole(Data_Access_Layer.Roles.Roles.Student))
+                                    @if (User.IsInRole(RoleNames.Student))
                                     {
                                         @if (Model.Exams[i].UserAttemptCount >= Model.Exams[i].MaxAttemptsAllowed)
                                         {
@@ -429,14 +243,14 @@
                                         }
                                         else
                                         {
-                                            @Html.ActionLink("Start attempt", "Assessment", "ExamAssessment", new { examId = Model.Exams[i].Id }, new { @class = "btn btn-success" })
+                                            @Html.ActionLink("Start attempt", "TakeExam", "ExamAssessment", new { examId = Model.Exams[i].Id }, new { @class = "btn btn-success" })
                                         }
                                     }
-                                    else if (User.IsInRole(Data_Access_Layer.Roles.Roles.Teacher))
+                                    else if (User.IsInRole(RoleNames.Teacher))
                                     {
                                         <div class="d-flex align-items-stretch justify-content-center">
-                                            @Html.ActionLink("Check answers", "UsersAnswers", "Exam", new { id = Model.Exams[i].Id }, new { @class = "btn btn-success me-2 d-flex align-items-center justify-content-center" })
-                                            @Html.ActionLink("Statistics", "ExamStatistic", "Exam", new { id = Model.Exams[i].Id }, new { @class = "btn btn-info me-2 d-flex align-items-center justify-content-center" })
+                                            @Html.ActionLink("Check answers", "Result", "Exam", new { id = Model.Exams[i].Id }, new { @class = "btn btn-success me-2 d-flex align-items-center justify-content-center" })
+                                            @Html.ActionLink("Statistics", "Statistic", "Exam", new { id = Model.Exams[i].Id }, new { @class = "btn btn-info me-2 d-flex align-items-center justify-content-center" })
                                             @Html.ActionLink("Details", "Details", "Exam", new { id = Model.Exams[i].Id }, new { @class = "btn btn-secondary me-2 d-flex align-items-center justify-content-center" })
                                             @Html.ActionLink("Update", "Update", "Exam", new { id = Model.Exams[i].Id }, new { @class = "btn btn-warning me-2 d-flex align-items-center justify-content-center" })
                                             <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#RemoveExam-@Model.Exams[i].Id">Remove</button>

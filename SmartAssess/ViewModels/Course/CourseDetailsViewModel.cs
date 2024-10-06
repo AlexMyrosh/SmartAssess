@@ -1,5 +1,4 @@
 ﻿using Presentation_Layer.ViewModels.Course.Shared;
-using Presentation_Layer.ViewModels.Enums;
 
 namespace Presentation_Layer.ViewModels.Course
 {
