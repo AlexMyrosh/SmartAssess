@@ -13,9 +13,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Presentation_Layer.AutoMapperProfiles;
 using Presentation_Layer.Extensions;
-using Presentation_Layer.FluentValidator;
 using FluentValidation.AspNetCore;
 using Business_Logic_Layer.Models;
+using Presentation_Layer.FluentValidator.Account;
 using Serilog.Sinks.MSSqlServer;
 using Serilog;
 using Presentation_Layer.ViewModels.Account;
@@ -108,6 +108,11 @@ namespace Presentation_Layer
             services.Configure<EmailConfig>(configuration.GetSection("EmailSettings"));
 
             services.AddScoped<IValidator<ChangeEmailViewModel>, ChangeEmailViewModelValidator>();
+            services.AddScoped<IValidator<ChangePasswordViewModel>, ChangePasswordViewModelValidator>();
+            services.AddScoped<IValidator<ForgotPasswordViewModel>, ForgotPasswordViewModelValidator>();
+            services.AddScoped<IValidator<LoginViewModel>, LoginViewModelValidator>();
+            services.AddScoped<IValidator<RegisterViewModel>, RegisterViewModelValidator>();
+            services.AddScoped<IValidator<ResetPasswordViewModel>, ResetPasswordViewModelValidator>();
 
             services.AddScoped<IExamService, ExamService>();
             services.AddScoped<IAccountService, AccountService>();

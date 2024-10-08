@@ -13,12 +13,9 @@ namespace Presentation_Layer.Controllers
     public class CourseController(
         ICourseService courseService,
         IMapper mapper,
-        IAccountService accountService,
-        IUserExamPassService userExamPassService)
+        IAccountService accountService)
         : Controller
     {
-        private readonly IUserExamPassService _userExamPassService = userExamPassService;
-
         private const int PageSize = 12;
 
         [HttpGet]

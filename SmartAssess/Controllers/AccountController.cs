@@ -31,10 +31,11 @@ namespace Presentation_Layer.Controllers
 
                 if (result.Succeeded)
                 {
-                    Task.Run(async () => await SendConfirmationEmailAsync(userModel));
-
                     var createdUser = await accountService.GetUserByEmailAsync(model.Email);
+                    Task.Run(async () => await SendConfirmationEmailAsync(createdUser));
+
                     var userEntity = mapper.Map<UserEntity>(createdUser);
+
                     await signInManager.SignInAsync(userEntity, isPersistent: false);
                     return RedirectToAction("Index", "Home");
                 }
@@ -273,6 +274,7 @@ namespace Presentation_Layer.Controllers
             {
                 ModelState.AddModelError(string.Empty, error.Description);
             }
+
             return View();
         }
 
@@ -293,12 +295,6 @@ namespace Presentation_Layer.Controllers
 
             TempData["ErrorNotification"] = "Email confirmation failed";
             return RedirectToAction("Details");
-        }
-
-        [HttpGet]
-        public IActionResult ChangePassword()
-        {
-            return View();
         }
 
         [HttpPost]
@@ -323,13 +319,6 @@ namespace Presentation_Layer.Controllers
             }
 
             return Json(new { success = false, message = string.Join("\n", errorList) });
-        }
-
-        [HttpGet]
-        [Authorize]
-        public IActionResult ChangeEmail()
-        {
-            return View();
         }
 
         [HttpPost]

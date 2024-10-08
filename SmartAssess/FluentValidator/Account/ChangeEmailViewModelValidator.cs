@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using Presentation_Layer.ViewModels.Account;
 
-namespace Presentation_Layer.FluentValidator
+namespace Presentation_Layer.FluentValidator.Account
 {
     public class ChangeEmailViewModelValidator : AbstractValidator<ChangeEmailViewModel>
     {

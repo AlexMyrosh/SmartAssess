@@ -9,11 +9,11 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-7 col-lg-4 mb-5 mb-lg-0 wow fadeIn pb-4">
-            <div class="card border-0 shadow">
-                <div class="image-container">
+            <div class="card border-0 shadow" style="width: 400px;">
+                <div class="user-profile-image-container">
                     @if (string.IsNullOrWhiteSpace(Model.ImagePath))
                     {
-                        <img src="@Url.Content("~/images/default-user-photo.png")" alt="Add user image" class="user-photo"/>
+                        <img src="@Url.Content("~/images/default-user-photo.png")" alt="Default user photo" class="user-photo"/>
                     }
                     else
                     {
@@ -23,7 +23,6 @@
                     <input type="hidden" name="userId" value="@Model.Id" />
                 </div>
 
-                
                 <div class="row">
                     <div class="col">
                         <div class="d-grid justify-content-md-start me-2 mt-2" style="margin-bottom: -1rem; margin-left: 8px;">
@@ -62,16 +61,23 @@
                                 <input id="lastNameEdit" type="text" class="form-control" placeholder="Last name"/>
                                 <label for="lastNameEdit" class="form-label">Last name</label>
                             </div>
-                            <button id="saveNameButton" style="display:none;" class="btn btn-success">Save</button>
-                            <button id="cancelNameButton" style="display:none;" class="btn btn-warning">Cancel</button>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col">
+                                        <button id="saveNameButton" class="btn btn-success" style="display:none; width: 100%;">Save</button>
+                                    </div>
+                                    <div class="col">
+                                        <button id="cancelNameButton" class="btn btn-warning" style="display:none; width: 100%;">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-
                     </div>
                     <div id="userInfoContainer">
-                        <ul class="list-unstyled mb-4">
-                            <div class="mb-1 wow fadeIn">
-                                <div class="row">
-                                    <div class="col-11">
+                        <div class="mb-1 wow fadeIn">
+                            <div class="row">
+                                <div class="col-11">
+                                    <ul class="list-unstyled" style="margin-bottom: 0;">
                                         <li class="mb-3" title="Email">
                                             <i class="far fa-envelope display-25 me-3 text-secondary"></i>
                                             <span id="emailText">@Model.Email</span>
@@ -94,34 +100,36 @@
                                             {
                                                 <span id="locationText">@Model.City, @Model.Country</span>
                                             }
-                                            
+
                                         </li>
                                         <li id="EducationInstitution" class="mb-3" title="Educational institution">
                                             <i class="fas fa-university display-25 me-3 text-secondary"></i>
                                             @if (string.IsNullOrWhiteSpace(Model.EducationalInstitution))
                                             {
-                                                <span>Empty</span>
+                                                <span id="educationalInstitutionText">Empty</span>
                                             }
                                             else
                                             {
                                                 <span id="educationalInstitutionText">@Model.EducationalInstitution</span>
                                             }
                                         </li>
-                                    </div>
-                                    <div class="col-1">
-                                        <i id="editUserInfoButton" class="fas fa-pencil-alt display-25 clickable-icon" style="font-size:18px;margin-left: auto;"></i>
-                                    </div>
+                                    </ul>
+                                </div>
+                                <div class="col-1">
+                                    <i id="editUserInfoButton" class="fas fa-pencil-alt display-25 clickable-icon" style="font-size:18px;margin-left: auto;"></i>
                                 </div>
                             </div>
-                        </ul>
+                        </div>
                     </div>
                     
                     @* Update user info form *@
                     <div id="userInfoEditContainer" style="display:none;">
-                        <ul class="list-unstyled mb-4">
-                            <div class="mb-1 wow fadeIn">
-                                <li class="mb-3" title="Email"><i class="far fa-envelope display-25 me-3 text-secondary"></i>@Model.Email</li>
-
+                        <div class="mb-1 wow fadeIn">
+                            <ul class="list-unstyled" style="margin-bottom: 0;">
+                                <li class="mb-3" title="Email">
+                                    <i class="far fa-envelope display-25 me-3 text-secondary"></i>
+                                    @Model.Email
+                                </li>
                                 <li class="mb-3" title="Location">
                                     <div class="row">
                                         <div class="col-1">
@@ -139,7 +147,6 @@
                                         </div>
                                     </div>
                                 </li>
-
                                 <li title="Educational institution">
                                     <div class="row">
                                         <div class="col-1">
@@ -153,25 +160,36 @@
                                         </div>
                                     </div>
                                 </li>
-                                <button id="saveUserInfoButton" class="btn btn-success">Save</button>
-                                <button id="cancelUserInfoButton" class="btn btn-warning">Cancel</button>
+                            </ul>
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col">
+                                        <button id="saveUserInfoButton" class="btn btn-success" style="width: 100%;">Save</button>
+                                    </div>
+                                    <div class="col">
+                                        <button id="cancelUserInfoButton" class="btn btn-warning" style="width: 100%;">Cancel</button>
+                                    </div>
+                                </div>
                             </div>
-                        </ul>
+                        </div>
                     </div>
-                    <div>
-                        <button type="button" class="link-button" data-bs-toggle="modal" data-bs-target="#passwordChangeModal">
-                            Change password
-                        </button>
-                        <br />
-                        <button type="button" class="link-button" data-bs-toggle="modal" data-bs-target="#emailChangeModal">
-                            Change email
-                        </button>
+                    <div class="container">
+                        <div class="row mb-1">
+                            <button type="button" class="link-button" data-bs-toggle="modal" data-bs-target="#passwordChangeModal">
+                                Change password
+                            </button>
+                        </div>
+                        <div class="row">
+                            <button type="button" class="link-button" data-bs-toggle="modal" data-bs-target="#emailChangeModal">
+                                Change email
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-lg-8">
-            <div class="ps-lg-1-6 ps-xl-5">
+            <div class="ps-lg-1-6 ps-xl-5" style="height: 100%;">
                 <div class="mb-1 wow fadeIn">
                     <div class="text-start mb-1-6 wow fadeIn">
                         <div class="d-flex flex-md-row flex-column align-items-center">
@@ -190,7 +208,7 @@
                     <button id="saveButton" style="display:none;" class="btn btn-success">Save</button>
                     <button id="cancelButton" style="display:none;" class="btn btn-warning">Cancel</button>
                 </div>
-                <div class="mb-5 wow fadeIn">
+                <div class="mb-5 wow fadeIn" style="height: 60%;">
                     <div class="text-start mb-1-6 wow fadeIn">
                         @if (User.IsInRole(RoleNames.Student))
                         {
@@ -202,7 +220,7 @@
                         }
                         
                     </div>
-                    <div class="row mt-n4" style="width: 98%">
+                    <div class="row mt-n4" style="width: 98%; height: 100%;">
                         @for(var i = 0; i < Model.Courses.Count; i++)
                         {
                             <div class="col-sm-6 col-xl-4 mt-4">
@@ -228,6 +246,12 @@
 
                                 break;
                             }
+                        }
+                        @if (Model.Courses.Count == 0)
+                        {
+                            <h1 class="display-4" style="text-align: center; display: flex;justify-content: center;align-items: center;height: 100%;">
+                                No applied courses
+                            </h1>
                         }
                     </div>
                 </div>
@@ -629,7 +653,11 @@
                 $('#userInfoContainer').hide();
                 $('#userInfoEditContainer').show();
                 $(this).hide();
-                $('#EducationInstitutionEdit').val($('#educationalInstitutionText').text());
+                let educationInstitutionValue = $('#educationalInstitutionText').text();
+                if(educationInstitutionValue === "Empty"){
+                    educationInstitutionValue = null;
+                }
+                $('#EducationInstitutionEdit').val();
 
                 var userCountry = '@Model.Country';
                 var userCity = '@Model.City';
@@ -658,6 +686,7 @@
                     data: { userId: '@Model.Id', country: newCountryName, city: newCityName, educationalInstitution: newEducationalInstitutionName },
                     success: function (response) {
                         if (response.success) {
+                            debugger;
                             if (!newCityName || newCityName.trim() === "") {
                                 newCityName = "City not specified";  // Assign a new value
                             }
@@ -667,8 +696,12 @@
                             }
 
                             $('#locationText').text(`${newCityName}, ${newCountryName}`);
-                            $('#educationalInstitutionText').text(`${newEducationalInstitutionName}`);
+                            if (!newEducationalInstitutionName){
+                                newEducationalInstitutionName = "Empty";
+                            }
 
+                            $('#educationalInstitutionText').text(`${newEducationalInstitutionName}`);
+                            
                             $('#userInfoContainer').show();
                             $('#editUserInfoButton').show();
                             $('#userInfoEditContainer').hide();
@@ -721,6 +754,11 @@
             $('#saveNameButton').on('click', function () {
                 newFirstName = $('#firstNameEdit').val();
                 newLastName = $('#lastNameEdit').val();
+
+                if (!newFirstName || !newLastName){
+                    alert("Name should not be empty");
+                    return;
+                }
 
                 $.ajax({
                     url: '@Url.Action("UpdateFirstAndLastName", "Account")',

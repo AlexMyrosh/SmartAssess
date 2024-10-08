@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Business_Logic_Layer.Models;
+using Presentation_Layer.ViewModels.Account;
 
 namespace Presentation_Layer.AutoMapperProfiles
 {
@@ -6,6 +8,11 @@ namespace Presentation_Layer.AutoMapperProfiles
     {
         public PresentationLayerAndBusinessLayerModelsMapper()
         {
+            CreateMap<RegisterViewModel, UserModel>().ReverseMap();
+            CreateMap<UserModel, AccountDetailsViewModel>().ReverseMap();
+            CreateMap<ViewModels.Account.Shared.CourseViewModel, CourseModel>().ReverseMap();
+
+
             //CreateMap<PaginationCourseModel, PaginationCourseViewModel>().ReverseMap();
             //CreateMap<ExamViewModel, ExamModel>().ReverseMap();
             //CreateMap<QuestionViewModel, ExamQuestionModel>().ReverseMap();
