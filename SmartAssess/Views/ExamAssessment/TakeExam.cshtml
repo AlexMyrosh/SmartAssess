@@ -36,11 +36,7 @@
                         <div class="container d-flex align-items-center justify-content-center">
                             <div>
                                 @Html.HiddenFor(model => model.AttemptId)
-@*                                 @for (int i = 0; i < Model.QuestionAnswers.Count; i++)
-                                {
-                                    @Html.HiddenFor(model => Model.QuestionAnswers[i].QuestionAnswerId)
-                                } *@
-                                <button id="submitExamButton" class="btn btn-success">Submit exam</button>
+                                <button type="submit" id="submitExamButton" class="btn btn-success">Submit exam</button>
                             </div>
                         </div>
                     </div>
@@ -70,7 +66,6 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
     window.addEventListener("beforeunload", function (e) {
-        debugger;
         let questions = document.querySelectorAll('.question');
 
         const dataToSend = {
@@ -134,23 +129,6 @@
             }
         }, 1000);
     }
-
-    // Update the form on submit with the time spent
-    document.getElementById("myForm").addEventListener("submit", function () {
-        var timeSpentInSeconds = @Model.RemainingTimeToCompleteExam.TotalSeconds - timer;
-
-        // Convert timeSpentInSeconds to hh:mm:ss format
-        var spentHours = parseInt(timeSpentInSeconds / 3600, 10);
-        var spentMinutes = parseInt((timeSpentInSeconds % 3600) / 60, 10);
-        var spentSeconds = parseInt(timeSpentInSeconds % 60, 10);
-
-        spentHours = spentHours < 10 ? "0" + spentHours : spentHours;
-        spentMinutes = spentMinutes < 10 ? "0" + spentMinutes : spentMinutes;
-        spentSeconds = spentSeconds < 10 ? "0" + spentSeconds : spentSeconds;
-
-        // Set the time spent in the hidden field
-        document.getElementById("timerValue").value = spentHours + ":" + spentMinutes + ":" + spentSeconds;
-    });
 </script>
 
 <script>

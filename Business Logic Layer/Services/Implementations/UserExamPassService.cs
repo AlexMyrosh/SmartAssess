@@ -34,6 +34,7 @@ namespace Business_Logic_Layer.Services.Implementations
         {
             var entityFromDb = await _unitOfWork.UserExamPassRepository.GetByIdWithDetailsAsync(model.Id.Value);
             entityFromDb.Status = ExamAttemptStatusEntity.Completed;
+            entityFromDb.TakenTimeToComplete = DateTime.UtcNow - entityFromDb.AttemptStarterAt.UtcDateTime;
             foreach (var userAnswer in entityFromDb.UserAnswers)
             {
                 userAnswer.AnswerText = model.UserAnswers.FirstOrDefault(x => x.Id == userAnswer.Id).AnswerText;

@@ -31,7 +31,7 @@
                                 <div class="row">
                                     @if (Model.IsExamAssessed)
                                     {
-                                        <div class="col d-flex align-items-stretch">
+                                        <div class="col d-flex align-items-stretch mb-3">
                                             <div class="card bg-c-blue order-card flex-fill">
                                                 <div class="card-body">
                                                     <h2 class="m-b-20 text-center">Exam grade</h2>
@@ -42,7 +42,7 @@
                                     }
                                     else
                                     {
-                                        <div class="col d-flex align-items-stretch">
+                                    <div class="col d-flex align-items-stretch mb-3">
                                             <div class="card bg-c-blue order-card flex-fill">
                                                 <div class="card-body">
                                                     <h2 class="m-b-20 text-center">Max possible grade</h2>
@@ -52,16 +52,16 @@
                                         </div>
                                     }
 
-                                <div class="col d-flex align-items-stretch">
+                                <div class="col d-flex align-items-stretch mb-3">
                                     <div class="card bg-c-teal order-card flex-fill">
                                         <div class="card-body">
                                             <h2 class="m-b-20 text-center">Time to complete</h2>
-                                            <h3 class="text-center"><span>@Model.TakenTimeToComplete</span></h3>
+                                            <h3 class="text-center"><span>@Model.TakenTimeToComplete.ToString(@"hh\:mm\:ss")</span></h3>
                                         </div>
                                     </div>
                                 </div>
-                                    
-                                    <div class="col d-flex align-items-stretch">
+
+                                <div class="col d-flex align-items-stretch mb-3">
                                         <div class="card bg-c-indigo order-card flex-fill">
                                             <div class="card-body">
                                                 <h2 class="m-b-20 text-center">Threshold score</h2>
@@ -74,7 +74,7 @@
                                     {
                                         @if (Model.TotalGrade >= Model.MinExamPassGrade)
                                         {
-                                            <div class="col d-flex align-items-stretch">
+                                        <div class="col d-flex align-items-stretch mb-3">
                                                 <div class="card bg-c-green order-card flex-fill">
                                                     <div class="card-body">
                                                         <h2 class="m-b-20 text-center">PASSED</h2>
@@ -84,7 +84,7 @@
                                         }
                                         else
                                         {
-                                            <div class="col d-flex align-items-stretch">
+                                        <div class="col d-flex align-items-stretch mb-3">
                                                 <div class="card bg-c-red order-card flex-fill">
                                                     <div class="card-body">
                                                         <h2 class="text-center">FAILED</h2>
@@ -95,7 +95,7 @@
                                     }
                                     else
                                     {
-                                        <div class="col d-flex align-items-stretch">
+                                    <div class="col d-flex align-items-stretch mb-3">
                                             <div class="card bg-c-yellow order-card flex-fill">
                                                 <div class="card-body">
                                                     <h2 class="text-center">Exam is not assessed yet</h2>
@@ -109,7 +109,7 @@
                                     {
                                         @if (Model.IsAssessedByAi)
                                         {
-                                            <div class="col d-flex align-items-stretch">
+                                        <div class="col d-flex align-items-stretch mb-3">
                                                 <div class="card bg-c-purple order-card flex-fill">
                                                     <div class="card-body">
                                                         <h2 class="m-b-20 text-center">Assessed by AI</h2>
@@ -119,7 +119,7 @@
                                         }
                                         else
                                         {
-                                            <div class="col d-flex align-items-stretch">
+                                        <div class="col d-flex align-items-stretch mb-3">
                                                 <div class="card bg-c-cyan order-card flex-fill">
                                                     <div class="card-body">
                                                         <h2 class="m-b-20 text-center">Assessed manually</h2>
@@ -150,16 +150,16 @@
                     {
                         <div class="card mb-3" style="background-color: #f2f2f2; border-radius: 15px;">
                             <div class="card-body">
-                                <h5 class="card-title">Question @(i + 1)</h5>
-                                <p class="card-text">@Model.QuestionAnswers[i].QuestionText</p>
-                                <h5 class="card-title">Answer</h5>
+                                <h5 class="card-title text-center">Question @(i + 1)</h5>
+                                <p class="card-text text-center">@Model.QuestionAnswers[i].QuestionText</p>
+                                <h5 class="card-title text-center">Answer</h5>
                                 @if (string.IsNullOrWhiteSpace(Model.QuestionAnswers[i].AnswerText))
                                 {
-                                    <p class="card-text"><em>No answer provided...</em></p>
+                                    <p class="card-text text-center"><em>No answer provided...</em></p>
                                 }
                                 else
                                 {
-                                    <p class="card-text">@Model.QuestionAnswers[i].AnswerText</p>
+                                    <p class="card-text text-center">@Model.QuestionAnswers[i].AnswerText</p>
                                 }
                                 
                                 @if (Model.IsExamAssessed)
