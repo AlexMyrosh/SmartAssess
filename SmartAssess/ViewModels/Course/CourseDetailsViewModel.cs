@@ -10,9 +10,11 @@ namespace Presentation_Layer.ViewModels.Course
 
         public string LongDescription { get; set; }
 
+        public bool IsCurrentUserApplied { get; set; }
+
         public List<UserViewModel> AppliedUsers { get; set; }
 
-        public List<Guid> TeacherIds { get; set; }
+        public List<string> TeacherIds { get; set; }
 
         public List<ExamViewModel> Exams { get; set; }
     }

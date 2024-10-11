@@ -2,17 +2,6 @@
 
 @{
     ViewData["Title"] = Model.Name;
-    bool isUserAppliedForCourse = false;
-
-    if (User.IsInRole(RoleNames.Student))
-    {
-        isUserAppliedForCourse = Model.AppliedUsers.Any(user => user.Id == ViewBag.UserId);
-    }
-    else if (User.IsInRole(RoleNames.Teacher))
-    {
-        isUserAppliedForCourse = Model.TeacherIds.Any(userId => userId == ViewBag.UserId);
-    }
-
     var currentDateTime = DateTimeOffset.UtcNow;
 }
 
@@ -31,7 +20,7 @@
                                 @Model.Name
                             </h1>
                         </div>
-                        @if (isUserAppliedForCourse)
+                        @if (Model.IsCurrentUserApplied)
                         {
                             @if (User.IsInRole(RoleNames.Student))
                             {
@@ -66,7 +55,7 @@
                             }
                         }
                         
-                        @if (isUserAppliedForCourse && User.IsInRole(RoleNames.Teacher))
+                        @if (Model.IsCurrentUserApplied && User.IsInRole(RoleNames.Teacher))
                         {
                             <div class="btn-group dropleft course-dropdown-menu">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -93,7 +82,7 @@
                     <div class="text-center">
                         <h1 class="display-4">
                             Course description
-                            @if (isUserAppliedForCourse && User.IsInRole(RoleNames.Teacher))
+                            @if (Model.IsCurrentUserApplied && User.IsInRole(RoleNames.Teacher))
                             {
                                 <i id="editCourseDescriptionButton" class="fas fa-pencil-alt display-25 ms-3 me-3 clickable-icon" style="font-size:50%;"></i>
                             }
@@ -119,7 +108,7 @@
                     <button id="courseLongDescriptionCancelButton" style="display:none;" class="btn btn-warning">Cancel</button>
                 </div>
 
-                @if (isUserAppliedForCourse)
+                @if (Model.IsCurrentUserApplied)
                 {
                     <div class="container" style="margin-top: 30px; margin-bottom: 30px;">
                         <div class="text-center">
@@ -162,7 +151,7 @@
                                 <div class="card-body" style="padding-bottom:0;">
                                     <p class="card-text">@Model.Exams[i].Description</p>
                                     
-                                    <div class="row">
+                                    <div class="row mb-4">
                                         @if (User.IsInRole(RoleNames.Student))
                                         {
                                             <div class="col d-flex align-items-stretch">

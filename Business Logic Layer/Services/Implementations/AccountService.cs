@@ -44,7 +44,7 @@ namespace Business_Logic_Layer.Services.Implementations
             {
                 userModel.Courses = mapper.Map<List<CourseModel>>(userEntity.TeachingCourses);
             }
-
+            
             return userModel;
         }
 

@@ -6,6 +6,8 @@ namespace Presentation_Layer.ViewModels.Course
     {
         public string SearchQuery { get; set; }
 
+        public string CurrentUserRole { get; set; }
+
         public CourseListWithPaginationViewModel CourseListWithPagination { get; set; }
 
         public CourseViewModel CreatedCourse { get; set; }

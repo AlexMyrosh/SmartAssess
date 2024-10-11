@@ -26,6 +26,10 @@ namespace Business_Logic_Layer.Models
 
         public bool? IsDeleted { get; set; }
 
+        public int UserAttemptCount { get; set; }
+
+        public Guid? StartedAttemptId { get; set; }
+
         public CourseModel? Course { get; set; }
 
         public List<ExamQuestionModel>? Questions { get; set; }

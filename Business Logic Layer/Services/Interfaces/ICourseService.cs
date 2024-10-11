@@ -13,7 +13,7 @@ namespace Business_Logic_Layer.Services.Interfaces
 
         Task<CourseModel?> GetByIdAsync(Guid id);
 
-        Task<CourseModel?> GetByIdWithDetailsAsync(Guid id);
+        Task<CourseModel?> GetByIdWithDetailsAsync(Guid id, ClaimsPrincipal currentUserPrincipal);
 
         Task<Guid> CreateAsync(CourseModel model, string createdByTeacherId);
 

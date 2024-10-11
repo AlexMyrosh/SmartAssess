@@ -1,6 +1,6 @@
 ﻿namespace Presentation_Layer.ViewModels.Course
 {
-    public class AllCoursesCoursesViewModel
+    public class AllCoursesViewModel
     {
         public string SearchQuery { get; set; }
 

@@ -22,7 +22,7 @@ namespace Presentation_Layer.Controllers
         public async Task<IActionResult> All()
         {
             var paginationCourseModel = await courseService.GetAllBySearchQueryWithPaginationAsync(PageSize);
-            var viewModel = mapper.Map<AllCoursesCoursesViewModel>(paginationCourseModel);
+            var viewModel = mapper.Map<AllCoursesViewModel>(paginationCourseModel);
             viewModel.CourseListWithPagination.Pagination.PageSize = PageSize;
             viewModel.CourseListWithPagination.Pagination.PageNumber = 1;
             return View(viewModel);
@@ -50,7 +50,7 @@ namespace Presentation_Layer.Controllers
 
         [HttpGet]
         public async Task<IActionResult> PaginateAppliedCourses(int pageNumber = 1, string searchQuery = "")
-        {
+        { 
             var paginationCourseModel = await courseService.GetAllAppliedByUserBySearchQueryWithPaginationAsync(User, PageSize, searchQuery, pageNumber);
             var viewModel = mapper.Map<CourseListWithPaginationViewModel>(paginationCourseModel);
             viewModel.Pagination.PageSize = PageSize;
@@ -109,27 +109,8 @@ namespace Presentation_Layer.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(Guid id)
         {
-            var courseModel = await courseService.GetByIdWithDetailsAsync(id);
+            var courseModel = await courseService.GetByIdWithDetailsAsync(id, User);
             var courseViewModel = mapper.Map<CourseDetailsViewModel>(courseModel);
-            //var currentUserId = _accountService.GetUserId(User);
-            //ViewBag.UserId = currentUserId;
-
-            // TODO: Move to Business Logic
-            //foreach (var exam in courseViewModel.Exams)
-            //{
-            //    exam.CurrentUserAttmptNumber = exam.UsersExamPasses.FirstOrDefault(x => x.User.Id == currentUserId).UserExamAttempts.Count;
-            //    var startedExam = exam.UsersExamPasses.FirstOrDefault(x => x.User.Id == currentUserId).UserExamAttempts.FirstOrDefault(y => y.Status == ExamAttemptStatusViewModel.InProgress);
-            //    if (startedExam != null && DateTimeOffset.Now - startedExam.AttemptStarterAt > startedExam.Exam?.ExamDuration)
-            //    {
-            //        // set to complete
-            //        await _userExamPassService.SetStatusAsync(startedExam.Id.Value, ExamAttemptStatusModel.Completed);
-            //    }
-            //    else if(startedExam != null)
-            //    {
-            //        exam.StartedByCurrentUserAttemptId = startedExam?.Id;
-            //    }
-            //}
-
             return View(courseViewModel);
         }
 

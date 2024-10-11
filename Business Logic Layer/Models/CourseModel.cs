@@ -8,6 +8,8 @@
 
         public string LongDescription { get; set; }
 
+        public bool IsCurrentUserApplied { get; set; }
+
         public List<ExamModel> Exams { get; set; }
 
         public List<UserModel> Users { get; set; }

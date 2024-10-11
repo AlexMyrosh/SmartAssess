@@ -95,8 +95,9 @@
 <script>
     function filterCourses() {
         var searchQuery = $('#searchInput').val();
+        const url = '@Model.CurrentUserRole' === '@RoleNames.Student' ? '@Url.Action("PaginateAppliedCourses", "Course")' : '@Url.Action("PaginateAppliedByTeacherCourses", "Course")';
         $.ajax({
-            url: '/Course/PaginateAppliedCourses',
+            url: url,
             type: 'GET',
             data: { searchQuery: searchQuery, pageNumber: 1 }, // Reset to first page on search
             success: function (data) {
@@ -129,9 +130,9 @@
         e.preventDefault();
         var page = $(this).data('page');
         var searchQuery = $('#searchInput').val();
-
+        const url = '@Model.CurrentUserRole' === '@RoleNames.Student' ? '@Url.Action("PaginateAppliedCourses", "Course")' : '@Url.Action("PaginateAppliedByTeacherCourses", "Course")';
         $.ajax({
-            url: '/Course/PaginateAppliedCourses',
+            url: url,
             type: 'GET',
             data: { searchQuery: searchQuery, pageNumber: page },
             success: function (data) {

@@ -2,7 +2,9 @@
 {
     public class PaginationCourseModel
     {
-        public IEnumerable<CourseModel> Items { get; set; }
+        public string CurrentUserRole { get; set; }
+
+        public List<CourseModel> Items { get; set; }
 
         public int TotalItems { get; set; }
     }

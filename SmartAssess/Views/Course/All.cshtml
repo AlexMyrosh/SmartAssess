@@ -1,4 +1,4 @@
-﻿@model Presentation_Layer.ViewModels.Course.AllCoursesCoursesViewModel
+﻿@model Presentation_Layer.ViewModels.Course.AllCoursesViewModel
 
 @{
     ViewData["Title"] = "All courses";
@@ -29,13 +29,13 @@
 <script>
     function filterCourses() {
         var searchQuery = $('#searchInput').val();
+
         $.ajax({
-            url: '/Course/PaginateCourses',
+            url: '@Url.Action("PaginateAllCourses", "Course")',
             type: 'GET',
-            data: { searchQuery: searchQuery, pageNumber: 1 }, // Reset to first page on search
+            data: { searchQuery: searchQuery, pageNumber: 1 },
             success: function (data) {
                 var parsedData = $.parseHTML(data);
-
                 var courseListHtml = $(parsedData).filter('#courseList').html();
                 var paginationHtml = $(parsedData).filter('#paginationContainer').html();
                 if (courseListHtml !== undefined && !isEmptyRow(courseListHtml)) {
@@ -54,29 +54,19 @@
         });
     }
 
-    function isEmptyRow(htmlString) {
-        var parsedRowValue = $($.parseHTML(htmlString)).filter('.row').html();
-        return parsedRowValue.trim().length === 0
-    }
-
     $(document).on('click', '.pagination-button', function (e) {
         e.preventDefault();
         var page = $(this).data('page');
         var searchQuery = $('#searchInput').val();
 
         $.ajax({
-            url: '/Course/PaginateCourses',
+            url: '@Url.Action("PaginateAllCourses", "Course")',
             type: 'GET',
             data: { searchQuery: searchQuery, pageNumber: page },
             success: function (data) {
-                // Parse the HTML response into DOM elements
                 var parsedData = $.parseHTML(data);
-
-                // Extract the course list and pagination content
                 var courseListHtml = $(parsedData).filter('#courseList').html();
                 var paginationHtml = $(parsedData).filter('#paginationContainer').html();
-
-                // Update the HTML content on the page
                 if (courseListHtml !== undefined) {
                     $('#courseList').html(courseListHtml);
                 }
@@ -90,4 +80,9 @@
             }
         });
     });
+
+    function isEmptyRow(htmlString) {
+        var parsedRowValue = $($.parseHTML(htmlString)).filter('.row').html();
+        return parsedRowValue.trim().length === 0
+    }
 </script>

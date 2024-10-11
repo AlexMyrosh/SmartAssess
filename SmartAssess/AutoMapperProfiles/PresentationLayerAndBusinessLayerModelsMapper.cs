@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Business_Logic_Layer.Models;
+using Presentation_Layer.AutoMapperProfiles.CustomResolvers;
 using Presentation_Layer.ViewModels.Account;
+using Presentation_Layer.ViewModels.Course;
 
 namespace Presentation_Layer.AutoMapperProfiles
 {
@@ -11,6 +13,16 @@ namespace Presentation_Layer.AutoMapperProfiles
             CreateMap<RegisterViewModel, UserModel>().ReverseMap();
             CreateMap<UserModel, AccountDetailsViewModel>().ReverseMap();
             CreateMap<ViewModels.Account.Shared.CourseViewModel, CourseModel>().ReverseMap();
+            CreateMap<CourseModel, ViewModels.Course.Shared.CourseViewModel>().ReverseMap();
+            CreateMap<UserModel, ViewModels.Course.Shared.UserViewModel>().ReverseMap();
+            CreateMap<ViewModels.Course.Shared.ExamViewModel, ExamModel>();
+            CreateMap<ExamModel, ViewModels.Course.Shared.ExamViewModel>()
+                .ForMember(dest => dest.NumberOfQuestions, opt => opt.MapFrom(src => src.Questions!.Count));
+
+            CreateMap<PaginationCourseModel, AllCoursesViewModel>().ConvertUsing<PaginationCourseModelToAllCoursesViewModelConverter>();
+            CreateMap<PaginationCourseModel, AppliedCoursesViewModel>().ConvertUsing<PaginationCourseModelToAppliedCoursesViewModelConverter>();
+            CreateMap<PaginationCourseModel, CourseListWithPaginationViewModel>().ConvertUsing<PaginationCourseModelToCourseListWithPaginationViewModelConverter>();
+            CreateMap<CourseModel, CourseDetailsViewModel>().ConvertUsing<CourseModelToCourseDetailsViewModelConverter>();
 
 
             //CreateMap<PaginationCourseModel, PaginationCourseViewModel>().ReverseMap();
