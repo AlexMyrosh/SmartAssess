@@ -178,7 +178,7 @@ namespace Business_Logic_Layer.Services.Implementations
         public async Task<IEnumerable<CourseModel>> GetAllWithTakenUserExamsAsync(ClaimsPrincipal userPrincipal, bool includeDeleted = false)
         {
             var userId = accountService.GetUserId(userPrincipal);
-            var courseEntities = await unitOfWork.CourseRepository.GetAllByFilterAsync(course => course.Exams.Any(exam => exam.UserExamAttempts.Any(userAttempt => userAttempt.UserId == userId)));
+            var courseEntities = await unitOfWork.CourseRepository.GetAllByFilterAsync(course => course.Exams.Any(exam => exam.UserExamAttempts.Any(userAttempt => userAttempt.UserId == userId)), userId);
             var courseModels = mapper.Map<IEnumerable<CourseModel>>(courseEntities);
             return courseModels;
         }

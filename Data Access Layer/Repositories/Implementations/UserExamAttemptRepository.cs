@@ -1,5 +1,6 @@
 ﻿using Data_Access_Layer.Context;
 using Data_Access_Layer.Models;
+using Data_Access_Layer.Models.Enums;
 using Data_Access_Layer.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -57,9 +58,28 @@ namespace Data_Access_Layer.Repositories.Implementations
                 .Include(entity => entity.User)
                 .Include(entity => entity.UserAnswers)
                 .ThenInclude(sub => sub.Question)
+                .Include(entity => entity.Exam)
+                .ThenInclude(exam => exam.UserExamAttempts)
                 .FirstOrDefaultAsync(exam => exam.Id == id);
 
             return userExamAttemptEntity;
+        }
+
+        public Task<UserExamAttemptEntity?> GetStartedAttemptAsync(Guid examId, string userId)
+        {
+            var entity = _sqlContext.UserExamAttempts
+                .Include(entity => entity.Exam)
+                .ThenInclude(exam => exam.Course)
+                .Include(entity => entity.Exam)
+                .ThenInclude(exam => exam.Questions)
+                .Include(entity => entity.Exam)
+                .ThenInclude(exam => exam.UserExamAttempts)
+                .Include(x => x.UserAnswers)
+                .Include(x => x.User)
+                .FirstOrDefaultAsync(x =>
+                x.UserId == userId && x.ExamId == examId && x.Status == ExamAttemptStatusEntity.InProgress);
+
+            return entity;
         }
 
         public async Task<bool> HardDeleteAsync(Guid id)

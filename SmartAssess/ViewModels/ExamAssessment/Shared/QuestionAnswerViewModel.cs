@@ -2,6 +2,8 @@
 {
     public class QuestionAnswerViewModel
     {
+        public Guid QuestionAnswerId { get; set; }
+
         public string QuestionText { get; set; }
 
         public string? AnswerText { get; set; }

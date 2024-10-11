@@ -35,6 +35,11 @@
                         </div>
                         <div class="container d-flex align-items-center justify-content-center">
                             <div>
+                                @Html.HiddenFor(model => model.AttemptId)
+@*                                 @for (int i = 0; i < Model.QuestionAnswers.Count; i++)
+                                {
+                                    @Html.HiddenFor(model => Model.QuestionAnswers[i].QuestionAnswerId)
+                                } *@
                                 <button id="submitExamButton" class="btn btn-success">Submit exam</button>
                             </div>
                         </div>
@@ -52,6 +57,7 @@
                             <p class="card-text">@Model.QuestionAnswers[i].QuestionText</p>
                             <p><strong>Max grade for this question:</strong> @Model.QuestionAnswers[i].QuestionMaxGrade</p>
                             <textarea asp-for="QuestionAnswers[i].AnswerText" class="form-control" style="flex-grow: 1; margin-top: 10px;" placeholder="Enter your answer here..."></textarea>
+                            @Html.HiddenFor(model => model.QuestionAnswers[i].QuestionAnswerId)
                         </div>
                     }
                 </div>
@@ -64,22 +70,23 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
     window.addEventListener("beforeunload", function (e) {
+        debugger;
         let questions = document.querySelectorAll('.question');
 
         const dataToSend = {
-            Id: 'id-here',
-            UserAnswers: []
+            AttemptId: '@Model.AttemptId',
+            QuestionAnswers: []
         };
         
         questions.forEach((question, index) => {
             let studentAnswer = question.querySelector('textarea').value;
-            let hiddenInput = question.querySelector(`#UserAnswers_${index}__Id`);
+            let hiddenInput = question.querySelector(`#QuestionAnswers_${index}__QuestionAnswerId`);
             if (hiddenInput) {
                 let userAnswerId = hiddenInput.value;
 
                 // Add each answer's data to the UserAnswers array
-                dataToSend.UserAnswers.push({
-                    Id: userAnswerId,
+                dataToSend.QuestionAnswers.push({
+                    QuestionAnswerId: userAnswerId,
                     AnswerText: studentAnswer
                 });
             }
@@ -91,21 +98,12 @@
             data: { viewModel: dataToSend }
         });
     });
-
-    function freezeUI(seconds) {
-        const now = Date.now();
-        const end = now + seconds * 1000;
-
-        while (Date.now() < end) {
-            // Busy-waiting to block the UI
-        }
-    }
 </script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         // Initialize the countdown timer:
-        var duration = '@(Model.ExamDuration - Model.TakenTimeToComplete)';
+        var duration = '@(Model.RemainingTimeToCompleteExam - Model.TakenTimeToComplete)';
         var timeParts = duration.split(':');
         var examDurationInSeconds = (+timeParts[0]) * 3600 + (+timeParts[1]) * 60 + (+timeParts[2]);
 
@@ -139,7 +137,7 @@
 
     // Update the form on submit with the time spent
     document.getElementById("myForm").addEventListener("submit", function () {
-        var timeSpentInSeconds = @Model.ExamDuration.TotalSeconds - timer;
+        var timeSpentInSeconds = @Model.RemainingTimeToCompleteExam.TotalSeconds - timer;
 
         // Convert timeSpentInSeconds to hh:mm:ss format
         var spentHours = parseInt(timeSpentInSeconds / 3600, 10);

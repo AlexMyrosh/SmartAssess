@@ -1,5 +1,6 @@
 ﻿using Business_Logic_Layer.Models;
 using Business_Logic_Layer.Models.Enums;
+using System.Security.Claims;
 
 namespace Business_Logic_Layer.Services.Interfaces
 {
@@ -22,5 +23,7 @@ namespace Business_Logic_Layer.Services.Interfaces
         Task SetStatusAsync(Guid id, ExamAttemptStatusModel statusToSet);
 
         Task SaveIntermediateResultAsync(UserExamAttemptModel model);
+
+        Task<UserExamAttemptModel> GetStartedAttemptAsync(Guid examId, ClaimsPrincipal userClaimsPrincipal);
     }
 }

@@ -5,6 +5,7 @@ namespace Presentation_Layer.ViewModels.ExamAssessment
     public class TakeExamViewModel
     {
         public Guid AttemptId { get; set; }
+
         public string ExamName { get; set; }
 
         public string CourseName { get; set; }
@@ -19,7 +20,7 @@ namespace Presentation_Layer.ViewModels.ExamAssessment
 
         public int MaxPossibleExamGrade { get; set; }
 
-        public TimeSpan ExamDuration { get; set; }
+        public TimeSpan RemainingTimeToCompleteExam { get; set; }
 
         public TimeSpan TakenTimeToComplete { get; set; }
 

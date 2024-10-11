@@ -16,6 +16,6 @@ namespace Presentation_Layer.ViewModels.ExamAssessment.Shared
 
         public List<ExamAttemptViewModel> ExamAttempts { get; set; }
 
-        public ExamAttemptViewModel? FinalAttempt { get; set; }
+        public double? FinalAttemptGrade { get; set; }
     }
 }

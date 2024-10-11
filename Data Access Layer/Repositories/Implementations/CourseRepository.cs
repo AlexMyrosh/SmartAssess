@@ -30,19 +30,19 @@ namespace Data_Access_Layer.Repositories.Implementations
             return courseEntities;
         }
 
-        public async Task<IEnumerable<CourseEntity>> GetAllByFilterAsync(Expression<Func<CourseEntity, bool>> filter, bool includeDeleted = false)
+        public async Task<IEnumerable<CourseEntity>> GetAllByFilterAsync(Expression<Func<CourseEntity, bool>> filter, string userId, bool includeDeleted = false)
         {
             var courseEntities = await _sqlContext
                 .Courses
                 .Where(course => course.IsDeleted == false || course.IsDeleted == includeDeleted)
                 .Where(filter)
                 .Include(course => course.Exams)
-                .ThenInclude(exam => exam.UserExamAttempts)
+                .ThenInclude(exam => exam.UserExamAttempts.Where(x=>x.UserId == userId))
                 .ThenInclude(attempt => attempt.User)
                 .Include(course => course.Exams)
                 .ThenInclude(exam => exam.Questions)
                 .Include(course => course.Exams)
-                .ThenInclude(exam => exam.UserExamAttempts)
+                .ThenInclude(exam => exam.UserExamAttempts.Where(x => x.UserId == userId))
                 .ThenInclude(attempt => attempt.UserAnswers)
                 .ToListAsync();
 

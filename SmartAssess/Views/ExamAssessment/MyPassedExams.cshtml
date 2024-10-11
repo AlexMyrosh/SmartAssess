@@ -123,17 +123,17 @@
                                                                                             </td>
                                                                                         </tr>
                                                                                     }
-                                                                                    @if (exam.FinalAttempt != null)
+                                                                                        @if (exam.FinalAttemptGrade != null)
                                                                                     {
                                                                                         <tr style="background-color: #DAF7A6;">
                                                                                             <td class="text-center align-middle">Final grade (@exam.FinalGradeCalculationMethod)</td>
                                                                                             <td class="text-center align-middle">
-                                                                                                    @exam.FinalAttempt.TotalGrade
+                                                                                                    @exam.FinalAttemptGrade
                                                                                             </td>
                                                                                             <td class="text-center align-middle">@exam.ExamMaxPossibleExamGrade</td>
                                                                                             <td class="text-center align-middle">@exam.ExamMinPassGrade</td>
                                                                                             <td class="text-center align-middle">
-                                                                                                @if (exam.FinalAttempt.TotalGrade >= exam.ExamMinPassGrade)
+                                                                                                    @if (exam.FinalAttemptGrade >= exam.ExamMinPassGrade)
                                                                                                 {
                                                                                                     <span class="text-success">Passed</span>
                                                                                                 }

@@ -228,7 +228,8 @@
                                         }
                                         else if (Model.Exams[i].StartedAttemptId != null)
                                         {
-                                            @Html.ActionLink("Continue attempt", "ContinueAssessments", "ExamAssessment", new { startedAttemptId = Model.Exams[i].StartedAttemptId }, new { @class = "btn btn-success" })
+@*                                             @Html.ActionLink("Continue attempt", "TakeExam", "ExamAssessment", new { startedAttemptId = Model.Exams[i].StartedAttemptId }, new { @class = "btn btn-success" }) *@
+                                            @Html.ActionLink("Continue attempt", "TakeExam", "ExamAssessment", new { examId = Model.Exams[i].Id }, new { @class = "btn btn-success" })
                                         }
                                         else
                                         {

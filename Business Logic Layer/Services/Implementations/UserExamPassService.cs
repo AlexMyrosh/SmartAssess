@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Security.Claims;
+using AutoMapper;
 using Business_Logic_Layer.Models;
 using Business_Logic_Layer.Models.Enums;
 using Business_Logic_Layer.Services.Interfaces;
@@ -12,16 +13,17 @@ namespace Business_Logic_Layer.Services.Implementations
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IAccountService _accountService;
 
-        public UserExamPassService(IUnitOfWork unitOfWork, IMapper mapper)
+        public UserExamPassService(IUnitOfWork unitOfWork, IMapper mapper, IAccountService accountService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _accountService = accountService;
         }
 
         public async Task<Guid> CreateAsync(UserExamAttemptModel model)
         {
-            model.AttemptStarterAt = DateTimeOffset.Now;
             var userExamAttemptEntity = _mapper.Map<UserExamAttemptEntity>(model);
             var createdEntityId = await _unitOfWork.UserExamPassRepository.CreateAsync(userExamAttemptEntity);
             await _unitOfWork.SaveAsync();
@@ -30,10 +32,13 @@ namespace Business_Logic_Layer.Services.Implementations
 
         public async Task CompleteAttemptAsync(UserExamAttemptModel model)
         {
-            var userExamAttemptEntity = _mapper.Map<UserExamAttemptEntity>(model);
-            userExamAttemptEntity.Status = ExamAttemptStatusEntity.Completed;
-            _unitOfWork.ClearChangeTracker();
-            _unitOfWork.UserExamPassRepository.Update(userExamAttemptEntity);
+            var entityFromDb = await _unitOfWork.UserExamPassRepository.GetByIdWithDetailsAsync(model.Id.Value);
+            entityFromDb.Status = ExamAttemptStatusEntity.Completed;
+            foreach (var userAnswer in entityFromDb.UserAnswers)
+            {
+                userAnswer.AnswerText = model.UserAnswers.FirstOrDefault(x => x.Id == userAnswer.Id).AnswerText;
+            }
+
             await _unitOfWork.SaveAsync();
         }
 
@@ -120,6 +125,46 @@ namespace Business_Logic_Layer.Services.Implementations
             }
             
             await _unitOfWork.SaveAsync();
+        }
+
+        public async Task<UserExamAttemptModel> GetStartedAttemptAsync(Guid examId, ClaimsPrincipal userClaimsPrincipal)
+        {
+            var userId = _accountService.GetUserId(userClaimsPrincipal);
+            var userAttempt = await _unitOfWork.UserExamPassRepository.GetStartedAttemptAsync(examId, userId);
+            UserExamAttemptModel model;
+            if (userAttempt is null)
+            {
+                var examEntity = await _unitOfWork.ExamRepository.GetByIdWithDetailsAsync(examId);
+                model = new UserExamAttemptModel
+                {
+                    AttemptStarterAt = DateTimeOffset.Now,
+                    Status = ExamAttemptStatusModel.InProgress,
+                    User = new UserModel
+                    {
+                        Id = userId
+                    },
+                    Exam = new ExamModel
+                    {
+                        Id = examId
+                    },
+                    UserAnswers = new List<UserAnswerModel>(examEntity.Questions.Count)
+                };
+
+                foreach (var question in examEntity.Questions)
+                {
+                    model.UserAnswers.Add(new UserAnswerModel
+                    {
+                        QuestionId = question.Id
+                    });
+                }
+
+                var createdAttemptEntityId = await CreateAsync(model);
+                userAttempt = await _unitOfWork.UserExamPassRepository.GetByIdWithDetailsAsync(createdAttemptEntityId);
+            }
+
+            model = _mapper.Map<UserExamAttemptModel>(userAttempt);
+            model.Exam.UserAttemptCount = model.Exam.UserExamAttempts.Count(x => x.User.Id == userId);
+            return model;
         }
     }
 }
