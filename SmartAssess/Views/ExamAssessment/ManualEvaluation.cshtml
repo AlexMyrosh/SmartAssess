@@ -82,6 +82,7 @@
 
                                     <h5 class="card-title">Feedback</h5>
                                     <textarea rows="5" asp-for="@Model.UserAnswers[i].QuestionAnswerFeedback" class="form-control" placeholder="Write something about the student's' answer"></textarea>
+                                    @Html.HiddenFor(model => Model.UserAnswers[i].QuestionAnswerId)
                                 </div>
                             </div>
                         }
@@ -110,7 +111,9 @@
                     </div>
 
                     <div class="text-center mb-3 mt-3">
-                        <input type="submit" value="Save" class="btn btn-success" style="border-radius: 50px; font-size: 20px;" />
+                        @Html.HiddenFor(model => model.ExamAttemptId)
+                        <input type="hidden" name="ExamId" value="@Model.ExamId" />
+                        <input type="submit" value="Save" class="btn btn-success" style="border-radius: 50px; font-size: 20px;"/>
                     </div>
                 </form>
             </div>

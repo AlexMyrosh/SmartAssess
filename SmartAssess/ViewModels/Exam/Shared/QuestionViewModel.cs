@@ -2,7 +2,7 @@
 {
     public class QuestionViewModel
     {
-        public Guid QuestionId { get; set; }
+        public Guid? QuestionId { get; set; }
 
         public string QuestionText { get; set; }
 

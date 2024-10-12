@@ -34,7 +34,6 @@ namespace Business_Logic_Layer.Services.Implementations
                                                    $"Please provide a grade from 0 to {userAnswerModel.Question.MaxGrade} " +
                                                    $"and also give some feedback.\n\nQuestion: {userAnswerModel.Question.QuestionText}\n\n" +
                                                    $"Student's Answer: {(string.IsNullOrEmpty(userAnswerModel.AnswerText) ? "<MISS>" : userAnswerModel.AnswerText)}\n\n" +
-                                                   $"Teacher's Notes: {(string.IsNullOrEmpty(userAnswerModel.Question.TeacherNoteForAssessment) ? "<MISS>" : userAnswerModel.Question.TeacherNoteForAssessment)}\n\n" +
                                                    $"If there is word <MISS> above, it means that value is null or empty." + 
                                                    $"We expect your answer in the following format: \n\nGrade: <grade>\nFeedback: <feedback>";
 

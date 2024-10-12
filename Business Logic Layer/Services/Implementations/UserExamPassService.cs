@@ -167,5 +167,38 @@ namespace Business_Logic_Layer.Services.Implementations
             model.Exam.UserAttemptCount = model.Exam.UserExamAttempts.Count(x => x.User.Id == userId);
             return model;
         }
+
+        public async Task<Guid> UpdateAfterEvaluationAsync(UserExamAttemptModel model)
+        {
+            if (model.Id is null)
+            {
+                throw new ArgumentException("UserExamAttemptModel id is null", nameof(model.Id));
+            }
+
+            if (model.UserAnswers is null)
+            {
+                throw new ArgumentException("UserExamAttemptModel UserAnswers is null", nameof(model.UserAnswers));
+            }
+
+            var userAttemptEntityFromDb = await _unitOfWork.UserExamPassRepository.GetByIdWithDetailsAsync(model.Id.Value);
+            if (userAttemptEntityFromDb is null)
+            {
+                throw new ArgumentException("Unable to get UserExamAttemptEntity by id", nameof(model.Id));
+            }
+
+            // TODO: doesn't work with automapper, try again
+            userAttemptEntityFromDb.Feedback = model.Feedback;
+            for (var i = 0; i < model.UserAnswers.Count; i++)
+            {
+                userAttemptEntityFromDb.UserAnswers[i].Grade = model.UserAnswers[i].Grade;
+                userAttemptEntityFromDb.UserAnswers[i].Feedback = model.UserAnswers[i].Feedback;
+            }
+
+            userAttemptEntityFromDb.IsExamAssessed = true;
+            userAttemptEntityFromDb.Status = ExamAttemptStatusEntity.Completed;
+
+            await _unitOfWork.SaveAsync();
+            return model.Id.Value;
+        }
     }
 }

@@ -31,7 +31,6 @@
   <ItemGroup>
     <Folder Include="Comparer\" />
     <Folder Include="FluentValidator\Course\" />
-    <Folder Include="FluentValidator\Exam\" />
     <Folder Include="FluentValidator\ExamAssessment\" />
   </ItemGroup>
 

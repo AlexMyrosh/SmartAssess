@@ -2,6 +2,7 @@
 using Business_Logic_Layer.Models;
 using Business_Logic_Layer.Services.Interfaces;
 using Data_Access_Layer.Models;
+using Data_Access_Layer.Models.Enums;
 using Data_Access_Layer.UnitOfWork.Interfaces;
 
 namespace Business_Logic_Layer.Services.Implementations
@@ -83,9 +84,32 @@ namespace Business_Logic_Layer.Services.Implementations
             }
 
             var examEntityFromDb = await _unitOfWork.ExamRepository.GetByIdWithDetailsAsync(model.Id.Value);
-            var userAttempts = examEntityFromDb.UserExamAttempts;
-            _mapper.Map(model, examEntityFromDb);
-            examEntityFromDb.UserExamAttempts = userAttempts;
+            examEntityFromDb.Name = model.Name;
+            examEntityFromDb.Description = model.Description;
+            examEntityFromDb.ExamStartDateTime = model.ExamStartDateTime.Value;
+            examEntityFromDb.ExamEndDateTime = model.ExamEndDateTime.Value;
+            examEntityFromDb.ExamDuration = model.ExamDuration.Value;
+            examEntityFromDb.MinimumPassGrade = model.MinimumPassGrade.Value;
+            examEntityFromDb.MaxAttemptsAllowed = model.MaxAttemptsAllowed.Value;
+            examEntityFromDb.FinalGradeCalculationMethod = (FinalGradeCalculationMethodEntity)model.FinalGradeCalculationMethod;
+
+            for (int i = 0; i < model.Questions.Count; i++)
+            {
+                if (examEntityFromDb.Questions.Exists(q => q.Id == model.Questions[i].Id))
+                {
+                    examEntityFromDb.Questions.First(q=>q.Id == model.Questions[i].Id).QuestionText = model.Questions[i].QuestionText;
+                    examEntityFromDb.Questions.First(q => q.Id == model.Questions[i].Id).MaxGrade = model.Questions[i].MaxGrade.Value;
+                }
+                else
+                {
+                    examEntityFromDb.Questions.Add(new ExamQuestionEntity
+                    {
+                        QuestionText = model.Questions[i].QuestionText,
+                        MaxGrade = model.Questions[i].MaxGrade.Value,
+                    });
+                }
+            }
+
             await _unitOfWork.SaveAsync();
             return model.Id.Value;
         }

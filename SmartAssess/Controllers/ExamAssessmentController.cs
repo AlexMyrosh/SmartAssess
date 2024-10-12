@@ -46,7 +46,7 @@ namespace Presentation_Layer.Controllers
             {
                 var model = mapper.Map<UserExamAttemptModel>(viewModel);
                 model.IsExamAssessed = true;
-                await userExamPassService.UpdateAsync(model);
+                await userExamPassService.UpdateAfterEvaluationAsync(model);
                 return RedirectToAction("Result", "Exam", new { id = viewModel.ExamId });
             }
 

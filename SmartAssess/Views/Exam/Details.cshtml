@@ -92,12 +92,12 @@
             </div>
             <div class="container" style="=margin-bottom: 30px;">
                 <div class="text-center">
-                    <h1 class="display-4">Questions & Answers</h1>
+                    <h1 class="display-4">Questions</h1>
                 </div>
                 @for (var i = 0; i < Model.Questions.Count; i++)
                 {
-                    <div class="card" style="background-color: #f2f2f2; border-radius: 15px;">
-                        <div class="card-body question">
+                    <div class="card mb-3" style="background-color: #f2f2f2; border-radius: 15px;">
+                        <div class="card-body">
                             <h5 class="card-title" style="display: flex; justify-content: center; align-items: center;">
                                 Question @(i + 1)
                             </h5>

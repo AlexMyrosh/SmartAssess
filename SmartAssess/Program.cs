@@ -19,6 +19,8 @@ using Presentation_Layer.FluentValidator.Account;
 using Serilog.Sinks.MSSqlServer;
 using Serilog;
 using Presentation_Layer.ViewModels.Account;
+using Presentation_Layer.FluentValidator.Exam;
+using Presentation_Layer.ViewModels.Exam.Shared;
 
 namespace Presentation_Layer
 {
@@ -113,6 +115,7 @@ namespace Presentation_Layer
             services.AddScoped<IValidator<LoginViewModel>, LoginViewModelValidator>();
             services.AddScoped<IValidator<RegisterViewModel>, RegisterViewModelValidator>();
             services.AddScoped<IValidator<ResetPasswordViewModel>, ResetPasswordViewModelValidator>();
+            services.AddScoped<IValidator<QuestionViewModel>, QuestionViewModelValidator>();
 
             services.AddScoped<IExamService, ExamService>();
             services.AddScoped<IAccountService, AccountService>();
@@ -130,9 +133,14 @@ namespace Presentation_Layer
 
             //services.AddScoped<ErrorHandlingFilter>();
 
-            services.AddControllersWithViews()
+            services.AddControllersWithViews(options =>
+                {
+                    options.ModelValidatorProviders.Clear();
+                })
                 .AddMvcOptions(option => option.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true)
                 .AddFluentValidation();
+
+
             services.AddRazorPages();
         }
     }

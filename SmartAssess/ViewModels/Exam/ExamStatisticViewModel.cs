@@ -24,7 +24,7 @@ namespace Presentation_Layer.ViewModels.Exam
 
         public List<string> ExamGradeDistribution { get; set; }
 
-        public List<int> UserGradeDistribution { get; set; }
+        public int[] UserGradeDistribution { get; set; }
 
         public List<UserExamAttemptViewModel> UserAttempts { get; set; }
 

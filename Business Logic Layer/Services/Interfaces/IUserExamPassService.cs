@@ -20,6 +20,8 @@ namespace Business_Logic_Layer.Services.Interfaces
 
         Task<Guid> UpdateAsync(UserExamAttemptModel model);
 
+        Task<Guid> UpdateAfterEvaluationAsync(UserExamAttemptModel model);
+
         Task SetStatusAsync(Guid id, ExamAttemptStatusModel statusToSet);
 
         Task SaveIntermediateResultAsync(UserExamAttemptModel model);

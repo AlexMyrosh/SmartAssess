@@ -1,10 +1,10 @@
 $(document).ready(function () {
     var $questionsContainer = $("#questionsContainer");
     var $addQuestion = $("#addQuestion");
-    var questionCounter = document.querySelectorAll(".question").length;
+    var questionCounter = document.querySelectorAll(".examQuestionForm").length;
 
     function UpdateQuestionAttributesIndexes() {
-        $(".question").each(function (index, question) {
+        $(".examQuestionForm").each(function (index, question) {
             $(question).find("textarea").attr('id', function (_, idAttr) {
                 return idAttr.replace(/Questions_\d+__/, 'Questions_' + index + '__');
             });
@@ -20,7 +20,7 @@ $(document).ready(function () {
     }
 
     $addQuestion.click(function () {
-        var clone = $(".question:first").clone();
+        var clone = $(".examQuestionForm:first").clone();
 
         // Updates indexes to map fields to model properties
         clone.html(
@@ -39,7 +39,7 @@ $(document).ready(function () {
 
     $questionsContainer.on("click", ".delete-question", function () {
         if (questionCounter > 1) {
-            $(this).closest('.question').remove();
+            $(this).closest('.examQuestionForm').remove();
             UpdateQuestionAttributesIndexes();
             questionCounter--;
         }

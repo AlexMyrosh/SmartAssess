@@ -90,7 +90,7 @@
                         @Model.MinimumPassGrade
                 </td>
                 <td>
-                        @Model.UserAttempts[i].TakenTimeToComplete
+                        @Model.UserAttempts[i].TakenTimeToComplete.ToString(@"hh\:mm\:ss")
                 </td>
                 <td>
                         @if (Model.UserAttempts[i].IsAssessed)
@@ -198,7 +198,7 @@
 
             var toastEl = $('#testToast');
             var toastMessage = $('#testToastMessage');
-            toastMessage.text(`Execution started. It can take about ${formatTime(timeToComplete)} to finish`);
+            toastMessage.text(`Execution started in background`);
             var toast = new bootstrap.Toast(toastEl);
             toast.show();
 
@@ -272,9 +272,10 @@
 
             // Filtering logic
             rows.forEach(row => {
-                var statusColumnValue = row.cells[5].innerText.trim();
-                var isChecked = row.cells[3].innerHTML.includes('fa-check');
-                var isCheckedByAI = row.cells[4].innerHTML.includes('fa-check');
+                debugger;
+                var statusColumnValue = row.cells[6].innerText.trim();
+                var isChecked = row.cells[4].innerHTML.includes('fa-check');
+                var isCheckedByAI = row.cells[5].innerHTML.includes('fa-check');
 
                 var shouldDisplay = true;
 
