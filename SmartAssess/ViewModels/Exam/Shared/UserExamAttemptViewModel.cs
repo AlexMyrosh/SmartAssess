@@ -10,11 +10,13 @@ namespace Presentation_Layer.ViewModels.Exam.Shared
 
         public bool IsAssessedByAi { get; set; }
 
-        public int? TotalGrade { get; set; }
+        public double? TotalGrade { get; set; }
 
         public string UserFirstName { get; set; }
 
         public string UserLastName { get; set; }
+
+        public DateTimeOffset AttemptStarterAt { get; set; }
 
         public TimeSpan TakenTimeToComplete { get; set; }
 

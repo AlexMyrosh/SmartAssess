@@ -2,8 +2,8 @@
 
 @{
     ViewData["Title"] = "ExamStatistic";
-    var orderedByGradeFromMaxToMin = Model.AssessedUserAttempts.OrderByDescending(x => x.TotalGrade).ToList();
-    var orderedByGradeFromMinToMax = Model.AssessedUserAttempts.OrderBy(x => x.TotalGrade).ToList();
+    // var orderedByGradeFromMaxToMin = Model.AssessedUserAttempts.OrderByDescending(x => x.TotalGrade).ToList();
+    // var orderedByGradeFromMinToMax = Model.AssessedUserAttempts.OrderBy(x => x.TotalGrade).ToList();
 }
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -37,7 +37,7 @@
                         <div class="card bg-c-pink order-card flex-fill">
                             <div class="card-body">
                                 <h2 class="m-b-20 text-center">Average time to complete</h2>
-                                @if (Model.UserAttempts.Count > 0)
+                                @if (Model.IsExamTakenByStudents)
                                 {
                                     <h3 class="text-center">
                                         <span>@Model.AverageTimeSpentToCompleteExam.ToString(@"hh\:mm\:ss")</span>
@@ -55,9 +55,9 @@
                         <div class="card bg-c-purple order-card flex-fill">
                             <div class="card-body">
                                 <h2 class="m-b-20 text-center">Average grade</h2>
-                                @if (Model.UserAttempts.Count > 0)
+                                @if (Model.IsExamTakenByStudents)
                                 {
-                                    <h3 class="text-center"><span>@Model.ExamTakerAverageGrade</span></h3>
+                                    <h3 class="text-center"><span>@Math.Round(Model.ExamTakerAverageGrade, 2)</span></h3>
                                 }
                                 else
                                 {
@@ -68,7 +68,7 @@
                     </div>
                 </div>
                 
-                @if (Model.AssessedUserAttempts.Count > 0)
+                @if (Model.IsExamHasAssessedUserAttempts)
                 {
                     <div class="row justify-content-center">
                         <div class="col-md-6">
@@ -78,15 +78,15 @@
                                         Top 5 students with best grades
                                     </h5>
                                 </div>
-                                @for (var i = 0; i < Model.AssessedUserAttempts.Count; i++)
+                                @for (var i = 0; i < Model.AssessedUserAttemptsFromMaxToMinGrade.Count; i++)
                                 {
                                     <div class="card-body d-flex justify-content-between" style="background-color: #f2f4f6; margin: 10px; border-radius: 10px;">
                                         <span>
-                                            @(i + 1). @orderedByGradeFromMaxToMin[i].UserFirstName @orderedByGradeFromMaxToMin[i].UserLastName
+                                            @(i + 1). @Model.AssessedUserAttemptsFromMaxToMinGrade[i].UserFirstName @Model.AssessedUserAttemptsFromMaxToMinGrade[i].UserLastName
                                         </span>
 
                                         <span>
-                                            @orderedByGradeFromMaxToMin[i].TotalGrade/@Model.MaxPossibleExamGrade
+                                            @Model.AssessedUserAttemptsFromMaxToMinGrade[i].TotalGrade/@Model.MaxPossibleExamGrade
                                         </span>
                                     </div>
 
@@ -107,15 +107,15 @@
                                     </h5>
                                 </div>
 
-                                @for (var i = 0; i < Model.AssessedUserAttempts.Count; i++)
+                                @for (var i = 0; i < Model.AssessedUserAttemptsFromMinToMaxGrade.Count; i++)
                                 {
                                     <div class="card-body d-flex justify-content-between" style="background-color: #f2f4f6; margin: 10px; border-radius: 10px;">
                                         <span>
-                                            @(i + 1). @orderedByGradeFromMinToMax[i].UserFirstName @orderedByGradeFromMinToMax[i].UserLastName
+                                            @(i + 1). @Model.AssessedUserAttemptsFromMinToMaxGrade[i].UserFirstName @Model.AssessedUserAttemptsFromMinToMaxGrade[i].UserLastName
                                         </span>
 
                                         <span>
-                                            @orderedByGradeFromMinToMax[i].TotalGrade/@Model.MaxPossibleExamGrade
+                                            @Model.AssessedUserAttemptsFromMinToMaxGrade[i].TotalGrade/@Model.MaxPossibleExamGrade
                                         </span>
                                     </div>
 
@@ -129,7 +129,7 @@
                     </div>
                 }
                 
-                @if (Model.AssessedUserAttempts.Count == 0)
+                @if (!Model.IsExamHasAssessedUserAttempts)
                 {
                     <div class="text-center mb-5">
                         <h1 class="display-1">
@@ -138,7 +138,7 @@
                     </div>
                 }
 
-                @if (Model.UserAttempts.Count > 0)
+                @if (Model.IsExamHasAssessedUserAttempts)
                 {
                     <div class="row">
                         <div class="col-md-6 d-flex flex-column align-items-center justify-content-center  mb-5 mt-5" style="height: 50vh;">
@@ -171,12 +171,12 @@
         var myChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: ['Passed', 'Failed', 'Not assessed'],
+                labels: ['Passed', 'Failed', 'There is no assessed attempts'],
                 datasets: [{
                     data: [
                         @Model.PassedExamNumberOfUsers,
                         @Model.FailedExamNumberOfUsers,
-                        @Model.WaitingForAssessmentNumberOfUserAttempts
+                        @Model.NumberOfUsersWithNoneOfCheckedAttempts
                     ],
                     backgroundColor: [
                         'rgba(75, 192, 192, 0.2)',

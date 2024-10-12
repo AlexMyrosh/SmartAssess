@@ -24,6 +24,11 @@ public class ListCourseModelsToMyPassedExamsViewModelConverter : ITypeConverter<
 
             foreach (var exam in course.Exams)
             {
+                if (exam.UserExamAttempts.Count == 0)
+                {
+                    continue;
+                }
+
                 var takenExam = new TakenExamsViewModel
                 {
                     ExamId = exam.Id.Value,
@@ -47,7 +52,7 @@ public class ListCourseModelsToMyPassedExamsViewModelConverter : ITypeConverter<
                     }
                 }
 
-                if (takenExam.ExamAttempts.All(x => x.IsExamAssessed))
+                if (takenExam.ExamAttempts.Any(x => x.IsExamAssessed))
                 {
                     if (takenExam.FinalGradeCalculationMethod == FinalGradeCalculationMethodViewModel.Average)
                     {
@@ -66,7 +71,6 @@ public class ListCourseModelsToMyPassedExamsViewModelConverter : ITypeConverter<
 
                 examCourse.TakenExams.Add(takenExam);
             }
-
 
             result.TakenExamCourses.Add(examCourse);
         }

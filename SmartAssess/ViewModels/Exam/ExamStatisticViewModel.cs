@@ -20,14 +20,22 @@ namespace Presentation_Layer.ViewModels.Exam
 
         public int WaitingForAssessmentNumberOfUserAttempts { get; set; }
 
+        public int NumberOfUsersWithNoneOfCheckedAttempts { get; set; }
+
         public TimeSpan AverageTimeSpentToCompleteExam { get; set; }
 
         public List<string> ExamGradeDistribution { get; set; }
 
         public int[] UserGradeDistribution { get; set; }
 
-        public List<UserExamAttemptViewModel> UserAttempts { get; set; }
+        public bool IsExamTakenByStudents { get; set; }
 
-        public List<UserExamAttemptViewModel> AssessedUserAttempts { get; set; }
+        public bool IsExamHasAssessedUserAttempts { get; set; }
+
+        public List<UserExamAttemptViewModel> AssessedUserAttemptsFromMinToMaxGrade { get; set; }
+
+        public List<UserExamAttemptViewModel> AssessedUserAttemptsFromMaxToMinGrade { get; set; }
+
+        public List<UserExamAttemptViewModel> UserAttempts { get; set; }
     }
 }
