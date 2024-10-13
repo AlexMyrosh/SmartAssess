@@ -1,4 +1,5 @@
-﻿using Presentation_Layer.ViewModels.Exam.Shared;
+﻿using Presentation_Layer.ViewModels.Enums;
+using Presentation_Layer.ViewModels.Exam.Shared;
 
 namespace Presentation_Layer.ViewModels.Exam
 {
@@ -6,7 +7,7 @@ namespace Presentation_Layer.ViewModels.Exam
     {
         public string ExamName { get; set; }
 
-        public List<UserExamAttemptViewModel> UserAttempts { get; set; }
+        public Dictionary<UserViewModel, ExamAttemptsViewModel> UserAttempts { get; set; }
 
         public int MaxPossibleExamGrade { get; set; }
 

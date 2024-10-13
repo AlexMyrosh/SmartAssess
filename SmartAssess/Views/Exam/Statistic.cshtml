@@ -171,7 +171,7 @@
         var myChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: ['Passed', 'Failed', 'There is no assessed attempts'],
+                labels: ['Passed', 'Failed', 'With no assessed attempts'],
                 datasets: [{
                     data: [
                         @Model.PassedExamNumberOfUsers,
@@ -238,7 +238,6 @@
     </script>
 
     <script>
-        debugger;
         var ctx = document.getElementById('gradeWithNumberOfStudentsCategoriesChart').getContext('2d');
         var chart = new Chart(ctx, {
             type: 'bar',

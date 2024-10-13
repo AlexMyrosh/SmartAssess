@@ -6,6 +6,7 @@ using Presentation_Layer.ViewModels.Course;
 using Presentation_Layer.ViewModels.Exam;
 using Presentation_Layer.ViewModels.Exam.Shared;
 using Presentation_Layer.ViewModels.ExamAssessment;
+using Presentation_Layer.ViewModels.ExamAssessment.Shared;
 
 namespace Presentation_Layer.AutoMapperProfiles
 {
@@ -29,6 +30,7 @@ namespace Presentation_Layer.AutoMapperProfiles
             CreateMap<UserExamAttemptModel, TakeExamViewModel>().ConvertUsing<UserExamAttemptModelToTakeExamViewModelConverter>();
             CreateMap<List<CourseModel>, MyPassedExamsViewModel>().ConvertUsing<ListCourseModelsToMyPassedExamsViewModelConverter>();
             CreateMap<ExamModel, ExamStatisticViewModel>().ConvertUsing<ExamModelToExamStatisticViewModelConverter>();
+            CreateMap<ExamModel, ExamResultViewModel>().ConvertUsing<ExamModelToExamResultViewModelConverter>();
 
             CreateMap<TakeExamViewModel, UserExamAttemptModel>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.AttemptId))
@@ -76,12 +78,12 @@ namespace Presentation_Layer.AutoMapperProfiles
             CreateMap<ViewModels.Exam.Shared.QuestionViewModel, ExamQuestionModel>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.QuestionId));
 
-            CreateMap<ExamModel, ExamDetailsViewModel>();
+            CreateMap<UserModel, ViewModels.Exam.Shared.UserViewModel>();
 
-            CreateMap<ExamModel, ExamResultViewModel>()
-                .ForMember(dest => dest.ExamName, opt => opt.MapFrom(src => src.Name))
-                .ForMember(dest => dest.MaxPossibleExamGrade, opt => opt.MapFrom(src => src.Questions.Sum(q=>q.MaxGrade)))
-                .ForMember(dest => dest.UserAttempts, opt => opt.MapFrom(src => src.UserExamAttempts));
+            CreateMap<ExamModel, ExamDetailsViewModel>();
+            CreateMap<UserExamAttemptModel, ViewModels.Exam.Shared.ExamAttemptViewModel>()
+                .ForMember(dest => dest.AttemptId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.IsExamAssessedByAi, opt => opt.MapFrom(src => src.IsAssessedByAi));
 
             CreateMap<UserExamAttemptModel, UserExamAttemptViewModel>()
                 .ForMember(dest => dest.IsAssessed, opt => opt.MapFrom(src => src.IsExamAssessed))

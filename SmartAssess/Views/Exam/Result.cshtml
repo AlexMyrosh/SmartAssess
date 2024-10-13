@@ -62,101 +62,146 @@
     </div>
 </div>
 
-<div class="table-responsivep-4 wrapper rounded-3">
-    <table class="table table-scrollable">
-        <thead class="bg-light text-center">
-        <tr class="align-middle">
-            <th>Student name</th>
-            <th>Grade</th>
-            <th>Threshold grade</th>
-            <th>Time to complete</th>
-            <th>Is checked</th>
-            <th>Is checked by AI</th>
-            <th>Status</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody class="table-hover text-center" id="userDetails">
-            @for (var i = 0; i < Model.UserAttempts.Count; i++)
-        {
-            <tr class="align-middle" style="height: 50px;">
-                <td class="student-name">
-                        @Model.UserAttempts[i].UserFirstName @Model.UserAttempts[i].UserLastName
-                </td>
-                <td>
-                        <span class="grade">@Model.UserAttempts[i].TotalGrade</span>/@Model.MaxPossibleExamGrade
-                </td>
-                <td>
-                        @Model.MinimumPassGrade
-                </td>
-                <td>
-                        @Model.UserAttempts[i].TakenTimeToComplete.ToString(@"hh\:mm\:ss")
-                </td>
-                <td>
-                        @if (Model.UserAttempts[i].IsAssessed)
-                    {
-                        <i class="fas fa-check" style="color: green; font-size: 25px;"></i>
-                    }
-                    else
-                    {
-                        <i class="fa fa-close" style="font-size:30px;color:red"></i>
-                    }
-                </td>
-                <td>
-                        @if (Model.UserAttempts[i].IsAssessed)
-                    {
-                            @if (Model.UserAttempts[i].IsAssessedByAi)
-                        {
-                            <i class="fas fa-check" style="color: green; font-size: 25px;"></i>
-                        }
-                        else
-                        {
-                            <i class="fa fa-close" style="font-size:30px;color:red"></i>
-                        }
-                    }
-                </td>
-                <td>
-                        @if (!Model.UserAttempts[i].IsAssessed)
-                    {
-                        <span class="not-assessed">Not assessed</span>
-                    }
-                        else if (Model.UserAttempts[i].TotalGrade >= Model.MinimumPassGrade)
-                    {
-                        <span class="passed">Passed</span>
-                    }
-                    else
-                    {
-                        <span class="failed">Failed</span>
-                    }
-                </td>
-                <td>
-                    <div class="d-flex justify-content-center align-items-center">
-                        @if (Model.UserAttempts[i].Status == ExamAttemptStatusViewModel.AssessingByAI)
-                        {
-                            <button class="btn btn-outline-info me-2" disabled="disabled">Assessing by AI</button>
-                        }
-                        else
-                        {
-                            <button type="submit" class="btn btn-outline-info me-2 assessByAiButton" data-userExamAttemptId="@Model.UserAttempts[i].Id">Assess by AI</button>
-                        }
-                        
-                        @Html.ActionLink("Assess manually", "ManualEvaluation", "ExamAssessment", new { examId = Model.UserAttempts[i].Id }, new { @class = "btn btn-outline-info me-2" })
-                        @Html.ActionLink("View answers", "TakenExamDetails", "ExamAssessment", new { id = Model.UserAttempts[i].Id }, new { @class = "btn btn-outline-info" })
-                    </div>
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
-    @if (Model.UserAttempts.Count == 0)
+<div class="accordion" id="accordionPanelsStayOpenExample">
+    @foreach (var userAttempts in Model.UserAttempts)
     {
-        <div class="text-center mb-5 mt-5">
-            <h1 class="display-4">
-                No one has passed the exam yet
-            </h1>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="student-@userAttempts.Key.Id-header">
+                <button class="accordion-button collapsed second-level-collapse"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#student-@userAttempts.Key.Id"
+                        aria-expanded="false"
+                        aria-controls="student-@userAttempts.Key.Id"
+                        style="box-shadow: none; display: flex; justify-content: space-between; align-items: center; width: 100%; padding-right: 20px;">
+                    <span class="usernames">
+                        @userAttempts.Key.FirstName @userAttempts.Key.LastName
+                    </span>
+
+                    @if (userAttempts.Value.FinalGrade != null)
+                    {
+                        <span>&nbsp;-&nbsp;</span>
+                        <span class="finaGrade">@userAttempts.Value.FinalGrade</span>
+                        <span>/@Model.MaxPossibleExamGrade</span>
+                    }
+
+                    <span style="position: absolute; right: 58px;">
+                        @if (userAttempts.Value.FinalGrade != null && userAttempts.Value.FinalGrade >= Model.MinimumPassGrade)
+                        {
+                            <span class="finalUserExamStatus passed">PASSED</span>
+                        }
+                        else if (userAttempts.Value.FinalGrade != null && userAttempts.Value.FinalGrade < Model.MinimumPassGrade)
+                        {
+                            <span class="finalUserExamStatus failed">FAILED</span>
+                        }
+                        else if (userAttempts.Value.FinalGrade is null)
+                        {
+                            <span class="finalUserExamStatus not-assessed">NOT ASSESSED</span>
+                        }
+                    </span>
+                </button>
+            </h2>
+
+            <div id="student-@userAttempts.Key.Id" class="accordion-collapse collapse" aria-labelledby="student-@userAttempts.Key.Id-header">
+                <div class="accordion-body p-0">
+                    <section class="intro">
+                        <table class="table mb-0">
+                            <thead>
+                            <tr>
+                                <th class="text-center" scope="col">Attempt</th>
+                                <th class="text-center" scope="col">Grade</th>
+                                <th class="text-center" scope="col">Time to complete</th>
+                                <th class="text-center" scope="col">Is checked</th>
+                                <th class="text-center" scope="col">Is checked by AI</th>
+                                <th class="text-center" scope="col">Status</th>
+                                <th class="text-center" scope="col">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @for (var i = 0; i < userAttempts.Value.UserAttempts.Count; i++) {
+                                <tr>
+                                    <td class="text-center align-middle">@(i + 1)</td>
+                                    <td class="text-center align-middle">
+                                            @if (userAttempts.Value.UserAttempts[i].IsExamAssessed)
+                                            {
+                                                @userAttempts.Value.UserAttempts[i].TotalGrade
+                                        }
+                                        else
+                                        {
+                                            <span>-</span>
+                                        }
+                                    </td>
+                                        <td class="text-center align-middle">@userAttempts.Value.UserAttempts[i].TakenTimeToComplete.ToString(@"hh\:mm\:ss")</td>
+                                    <td class="text-center align-middle">
+                                            @if (userAttempts.Value.UserAttempts[i].IsExamAssessed)
+                                        {
+                                            <i class="fas fa-check" style="color: green; font-size: 25px;"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="fa fa-close" style="font-size:30px;color:red"></i>
+                                        }
+                                    </td>
+                                    <td class="text-center align-middle">
+                                            @if (userAttempts.Value.UserAttempts[i].IsExamAssessed)
+                                            {
+                                                @if (userAttempts.Value.UserAttempts[i].IsExamAssessedByAi)
+                                            {
+                                                <i class="fas fa-check" style="color: green; font-size: 25px;"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fa fa-close" style="font-size:30px;color:red"></i>
+                                            }
+                                        }
+                                    </td>
+                                    <td class="text-center align-middle">
+                                            @if (!userAttempts.Value.UserAttempts[i].IsExamAssessed)
+                                        {
+                                            <span class="not-assessed">Not assessed</span>
+                                        }
+                                            else if (userAttempts.Value.UserAttempts[i].TotalGrade >= Model.MinimumPassGrade)
+                                        {
+                                            <span class="passed">Passed</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="failed">Failed</span>
+                                        }
+                                    </td>
+                                    <td class="text-center align-middle">
+                                        <div class="d-flex justify-content-center align-items-center">
+                                            @if (userAttempts.Value.UserAttempts[i].Status == ExamAttemptStatusViewModel.AssessingByAI)
+                                            {
+                                                <button class="btn btn-outline-info me-2" disabled="disabled">Assessing by AI</button>
+                                            }
+                                            else
+                                            {
+                                                    <button type="submit" class="btn btn-outline-info me-2 assessByAiButton" data-userExamAttemptId="@userAttempts.Value.UserAttempts[i].AttemptId">Assess by AI</button>
+                                            }
+
+                                            @Html.ActionLink("Assess manually", "ManualEvaluation", "ExamAssessment", new { examId = userAttempts.Value.UserAttempts[i].AttemptId }, new { @class = "btn btn-outline-info me-2" })
+                                            @Html.ActionLink("View answers", "TakenExamDetails", "ExamAssessment", new { id = userAttempts.Value.UserAttempts[i].AttemptId }, new { @class = "btn btn-outline-info" })
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </section>
+                </div>
+            </div>
         </div>
     }
 </div>
+@if (Model.UserAttempts.Count == 0)
+{
+    <div class="text-center mb-5 mt-5">
+        <h1 class="display-4">
+            No one has passed the exam yet
+        </h1>
+    </div>
+}
 
 <!-- Notification message -->
 <div class="toast-container position-fixed bottom-0 end-0 p-3">
@@ -233,19 +278,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             const searchInput = document.getElementById('searchInput');
 
-            searchInput.addEventListener('keyup', function (event) {
-                let searchQuery = event.target.value.toLowerCase();
-                const tableRows = document.querySelectorAll('#userDetails tr');
-
-                tableRows.forEach(row => {
-                    const studentName = row.querySelector('.student-name').textContent.toLowerCase();
-                    if (studentName.includes(searchQuery)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-            });
+            searchInput.addEventListener('keyup', filterData);
         });
     </script>
 
@@ -255,68 +288,94 @@
             var isCheckedValue = document.getElementById('isCheckedButton').innerText.replace('Is checked - ', '');
             var isCheckedByAIValue = document.getElementById('isCheckedByAIBtn').innerText.replace('Is checked by AI - ', '');
             const sortByGrade = document.getElementById('sortByGradeButton').innerText.replace('Sort by grade - ', '');
+            let searchQuery = document.getElementById('searchInput').value.toLowerCase();
 
-            const tbody = document.getElementById("userDetails");
-            let rows = Array.from(tbody.rows);
+            const userAttemptRows = document.querySelectorAll('.accordion-item');
+            for (let i = 0; i < userAttemptRows.length; i++) {
+                let rows = Array.from(userAttemptRows[i].querySelectorAll("table tbody tr"));
 
-            // Sorting logic
-            if (sortByGrade === 'From min to max') {
-                rows.sort((a, b) => {
-                    return extractGrade(a) - extractGrade(b);
+                // Filtering logic
+                rows.forEach(row => {
+                    var isChecked = row.cells[3].innerHTML.includes('fa-check');
+                    var isCheckedByAI = row.cells[4].innerHTML.includes('fa-check');
+
+                    var shouldDisplay = true;
+
+                    if (isCheckedValue === 'Yes' && !isChecked) {
+                        shouldDisplay = false;
+                    }
+
+                    if (isCheckedValue === 'No' && isChecked) {
+                        shouldDisplay = false;
+                    }
+
+                    if (isCheckedByAIValue === 'Yes' && !isCheckedByAI) {
+                        shouldDisplay = false;
+                    }
+
+                    if (isCheckedByAIValue === 'No' && (isCheckedByAI || !isChecked)) {
+                        shouldDisplay = false;
+                    }
+
+                    row.style.display = shouldDisplay ? '' : 'none';
                 });
-            } else if (sortByGrade === 'From max to min') {
-                rows.sort((a, b) => {
-                    return extractGrade(b) - extractGrade(a);
+
+                // Re-append rows in sorted or original order
+                rows.forEach(row => userAttemptRows[i].querySelector('tbody').appendChild(row));
+                const allHidden = Array.from(rows).every(tr => tr.style.display === 'none');
+
+                if (allHidden) {
+                    userAttemptRows[i].style.display = "none";
+                } else {
+                    userAttemptRows[i].style.removeProperty('display');
+                }
+
+                const finalStatus = userAttemptRows[i].querySelector(".finalUserExamStatus").innerText;
+                if (statusValue.toLowerCase().trim() !== 'all') {
+                    if (statusValue.toLowerCase() === finalStatus.toLowerCase()) {
+                        userAttemptRows[i].style.removeProperty('display');
+                    } else {
+                        userAttemptRows[i].style.display = "none";
+                    }
+                }
+
+                const studentName = userAttemptRows[i].querySelector('button.accordion-button .usernames').textContent.toLowerCase();
+                if (studentName.includes(searchQuery) && window.getComputedStyle(userAttemptRows[i]).display !== 'none') {
+                    userAttemptRows[i].style.display = '';
+                } else {
+                    userAttemptRows[i].style.display = 'none';
+                }
+            }
+
+            let sortedRows;
+
+            if (sortByGrade === 'Default') {
+                // No sorting, just keep the original order
+                sortedRows = Array.from(userAttemptRows);
+            } else {
+                sortedRows = Array.from(userAttemptRows).sort((a, b) => {
+                    const finaGradeA = a.querySelector('.finaGrade');
+                    const finaGradeB = b.querySelector('.finaGrade');
+
+                    // If one of the elements doesn't have a finaGrade, move it to the end
+                    if (!finaGradeA) return 1;
+                    if (!finaGradeB) return -1;
+
+                    // If both have finaGrade, compare the numeric values
+                    const gradeA = parseFloat(finaGradeA.textContent);
+                    const gradeB = parseFloat(finaGradeB.textContent);
+
+                    if (sortByGrade === 'From min to max') {
+                        return gradeA - gradeB; // Ascending order
+                    } else if (sortByGrade === 'From max to min') {
+                        return gradeB - gradeA; // Descending order
+                    }
                 });
             }
 
-            // Filtering logic
-            rows.forEach(row => {
-                debugger;
-                var statusColumnValue = row.cells[6].innerText.trim();
-                var isChecked = row.cells[4].innerHTML.includes('fa-check');
-                var isCheckedByAI = row.cells[5].innerHTML.includes('fa-check');
-
-                var shouldDisplay = true;
-
-                if (statusValue === 'Passed' && !statusColumnValue.includes(statusValue)) {
-                    shouldDisplay = false;
-                }
-
-                if (statusValue === 'Failed' && !statusColumnValue.includes(statusValue)) {
-                    shouldDisplay = false;
-                }
-
-                if (statusValue === 'Not assessed' && !statusColumnValue.includes(statusValue)) {
-                    shouldDisplay = false;
-                }
-
-                if (isCheckedValue === 'Yes' && !isChecked) {
-                    shouldDisplay = false;
-                }
-
-                if (isCheckedValue === 'No' && isChecked) {
-                    shouldDisplay = false;
-                }
-
-                if (isCheckedByAIValue === 'Yes' && !isCheckedByAI) {
-                    shouldDisplay = false;
-                }
-
-                if (isCheckedByAIValue === 'No' && (isCheckedByAI || !isChecked)) {
-                    shouldDisplay = false;
-                }
-
-                row.style.display = shouldDisplay ? '' : 'none';
-            });
-
-            // Re-append rows in sorted or original order
-            rows.forEach(row => tbody.appendChild(row));
-        }
-
-        function extractGrade(row) {
-            const gradeCellText = row.cells[1].childNodes[1].innerText;
-            return parseFloat(gradeCellText.split('/')[0]) || 0;
+            // Append sorted rows back to their parent container
+            const parentContainer = document.querySelector('.accordion');
+            sortedRows.forEach(row => parentContainer.appendChild(row));
         }
     </script>
 
