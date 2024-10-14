@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data_Access_Layer.Models
 {
@@ -28,6 +29,11 @@ namespace Data_Access_Layer.Models
         public string? AboutUser { get; set; }
 
         public string? ImagePath { get; set; }
+
+        public bool IsDeleted { get; set; }
+
+        [NotMapped]
+        public string Role { get; set; }
 
         public List<UserExamAttemptEntity> UserExamAttempts { get; set; }
 

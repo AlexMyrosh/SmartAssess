@@ -97,5 +97,14 @@ namespace Data_Access_Layer.Repositories.Implementations
 
             return examEntities;
         }
+
+        public async Task<List<ExamEntity>> GetAllRemovedAsync()
+        {
+            var examEntities = await _sqlContext.Exams
+                .Where(exam => exam.IsDeleted)
+                .ToListAsync();
+
+            return examEntities;
+        }
     }
 }

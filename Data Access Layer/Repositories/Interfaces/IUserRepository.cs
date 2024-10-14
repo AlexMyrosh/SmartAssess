@@ -9,5 +9,7 @@ namespace Data_Access_Layer.Repositories.Interfaces
         Task<UserEntity?> GetByIdWithDetailsAsync(string id);
 
         Task<UserEntity?> GetByIdWithoutTrackingAsync(string id);
+
+        Task SoftDeleteAsync(string id);
     }
 }

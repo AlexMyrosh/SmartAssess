@@ -5,7 +5,15 @@
 }
 
 <div class="container-fluid custom-container" style="width: 90%;">
-    <h1 class="text-center"> All courses</h1>
+    <div class="d-flex justify-content-between align-items-center">
+        <h1 class="mx-auto text-center">All courses</h1>
+        @if (User.IsInRole(RoleNames.Admin))
+        {
+            <button type="button" class="btn btn-primary" style="border-radius: 25px;" data-bs-toggle="modal" data-bs-target="#newCourseCreationModal">
+                Create new course
+            </button>
+        }
+    </div>
     @if (Model.CourseListWithPagination.Courses.Any())
     {
         <div class="form-floating mb-3">
@@ -25,7 +33,60 @@
     }
 </div>
 
+<!-- Modal For Course Creation-->
+<div class="modal fade" id="newCourseCreationModal" tabindex="-1" aria-labelledby="newCourseCreationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <form id="createCourseForm" asp-action="Create" method="post">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="newCourseCreationModalLabel">Create new course</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-floating mb-3">
+                        <input asp-for="CreatedCourse.Name" class="form-control" id="courseNameFloatingInput" />
+                        <label for="courseNameFloatingInput">Course Name</label>
+                    </div>
+                    <div class="form-floating">
+                        <textarea asp-for="CreatedCourse.LongDescription" class="form-control" style="max-height: 50vh; min-height: 20vh;" id="courseLongDescriptionfloatingTextarea"></textarea>
+                        <label for="courseLongDescriptionfloatingTextarea">Course Description</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $('#createCourseForm').submit(function (event) {
+        event.preventDefault(); // Prevent default form submission
+        var newCourseNameValue = $('#courseNameFloatingInput').val();
+        var newCourseLongDescriptionValue = $('#courseLongDescriptionfloatingTextarea').val();
+        $.ajax({
+            url: '@Url.Action("Create", "Course")',
+            type: 'POST',
+            data: { Name: newCourseNameValue, LongDescription: newCourseLongDescriptionValue },
+            success: function (response) {
+                if (response.success) {
+                    console.log(response);
+                    window.location.href = `/Course/Details/${response.courseId}`;
+                } else {
+                    console.error('Form submission failed:', response.errors);
+                }
+            },
+            error: function () {
+                console.error('Error submitting the form.');
+            }
+        });
+    });
+</script>
 <script>
     function filterCourses() {
         var searchQuery = $('#searchInput').val();

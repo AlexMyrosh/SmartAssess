@@ -55,6 +55,12 @@
                         @if (User.IsInRole(RoleNames.Admin))
                         {
                             <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Course" asp-action="All">All courses</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="UserManagement" asp-action="AllUsers">User management</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Trash" asp-action="Index">Trash</a>
                             </li>
                         }

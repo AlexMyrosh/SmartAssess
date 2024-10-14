@@ -69,6 +69,15 @@ namespace Data_Access_Layer.Repositories.Implementations
             return result;
         }
 
+        public async Task<List<CourseEntity>> GetAllRemovedAsync()
+        {
+            var courseEntities = await _sqlContext.Courses
+                .Where(course => course.IsDeleted)
+                .ToListAsync();
+
+            return courseEntities;
+        }
+
         public async Task<IEnumerable<CourseEntity>> GetAllWithDetailsAsync(bool includeDeleted = false)
         {
             var courseEntities = await _sqlContext.Courses

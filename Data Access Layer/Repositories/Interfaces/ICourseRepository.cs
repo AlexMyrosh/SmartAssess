@@ -24,5 +24,7 @@ namespace Data_Access_Layer.Repositories.Interfaces
         Task<PaginationCourseEntity> GetAllByFilterWithPaginationAsync(Expression<Func<CourseEntity, bool>> filter, int pageSize, int pageNumber = 1, bool includeDeleted = false);
 
         Task<IEnumerable<CourseEntity>> GetAllByFilterAsync(Expression<Func<CourseEntity, bool>> filter, string userId, bool includeDeleted = false);
+
+        Task<List<CourseEntity>> GetAllRemovedAsync();
     }
 }

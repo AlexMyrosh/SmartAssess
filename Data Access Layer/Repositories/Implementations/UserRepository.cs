@@ -36,5 +36,14 @@ namespace Data_Access_Layer.Repositories.Implementations
 
             return userEntity;
         }
+
+        public async Task SoftDeleteAsync(string id)
+        {
+            var courseEntity = await _sqlContext.Users.FindAsync(id);
+            if (courseEntity != null)
+            {
+                courseEntity.IsDeleted = true;
+            }
+        }
     }
 }

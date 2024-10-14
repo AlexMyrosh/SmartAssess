@@ -252,5 +252,12 @@ namespace Business_Logic_Layer.Services.Implementations
             courseModel.Users.Remove(userEntity);
             await unitOfWork.SaveAsync();
         }
+
+        public async Task<List<CourseModel>> GetAllRemovedCoursesAsync()
+        {
+            var courseEntities = await unitOfWork.CourseRepository.GetAllRemovedAsync();
+            var courseModels = mapper.Map<List<CourseModel>>(courseEntities);
+            return courseModels;
+        }
     }
 }

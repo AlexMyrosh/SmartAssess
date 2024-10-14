@@ -23,5 +23,7 @@ namespace Presentation_Layer.ViewModels.Account
         public string? ImagePath { get; set; }
 
         public List<CourseViewModel> Courses { get; set; }
+
+        public bool IsInReadonlyMode { get; set; }
     }
 }

@@ -40,5 +40,7 @@ namespace Business_Logic_Layer.Services.Interfaces
         Task<Guid> UpdateLongDescriptionAsync(Guid courseId, string newLongDescription);
 
         Task RemoveUserFromCourseAsync(string userId, Guid courseId);
+
+        Task<List<CourseModel>> GetAllRemovedCoursesAsync();
     }
 }

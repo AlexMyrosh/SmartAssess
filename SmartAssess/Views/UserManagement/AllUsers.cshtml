@@ -1,0 +1,108 @@
+﻿@model Presentation_Layer.ViewModels.UserManagement.AllUsersViewModel
+
+@{
+    ViewData["Title"] = "AllUsers";
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Users.First().FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Users.First().LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Users.First().Role)
+            </th>
+            <th>
+
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Users) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Role)
+            </td>
+            <td>
+                <button type="button" class="btn btn-primary d-inline-block"
+                        data-bs-toggle="modal" 
+                        data-bs-target="#roleUpdateModalWindow"
+                        data-user-id="@item.Id" 
+                        data-user-role="@item.Role">
+                    Update role
+                </button>
+
+                <a class="btn btn-primary d-inline-block" asp-controller="UserManagement" asp-action="UserDetails" asp-route-userId="@item.Id">
+                    Details
+                </a>
+
+                <form asp-action="DeleteUser" method="post" asp-route-userId="@item.Id" class="d-inline-block">
+                    <button class="btn btn-primary" type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<!-- Modal For Role Update -->
+<div class="modal fade" id="roleUpdateModalWindow" tabindex="-1" aria-labelledby="roleUpdateModalWindowLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <form id="roleUpdateForm" asp-action="UpdateUserRole" method="post">
+                <input type="hidden" name="UserId" />
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="roleUpdateModalWindowLabel">Update user role</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @foreach (var role in new[] { RoleNames.Student, RoleNames.Teacher, RoleNames.Admin })
+                    {
+                        <div>
+                            <input type="radio" id="@role" name="SelectedRole" value="@role" />
+                            <label for="@role">@role</label>
+                        </div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var roleUpdateModal = document.getElementById('roleUpdateModalWindow');
+
+            roleUpdateModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var userId = button.getAttribute('data-user-id');
+                var userRole = button.getAttribute('data-user-role');
+
+                var form = roleUpdateModal.querySelector('form');
+                var hiddenUserIdInput = form.querySelector('input[name="UserId"]');
+                hiddenUserIdInput.value = userId;
+
+                var radios = form.querySelectorAll('input[name="SelectedRole"]');
+                radios.forEach(function (radio) {
+                    radio.checked = radio.value === userRole;
+                });
+            });
+        });
+
+    </script>
+}

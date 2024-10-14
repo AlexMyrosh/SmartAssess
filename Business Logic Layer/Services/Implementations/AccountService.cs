@@ -7,6 +7,7 @@ using Data_Access_Layer.Models;
 using Data_Access_Layer.Roles;
 using Data_Access_Layer.UnitOfWork.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Business_Logic_Layer.Services.Implementations
 {
@@ -136,6 +137,47 @@ namespace Business_Logic_Layer.Services.Implementations
             return result;
         }
 
+        public async Task<List<UserModel>> GetAllUsersAsync(ClaimsPrincipal userClaimsPrincipal, bool includeDeleted = false)
+        {
+            var userId = userManager.GetUserId(userClaimsPrincipal);
+            var userEntities = await userManager.Users.Where(x=>x.Id != userId && (x.IsDeleted == false || x.IsDeleted == includeDeleted)).ToListAsync();
+            
+            foreach (var userEntity in userEntities)
+            {
+                userEntity.Role = (await userManager.GetRolesAsync(userEntity)).First();
+            }
+
+            var userModels = mapper.Map<List<UserModel>>(userEntities);
+            
+            return userModels;
+        }
+
+        public async Task UpdateUserRoleAsync(string userId, string roleName)
+        {
+            var userEntity = userManager.Users.FirstOrDefault(u => u.Id == userId);
+            if (userEntity is null)
+            {
+                return;
+            }
+
+            var currentRoles = await userManager.GetRolesAsync(userEntity);
+            await userManager.RemoveFromRolesAsync(userEntity, currentRoles);
+            await userManager.AddToRoleAsync(userEntity, roleName);
+        }
+
+        public async Task SoftDeleteAsync(string userId)
+        {
+            await unitOfWork.UserRepository.SoftDeleteAsync(userId);
+            await unitOfWork.SaveAsync();
+        }
+
+        public async Task<List<UserModel>> GetAllRemovedUsersAsync()
+        {
+            var userEntities = await userManager.Users.Where(x => x.IsDeleted).ToListAsync();
+            var userModels = mapper.Map<List<UserModel>>(userEntities);
+            return userModels;
+        }
+
         public async Task<bool> IsUserExistByUsernameAsync(string username)
         {
             var user = await userManager.FindByNameAsync(username);
@@ -175,7 +217,7 @@ namespace Business_Logic_Layer.Services.Implementations
 
         public async Task<UserModel?> GetUserAsync(string id)
         {
-            var userEntity = await userManager.FindByIdAsync(id);
+            var userEntity = await unitOfWork.UserRepository.GetByIdWithDetailsAsync(id);
             var userModel = mapper.Map<UserModel>(userEntity);
             return userModel;
         }

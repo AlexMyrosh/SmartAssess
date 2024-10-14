@@ -20,5 +20,7 @@ namespace Data_Access_Layer.Repositories.Interfaces
         Task<bool> HardDeleteAsync(Guid id);
 
         public Task<IEnumerable<ExamEntity>> GetAllExamsByFilterWithDetailsAsync(Expression<Func<ExamEntity, bool>> filters, bool includeDeleted = false);
+
+        Task<List<ExamEntity>> GetAllRemovedAsync();
     }
 }

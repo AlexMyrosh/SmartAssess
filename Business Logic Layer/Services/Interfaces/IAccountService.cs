@@ -47,5 +47,13 @@ namespace Business_Logic_Layer.Services.Interfaces
         string GetUserId(ClaimsPrincipal claimsPrincipal);
 
         Task<bool> VerifyUserTokenAsync(string email, string token);
+
+        Task<List<UserModel>> GetAllUsersAsync(ClaimsPrincipal userClaimsPrincipal, bool includeDeleted = false);
+
+        Task UpdateUserRoleAsync(string userId, string roleName);
+
+        Task SoftDeleteAsync(string userId);
+
+        Task<List<UserModel>> GetAllRemovedUsersAsync();
     }
 }

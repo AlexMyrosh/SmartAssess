@@ -41,6 +41,13 @@ namespace Business_Logic_Layer.Services.Implementations
             return examModels;
         }
 
+        public async Task<List<ExamModel>> GetAllRemovedExamsAsync()
+        {
+            var examEntities = await _unitOfWork.ExamRepository.GetAllRemovedAsync();
+            var examModels = _mapper.Map<List<ExamModel>>(examEntities);
+            return examModels;
+        }
+
         public async Task<IEnumerable<ExamModel>> GetAllWithDetailsAsync(bool includeDeleted = false)
         {
             var examEntities = await _unitOfWork.ExamRepository.GetAllWithDetailsAsync(includeDeleted);

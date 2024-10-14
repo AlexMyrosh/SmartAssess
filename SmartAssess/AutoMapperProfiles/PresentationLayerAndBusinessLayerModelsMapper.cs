@@ -4,9 +4,8 @@ using Presentation_Layer.AutoMapperProfiles.CustomResolvers;
 using Presentation_Layer.ViewModels.Account;
 using Presentation_Layer.ViewModels.Course;
 using Presentation_Layer.ViewModels.Exam;
-using Presentation_Layer.ViewModels.Exam.Shared;
 using Presentation_Layer.ViewModels.ExamAssessment;
-using Presentation_Layer.ViewModels.ExamAssessment.Shared;
+using Presentation_Layer.ViewModels.UserManagement;
 
 namespace Presentation_Layer.AutoMapperProfiles
 {
@@ -85,7 +84,7 @@ namespace Presentation_Layer.AutoMapperProfiles
                 .ForMember(dest => dest.AttemptId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.IsExamAssessedByAi, opt => opt.MapFrom(src => src.IsAssessedByAi));
 
-            CreateMap<UserExamAttemptModel, UserExamAttemptViewModel>()
+            CreateMap<UserExamAttemptModel, ViewModels.Exam.Shared.UserExamAttemptViewModel>()
                 .ForMember(dest => dest.IsAssessed, opt => opt.MapFrom(src => src.IsExamAssessed))
                 .ForMember(dest => dest.UserFirstName, opt => opt.MapFrom(src => src.User.FirstName))
                 .ForMember(dest => dest.UserFirstName, opt => opt.MapFrom(src => src.User.LastName));
@@ -104,6 +103,14 @@ namespace Presentation_Layer.AutoMapperProfiles
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.ExamAttemptId))
                 .ForMember(dest => dest.Feedback, opt => opt.MapFrom(src => src.GeneralFeedback))
                 .ForMember(dest => dest.UserAnswers, opt => opt.MapFrom(src => src.UserAnswers));
+
+            CreateMap<List<UserModel>, AllUsersViewModel>()
+                .ForMember(dest => dest.Users, opt => opt.MapFrom(src => src));
+
+            CreateMap<UserModel, ViewModels.UserManagement.Shared.UserViewModel>();
+            CreateMap<UserModel, ViewModels.Trash.Shared.UserViewModel>();
+            CreateMap<ExamModel, ViewModels.Trash.Shared.ExamViewModel>();
+            CreateMap<CourseModel, ViewModels.Trash.Shared.CourseViewModel>();
         }
     }
 }
