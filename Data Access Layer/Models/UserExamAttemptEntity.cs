@@ -14,10 +14,6 @@ namespace Data_Access_Layer.Models
 
         [Required]
         [DefaultValue(false)]
-        public bool IsDeleted { get; set; }
-
-        [Required]
-        [DefaultValue(false)]
         public bool IsExamAssessed { get; set; }
 
         [Required]

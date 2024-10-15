@@ -152,11 +152,17 @@ namespace Business_Logic_Layer.Services.Implementations
             await unitOfWork.SaveAsync();
         }
 
-        public async Task<bool> SoftDeleteAsync(Guid id)
+        public async Task<bool> SoftDeleteAsync(Guid id, ClaimsPrincipal deletedByUserClaimsPrincipal)
         {
-            var result = await unitOfWork.CourseRepository.SoftDeleteAsync(id);
-            await unitOfWork.SaveAsync();
-            return result;
+            var deletedByUserId = userManager.GetUserId(deletedByUserClaimsPrincipal);
+            if (!string.IsNullOrWhiteSpace(deletedByUserId))
+            {
+                var result = await unitOfWork.CourseRepository.SoftDeleteAsync(id, deletedByUserId);
+                await unitOfWork.SaveAsync();
+                return result;
+            }
+
+            return false;
         }
 
         public async Task<Guid> UpdateAsync(CourseModel model)
@@ -258,6 +264,18 @@ namespace Business_Logic_Layer.Services.Implementations
             var courseEntities = await unitOfWork.CourseRepository.GetAllRemovedAsync();
             var courseModels = mapper.Map<List<CourseModel>>(courseEntities);
             return courseModels;
+        }
+
+        public async Task RestoreAsync(Guid courseId)
+        {
+            var courseEntity = await unitOfWork.CourseRepository.GetByIdAsync(courseId);
+            if (courseEntity is not null)
+            {
+                courseEntity.IsDeleted = false;
+                courseEntity.DeletedById = null;
+                courseEntity.DeletedOn = null;
+                await unitOfWork.SaveAsync();
+            }
         }
     }
 }

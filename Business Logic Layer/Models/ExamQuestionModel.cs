@@ -8,8 +8,6 @@
 
         public int? MaxGrade { get; set; }
 
-        public bool? IsDeleted { get; set; }
-
         public ExamModel? Exam { get; set; }
 
         public List<UserAnswerModel>? UserAnswers { get; set; }

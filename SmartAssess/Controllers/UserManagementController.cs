@@ -38,7 +38,7 @@ namespace Presentation_Layer.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteUser(string userId)
         {
-            await accountService.SoftDeleteAsync(userId);
+            await accountService.SoftDeleteAsync(userId, User);
             return RedirectToAction("AllUsers");
         }
     }

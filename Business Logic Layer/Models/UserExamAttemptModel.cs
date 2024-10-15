@@ -14,8 +14,6 @@ namespace Business_Logic_Layer.Models
 
         public TimeSpan TakenTimeToComplete { get; set; }
 
-        public bool? IsDeleted { get; set; }
-
         public int? TotalGrade { get; set; }
 
         public DateTimeOffset AttemptStarterAt { get; set; }

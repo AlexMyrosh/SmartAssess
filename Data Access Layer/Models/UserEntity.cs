@@ -32,13 +32,25 @@ namespace Data_Access_Layer.Models
 
         public bool IsDeleted { get; set; }
 
+        public DateTimeOffset? DeletedOn { get; set; }
+
+        public string? DeletedById { get; set; }
+
+        public UserEntity? DeletedBy { get; set; }
+
         [NotMapped]
         public string Role { get; set; }
 
-        public List<UserExamAttemptEntity> UserExamAttempts { get; set; }
+        public virtual List<UserExamAttemptEntity> UserExamAttempts { get; set; }
 
-        public List<CourseEntity> Courses { get; set; }
+        public virtual List<CourseEntity> Courses { get; set; }
 
         public virtual List<CourseEntity> TeachingCourses { get; set; }
+
+        public List<CourseEntity> DeletedCourses { get; set; }
+
+        public List<ExamEntity> DeletedExams { get; set; }
+
+        public List<UserEntity> DeletedUsers { get; set; }
     }
 }

@@ -17,10 +17,6 @@ namespace Data_Access_Layer.Models
         public string? Feedback { get; set; }
 
         [Required]
-        [DefaultValue(false)]
-        public bool IsDeleted { get; set; }
-
-        [Required]
         public Guid QuestionId { get; set; }
         public virtual ExamQuestionEntity Question { get; set; }
 

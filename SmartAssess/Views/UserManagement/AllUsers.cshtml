@@ -3,57 +3,51 @@
 @{
     ViewData["Title"] = "AllUsers";
 }
-
-<table class="table">
-    <thead>
+<div class="container-fluid">
+    <table class="table">
+        <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Users.First().FirstName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Users.First().LastName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Users.First().Role)
-            </th>
-            <th>
-
-            </th>
+            <th class="text-center" scope="col">#</th>
+            <th class="text-center" scope="col">Name</th>
+            <th class="text-center" scope="col">Role</th>
+            <th class="text-center" scope="col">Actions</th>
         </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model.Users) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Role)
-            </td>
-            <td>
-                <button type="button" class="btn btn-primary d-inline-block"
-                        data-bs-toggle="modal" 
-                        data-bs-target="#roleUpdateModalWindow"
-                        data-user-id="@item.Id" 
-                        data-user-role="@item.Role">
-                    Update role
-                </button>
+        </thead>
+        <tbody>
+            @for (var i = 0; i < Model.Users.Count; i++)
+            {
+            <tr>
+                <td class="text-center align-middle">
+                    @(i + 1) 
+                </td>
+                <td class="text-center align-middle">
+                    @Model.Users[i].FirstName @Model.Users[i].LastName
+                </td>
+                <td class="text-center align-middle">
+                    @Model.Users[i].Role
+                </td>
+                <td class="text-center align-middle">
+                    <button type="button" class="btn btn-success d-inline-block"
+                            data-bs-toggle="modal" 
+                            data-bs-target="#roleUpdateModalWindow"
+                            data-user-id="@Model.Users[i].Id"
+                            data-user-role="@Model.Users[i].Role">
+                        Update role
+                    </button>
 
-                <a class="btn btn-primary d-inline-block" asp-controller="UserManagement" asp-action="UserDetails" asp-route-userId="@item.Id">
-                    Details
-                </a>
+                    <a class="btn btn-primary d-inline-block" asp-controller="UserManagement" asp-action="UserDetails" asp-route-userId="@Model.Users[i].Id">
+                        Details
+                    </a>
 
-                <form asp-action="DeleteUser" method="post" asp-route-userId="@item.Id" class="d-inline-block">
-                    <button class="btn btn-primary" type="submit">Delete</button>
-                </form>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+                    <form id="deleteUserForm-@Model.Users[i].Id" asp-action="DeleteUser" method="post" asp-route-userId="@Model.Users[i].Id" class="d-inline-block">
+                        <button type="button" class="btn btn-danger" data-user-id="@Model.Users[i].Id" data-user-name="@Model.Users[i].FirstName @Model.Users[i].LastName" onclick="openDeleteUserModal(this)">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
 
 <!-- Modal For Role Update -->
 <div class="modal fade" id="roleUpdateModalWindow" tabindex="-1" aria-labelledby="roleUpdateModalWindowLabel" aria-hidden="true">
@@ -83,6 +77,25 @@
     </div>
 </div>
 
+@* Modal window to confirm user deletion *@
+<div class="modal fade" id="deleteUserConfirmationModal" tabindex="-1" aria-labelledby="deleteUserConfirmationLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-center">
+                <h1 class="modal-title fs-5 text-center" id="deleteUserConfirmationLabel">Delete confirmation</h1>
+                <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                You are going to delete user "<span id="userNameInModalWindow"></span>". Confirm deletion?
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="confirmUserDeleteButton" class="btn btn-primary">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts{
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -103,6 +116,18 @@
                 });
             });
         });
+
+        function openDeleteUserModal(button) {
+            const userId = button.getAttribute('data-user-id');
+            const userName = button.getAttribute('data-user-name');
+            const form = document.getElementById(`deleteUserForm-${userId}`);
+            document.getElementById('userNameInModalWindow').textContent = userName;
+            const deleteModal = new bootstrap.Modal(document.getElementById('deleteUserConfirmationModal'));
+            deleteModal.show();
+            document.getElementById('confirmUserDeleteButton').onclick = function () {
+                form.submit();
+            };
+        }
 
     </script>
 }

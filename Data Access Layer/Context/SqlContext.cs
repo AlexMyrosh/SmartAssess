@@ -36,7 +36,7 @@ namespace Data_Access_Layer.Context
                 .HasOne(attempt => attempt.User)
                 .WithMany(user => user.UserExamAttempts)
                 .HasForeignKey(attempt => attempt.UserId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<UserExamAttemptEntity>()
                 .HasOne(attempt => attempt.Exam)
@@ -55,7 +55,7 @@ namespace Data_Access_Layer.Context
                 .HasOne(answer => answer.UserExamAttempt)
                 .WithMany(pass => pass.UserAnswers)
                 .HasForeignKey(answer => answer.UserExamAttemptId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Configure ExamEntity
             modelBuilder.Entity<ExamEntity>()
@@ -74,6 +74,26 @@ namespace Data_Access_Layer.Context
                 .HasMany(c => c.Teachers)
                 .WithMany(t => t.TeachingCourses)
                 .UsingEntity(j => j.ToTable("CourseTeachers"));
+
+            modelBuilder.Entity<CourseEntity>()
+                .HasOne(course => course.DeletedBy)
+                .WithMany(user => user.DeletedCourses)
+                .HasForeignKey(course => course.DeletedById)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ExamEntity>()
+                .HasOne(course => course.DeletedBy)
+                .WithMany(user => user.DeletedExams)
+                .HasForeignKey(course => course.DeletedById)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<UserEntity>()
+                .HasOne(course => course.DeletedBy)
+                .WithMany(user => user.DeletedUsers)
+                .HasForeignKey(course => course.DeletedById)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

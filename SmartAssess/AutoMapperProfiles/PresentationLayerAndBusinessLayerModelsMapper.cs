@@ -108,9 +108,16 @@ namespace Presentation_Layer.AutoMapperProfiles
                 .ForMember(dest => dest.Users, opt => opt.MapFrom(src => src));
 
             CreateMap<UserModel, ViewModels.UserManagement.Shared.UserViewModel>();
-            CreateMap<UserModel, ViewModels.Trash.Shared.UserViewModel>();
-            CreateMap<ExamModel, ViewModels.Trash.Shared.ExamViewModel>();
-            CreateMap<CourseModel, ViewModels.Trash.Shared.CourseViewModel>();
+
+            CreateMap<UserModel, ViewModels.Trash.Shared.UserViewModel>()
+                .ForMember(dest => dest.DeletedBy, opt => opt.MapFrom(src => $"{src.DeletedBy.FirstName} {src.DeletedBy.LastName}"));
+
+            CreateMap<ExamModel, ViewModels.Trash.Shared.ExamViewModel>()
+                .ForMember(dest => dest.DeletedBy, opt => opt.MapFrom(src => $"{src.DeletedBy.FirstName} {src.DeletedBy.LastName}"))
+                .ForMember(dest => dest.CourseName, opt => opt.MapFrom(src => src.Course.Name));
+
+            CreateMap<CourseModel, ViewModels.Trash.Shared.CourseViewModel>()
+                .ForMember(dest => dest.DeletedBy, opt => opt.MapFrom(src => $"{src.DeletedBy.FirstName} {src.DeletedBy.LastName}"));
         }
     }
 }

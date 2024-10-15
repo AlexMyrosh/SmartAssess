@@ -20,6 +20,12 @@ namespace Data_Access_Layer.Models
         [DefaultValue(false)]
         public bool IsDeleted { get; set; }
 
+        public DateTimeOffset? DeletedOn { get; set; }
+
+        public string? DeletedById { get; set; }
+
+        public UserEntity? DeletedBy { get; set; }
+
         public virtual List<ExamEntity> Exams { get; set; }
 
         public virtual List<UserEntity> Users { get; set; }

@@ -24,6 +24,10 @@
 
         public string Role { get; set; }
 
+        public DateTimeOffset? DeletedOn { get; set; }
+
+        public UserModel? DeletedBy { get; set; }
+
         public IEnumerable<string> Roles { get; set; }
 
         public IEnumerable<CourseModel> Courses { get; set; }

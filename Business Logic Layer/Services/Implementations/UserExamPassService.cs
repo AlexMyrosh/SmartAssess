@@ -43,16 +43,16 @@ namespace Business_Logic_Layer.Services.Implementations
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task<IEnumerable<UserExamAttemptModel>> GetAllAsync(bool includeDeleted = false)
+        public async Task<IEnumerable<UserExamAttemptModel>> GetAllAsync()
         {
-            var userExamAttemptEntities = await _unitOfWork.UserExamPassRepository.GetAllAsync(includeDeleted);
+            var userExamAttemptEntities = await _unitOfWork.UserExamPassRepository.GetAllAsync();
             var userExamAttemptModels = _mapper.Map<IEnumerable<UserExamAttemptModel>>(userExamAttemptEntities);
             return userExamAttemptModels;
         }
 
-        public async Task<IEnumerable<UserExamAttemptModel>> GetAllWithDetailsAsync(bool includeDeleted = false)
+        public async Task<IEnumerable<UserExamAttemptModel>> GetAllWithDetailsAsync()
         {
-            var userExamAttemptEntities = await _unitOfWork.UserExamPassRepository.GetAllWithDetailsAsync(includeDeleted);
+            var userExamAttemptEntities = await _unitOfWork.UserExamPassRepository.GetAllWithDetailsAsync();
             var userExamAttemptModels = _mapper.Map<IEnumerable<UserExamAttemptModel>>(userExamAttemptEntities);
             return userExamAttemptModels;
         }

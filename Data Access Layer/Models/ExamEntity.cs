@@ -44,6 +44,12 @@ namespace Data_Access_Layer.Models
         [DefaultValue(false)]
         public bool IsDeleted { get; set; }
 
+        public DateTimeOffset? DeletedOn { get; set; }
+
+        public string? DeletedById { get; set; }
+
+        public UserEntity? DeletedBy { get; set; }
+
         [Required]
         public Guid CourseId { get; set; }
         public virtual CourseEntity Course { get; set; }

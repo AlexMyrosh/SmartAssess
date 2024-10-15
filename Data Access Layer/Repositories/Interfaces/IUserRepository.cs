@@ -10,6 +10,8 @@ namespace Data_Access_Layer.Repositories.Interfaces
 
         Task<UserEntity?> GetByIdWithoutTrackingAsync(string id);
 
-        Task SoftDeleteAsync(string id);
+        Task SoftDeleteAsync(string id, string deletedByUserId);
+
+        Task<List<UserEntity>> GetAllRemovedAsync();
     }
 }

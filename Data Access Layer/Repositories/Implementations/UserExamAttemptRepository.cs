@@ -21,19 +21,15 @@ namespace Data_Access_Layer.Repositories.Implementations
             return entityEntry.Entity.Id;
         }
 
-        public async Task<IEnumerable<UserExamAttemptEntity>> GetAllAsync(bool includeDeleted = false)
+        public async Task<IEnumerable<UserExamAttemptEntity>> GetAllAsync()
         {
-            var userExamAttemptEntities = await _sqlContext.UserExamAttempts
-                .Where(userExamAttempt => userExamAttempt.IsDeleted == false || userExamAttempt.IsDeleted == includeDeleted)
-                .ToListAsync();
-
+            var userExamAttemptEntities = await _sqlContext.UserExamAttempts.ToListAsync();
             return userExamAttemptEntities;
         }
 
-        public async Task<IEnumerable<UserExamAttemptEntity>> GetAllWithDetailsAsync(bool includeDeleted = false)
+        public async Task<IEnumerable<UserExamAttemptEntity>> GetAllWithDetailsAsync()
         {
             var userExamAttemptEntities = await _sqlContext.Set<UserExamAttemptEntity>()
-                .Where(userExamAttempt => userExamAttempt.IsDeleted == false || userExamAttempt.IsDeleted == includeDeleted)
                 .Include(entity => entity.Exam)
                 .ThenInclude(exam => exam.Course)
                 .Include(entity => entity.User)
@@ -88,18 +84,6 @@ namespace Data_Access_Layer.Repositories.Implementations
             if (userExamAttemptEntity != null)
             {
                 _sqlContext.UserExamAttempts.Remove(userExamAttemptEntity);
-                return true;
-            }
-
-            return false;
-        }
-
-        public async Task<bool> SoftDeleteAsync(Guid id)
-        {
-            var userExamAttemptEntity = await _sqlContext.UserExamAttempts.FindAsync(id);
-            if (userExamAttemptEntity != null)
-            {
-                userExamAttemptEntity.IsDeleted = true;
                 return true;
             }
 

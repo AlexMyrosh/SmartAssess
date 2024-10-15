@@ -1,4 +1,5 @@
-﻿using Business_Logic_Layer.Models;
+﻿using System.Security.Claims;
+using Business_Logic_Layer.Models;
 
 namespace Business_Logic_Layer.Services.Interfaces
 {
@@ -14,7 +15,7 @@ namespace Business_Logic_Layer.Services.Interfaces
 
         Task<Guid> CreateAsync(ExamModel model);
 
-        Task<bool> SoftDeleteAsync(Guid id);
+        Task<bool> SoftDeleteAsync(Guid id, ClaimsPrincipal deletedByUserClaimsPrincipal);
 
         Task<bool> HardDeleteAsync(Guid id);
 
@@ -23,5 +24,7 @@ namespace Business_Logic_Layer.Services.Interfaces
         Task<IEnumerable<ExamModel>> GetAllAvailableExamsWithDetailsAsync(bool includeDeleted = false);
 
         Task<List<ExamModel>> GetAllRemovedExamsAsync();
+
+        Task RestoreAsync(Guid examId);
     }
 }

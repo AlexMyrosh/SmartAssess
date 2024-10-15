@@ -52,7 +52,7 @@ namespace Presentation_Layer.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(Guid examId, Guid courseId)
         {
-            await examService.SoftDeleteAsync(examId);
+            await examService.SoftDeleteAsync(examId, User);
             return RedirectToAction("Details", "Course", new { id = courseId });
         }
 

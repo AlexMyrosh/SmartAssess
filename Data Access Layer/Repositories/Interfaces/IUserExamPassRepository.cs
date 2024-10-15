@@ -8,15 +8,13 @@ namespace Data_Access_Layer.Repositories.Interfaces
 
         void Update(UserExamAttemptEntity entity);
 
-        Task<IEnumerable<UserExamAttemptEntity>> GetAllAsync(bool includeDeleted = false);
+        Task<IEnumerable<UserExamAttemptEntity>> GetAllAsync();
 
-        Task<IEnumerable<UserExamAttemptEntity>> GetAllWithDetailsAsync(bool includeDeleted = false);
+        Task<IEnumerable<UserExamAttemptEntity>> GetAllWithDetailsAsync();
 
         Task<UserExamAttemptEntity?> GetByIdAsync(Guid id);
 
         Task<UserExamAttemptEntity?> GetByIdWithDetailsAsync(Guid id);
-
-        Task<bool> SoftDeleteAsync(Guid id);
 
         Task<bool> HardDeleteAsync(Guid id);
 

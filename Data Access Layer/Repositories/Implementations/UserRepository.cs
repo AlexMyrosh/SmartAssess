@@ -37,13 +37,25 @@ namespace Data_Access_Layer.Repositories.Implementations
             return userEntity;
         }
 
-        public async Task SoftDeleteAsync(string id)
+        public async Task SoftDeleteAsync(string id, string deletedByUserId)
         {
-            var courseEntity = await _sqlContext.Users.FindAsync(id);
-            if (courseEntity != null)
+            var userEntity = await _sqlContext.Users.FindAsync(id);
+            if (userEntity != null)
             {
-                courseEntity.IsDeleted = true;
+                userEntity.IsDeleted = true;
+                userEntity.DeletedById = deletedByUserId;
+                userEntity.DeletedOn = DateTimeOffset.Now;
             }
+        }
+
+        public async Task<List<UserEntity>> GetAllRemovedAsync()
+        {
+            var examEntities = await _sqlContext.Users
+                .Where(exam => exam.IsDeleted)
+                .Include(exam => exam.DeletedBy)
+                .ToListAsync();
+
+            return examEntities;
         }
     }
 }

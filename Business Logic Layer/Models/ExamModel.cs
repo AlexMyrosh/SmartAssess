@@ -24,11 +24,13 @@ namespace Business_Logic_Layer.Models
 
         public FinalGradeCalculationMethodModel FinalGradeCalculationMethod { get; set; }
 
-        public bool? IsDeleted { get; set; }
-
         public int UserAttemptCount { get; set; }
 
         public Guid? StartedAttemptId { get; set; }
+
+        public DateTimeOffset? DeletedOn { get; set; }
+
+        public UserModel? DeletedBy { get; set; }
 
         public CourseModel? Course { get; set; }
 

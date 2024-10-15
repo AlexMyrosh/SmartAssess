@@ -130,7 +130,7 @@ namespace Presentation_Layer.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(Guid id)
         {
-            await courseService.SoftDeleteAsync(id);
+            await courseService.SoftDeleteAsync(id, User);
             return RedirectToAction("AppliedByTeacherCourses");
         }
 

@@ -12,6 +12,7 @@ namespace Presentation_Layer.Controllers
         IExamService _examService,
         IMapper _mapper) : Controller
     {
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var deletedCourses = await _courseService.GetAllRemovedCoursesAsync();
@@ -25,6 +26,48 @@ namespace Presentation_Layer.Controllers
             };
 
             return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RestoreCourse(Guid courseId)
+        {
+            await _courseService.RestoreAsync(courseId);
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteCoursePermanently(Guid courseId)
+        {
+            await _courseService.HardDeleteAsync(courseId);
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RestoreExam(Guid examId)
+        {
+            await _examService.RestoreAsync(examId);
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteExamPermanently(Guid examId)
+        {
+            await _examService.HardDeleteAsync(examId);
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RestoreUser(string userId)
+        {
+            await _accountService.RestoreAsync(userId);
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteUserPermanently(string userId)
+        {
+            await _accountService.HardDeleteAsync(userId);
+            return RedirectToAction("Index");
         }
     }
 }

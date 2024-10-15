@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Data_Access_Layer.Models
 {
@@ -17,10 +16,6 @@ namespace Data_Access_Layer.Models
 
         [MaxLength(500)]
         public string? TeacherNoteForAssessment { get; set; }
-
-        [Required]
-        [DefaultValue(false)]
-        public bool IsDeleted { get; set; }
 
         [Required]
         public Guid ExamId { get; set; }

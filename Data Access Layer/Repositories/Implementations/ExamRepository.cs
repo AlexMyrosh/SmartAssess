@@ -73,12 +73,14 @@ namespace Data_Access_Layer.Repositories.Implementations
             return false;
         }
 
-        public async Task<bool> SoftDeleteAsync(Guid id)
+        public async Task<bool> SoftDeleteAsync(Guid id, string deletedByUserId)
         {
             var examEntity = await _sqlContext.Exams.FindAsync(id);
             if (examEntity != null)
             {
                 examEntity.IsDeleted = true;
+                examEntity.DeletedById = deletedByUserId;
+                examEntity.DeletedOn = DateTimeOffset.Now;
                 return true;
             }
 
@@ -102,6 +104,8 @@ namespace Data_Access_Layer.Repositories.Implementations
         {
             var examEntities = await _sqlContext.Exams
                 .Where(exam => exam.IsDeleted)
+                .Include(exam => exam.DeletedBy)
+                .Include(exam => exam.Course)
                 .ToListAsync();
 
             return examEntities;

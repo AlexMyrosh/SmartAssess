@@ -4,6 +4,7 @@ using Data_Access_Layer.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data_Access_Layer.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    partial class SqlContextModelSnapshot : ModelSnapshot
+    [Migration("20241015151757_add cascade deletion")]
+    partial class addcascadedeletion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -58,12 +61,6 @@ namespace Data_Access_Layer.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("DeletedById")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTimeOffset?>("DeletedOn")
-                        .HasColumnType("datetimeoffset");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -79,8 +76,6 @@ namespace Data_Access_Layer.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DeletedById");
-
                     b.ToTable("Courses");
                 });
 
@@ -92,12 +87,6 @@ namespace Data_Access_Layer.Migrations
 
                     b.Property<Guid>("CourseId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("DeletedById")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTimeOffset?>("DeletedOn")
-                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -137,8 +126,6 @@ namespace Data_Access_Layer.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.HasIndex("DeletedById");
-
                     b.ToTable("Exams");
                 });
 
@@ -150,6 +137,9 @@ namespace Data_Access_Layer.Migrations
 
                     b.Property<Guid>("ExamId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<int>("MaxGrade")
                         .HasColumnType("int");
@@ -186,6 +176,9 @@ namespace Data_Access_Layer.Migrations
 
                     b.Property<int?>("Grade")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<Guid>("QuestionId")
                         .HasColumnType("uniqueidentifier");
@@ -225,12 +218,6 @@ namespace Data_Access_Layer.Migrations
                     b.Property<string>("Country")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("DeletedById")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTimeOffset?>("DeletedOn")
-                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("EducationalInstitution")
                         .HasMaxLength(100)
@@ -294,8 +281,6 @@ namespace Data_Access_Layer.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DeletedById");
-
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -324,6 +309,9 @@ namespace Data_Access_Layer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsAssessedByAi")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsExamAssessed")
@@ -511,16 +499,6 @@ namespace Data_Access_Layer.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Data_Access_Layer.Models.CourseEntity", b =>
-                {
-                    b.HasOne("Data_Access_Layer.Models.UserEntity", "DeletedBy")
-                        .WithMany("DeletedCourses")
-                        .HasForeignKey("DeletedById")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("DeletedBy");
-                });
-
             modelBuilder.Entity("Data_Access_Layer.Models.ExamEntity", b =>
                 {
                     b.HasOne("Data_Access_Layer.Models.CourseEntity", "Course")
@@ -529,14 +507,7 @@ namespace Data_Access_Layer.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Data_Access_Layer.Models.UserEntity", "DeletedBy")
-                        .WithMany("DeletedExams")
-                        .HasForeignKey("DeletedById")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.Navigation("Course");
-
-                    b.Navigation("DeletedBy");
                 });
 
             modelBuilder.Entity("Data_Access_Layer.Models.ExamQuestionEntity", b =>
@@ -567,16 +538,6 @@ namespace Data_Access_Layer.Migrations
                     b.Navigation("Question");
 
                     b.Navigation("UserExamAttempt");
-                });
-
-            modelBuilder.Entity("Data_Access_Layer.Models.UserEntity", b =>
-                {
-                    b.HasOne("Data_Access_Layer.Models.UserEntity", "DeletedBy")
-                        .WithMany("DeletedUsers")
-                        .HasForeignKey("DeletedById")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("DeletedBy");
                 });
 
             modelBuilder.Entity("Data_Access_Layer.Models.UserExamAttemptEntity", b =>
@@ -668,12 +629,6 @@ namespace Data_Access_Layer.Migrations
 
             modelBuilder.Entity("Data_Access_Layer.Models.UserEntity", b =>
                 {
-                    b.Navigation("DeletedCourses");
-
-                    b.Navigation("DeletedExams");
-
-                    b.Navigation("DeletedUsers");
-
                     b.Navigation("UserExamAttempts");
                 });
 

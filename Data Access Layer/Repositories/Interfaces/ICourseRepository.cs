@@ -15,7 +15,7 @@ namespace Data_Access_Layer.Repositories.Interfaces
 
         Task<Guid> CreateAsync(CourseEntity entity);
 
-        Task<bool> SoftDeleteAsync(Guid id);
+        Task<bool> SoftDeleteAsync(Guid id, string deletedByUserId);
 
         Task<bool> HardDeleteAsync(Guid id);
 

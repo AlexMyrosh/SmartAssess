@@ -3,76 +3,362 @@
 @{
     ViewData["Title"] = "Index";
 }
-
-<ul class="nav nav-tabs nav-justified" role="tablist">
-    <li class="nav-item" role="presentation">
-        <a class="nav-link active" id="justified-tab-0" data-bs-toggle="tab" href="#deleted-courses" role="tab" aria-controls="deleted-courses" aria-selected="true">Deleted courses</a>
-    </li>
-    <li class="nav-item" role="presentation">
-        <a class="nav-link" id="justified-tab-1" data-bs-toggle="tab" href="#deleted-exams" role="tab" aria-controls="deleted-exams" aria-selected="false">Deleted exams</a>
-    </li>
-    <li class="nav-item" role="presentation">
-        <a class="nav-link" id="justified-tab-2" data-bs-toggle="tab" href="#deleted-users" role="tab" aria-controls="deleted-users" aria-selected="false">Deleted users</a>
-    </li>
-</ul>
-<div class="tab-content pt-5" id="tab-content">
-    <div class="tab-pane active" id="deleted-courses" role="tabpanel" aria-labelledby="justified-tab-0">
-        Deleted courses
-        
-        <table class="table">
-            <thead>
-            <tr>
-                <th scope="col">#</th>
-            </tr>
-            </thead>
-            <tbody>
-            @for (int i = 0; i < Model.DeletedCourses.Count; i++)
-            {
+<div class="container-fluid">
+    <ul class="nav nav-tabs nav-justified" role="tablist">
+        <li class="nav-item" role="presentation">
+            <a class="nav-link active" id="justified-tab-0" data-bs-toggle="tab" href="#deleted-courses" role="tab" aria-controls="deleted-courses" aria-selected="true">Deleted courses</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="justified-tab-1" data-bs-toggle="tab" href="#deleted-exams" role="tab" aria-controls="deleted-exams" aria-selected="false">Deleted exams</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="justified-tab-2" data-bs-toggle="tab" href="#deleted-users" role="tab" aria-controls="deleted-users" aria-selected="false">Deleted users</a>
+        </li>
+    </ul>
+    <div class="tab-content pt-5" id="tab-content">
+        <div class="tab-pane active" id="deleted-courses" role="tabpanel" aria-labelledby="justified-tab-0">
+            <div class="text-center">
+                <h1 class="display-4">Deleted courses</h1>
+            </div>
+            <table class="table">
+                <thead>
                 <tr>
-                    <th scope="row">@(i + 1)</th>
+                    <th class="text-center" scope="col">#</th>
+                    <th class="text-center" scope="col">Name</th>
+                    <th class="text-center" scope="col">Deleted on</th>
+                    <th class="text-center" scope="col">Deleted by</th>
+                    <th class="text-center" scope="col">Actions</th>
                 </tr>
-            }
-            </tbody>
-        </table>
-    </div>
+                </thead>
+                <tbody>
+                @for (int i = 0; i < Model.DeletedCourses.Count; i++)
+                {
+                    <tr>
+                        <td class="text-center align-middle">
+                            @(i + 1)
+                        </td>
+                        <td class="text-center align-middle">
+                            @Model.DeletedCourses[i].Name
+                        </td>
+                        <td class="text-center align-middle">
+                            @Model.DeletedCourses[i].DeletedOn
+                        </td>
+                        <td class="text-center align-middle">
+                            @Model.DeletedCourses[i].DeletedBy
+                        </td>
+                        <td class="text-center align-middle">
+                            <a class="btn btn-primary" asp-controller="Course" asp-action="Details" asp-route-id="@Model.DeletedCourses[i].Id">Details</a>
+                            <form id="restoreCourseForm-@Model.DeletedCourses[i].Id" asp-action="RestoreCourse" method="post" asp-route-courseId="@Model.DeletedCourses[i].Id" class="d-inline-block">
+                                <button type="button" class="btn btn-success" data-course-id="@Model.DeletedCourses[i].Id" data-course-name="@Model.DeletedCourses[i].Name" onclick="openRestoreCourseModal(this)">Restore</button>
+                            </form>
+                            <form id="deleteCourseForm-@Model.DeletedCourses[i].Id" asp-action="DeleteCoursePermanently" method="post" asp-route-courseId="@Model.DeletedCourses[i].Id" class="d-inline-block">
+                                <button type="button" class="btn btn-danger" data-course-id="@Model.DeletedCourses[i].Id" data-course-name="@Model.DeletedCourses[i].Name" onclick="openDeleteCourseModal(this)">Delete permanently</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
 
-    <div class="tab-pane" id="deleted-exams" role="tabpanel" aria-labelledby="justified-tab-1">
-        Deleted exams
-        
-        <table class="table">
-            <thead>
-            <tr>
-                <th scope="col">#</th>
-            </tr>
-            </thead>
-            <tbody>
-            @for (int i = 0; i < Model.DeletedExams.Count; i++)
-            {
+        <div class="tab-pane" id="deleted-exams" role="tabpanel" aria-labelledby="justified-tab-1">
+            <div class="text-center">
+                <h1 class="display-4">Deleted exams</h1>
+            </div>
+            <table class="table">
+                <thead>
                 <tr>
-                    <th scope="row">@(i + 1)</th>
+                    <th class="text-center" scope="col">#</th>
+                    <th class="text-center" scope="col">Name</th>
+                    <th class="text-center" scope="col">Start date</th>
+                    <th class="text-center" scope="col">End date</th>
+                    <th class="text-center" scope="col">Course Name</th>
+                    <th class="text-center" scope="col">Deleted on</th>
+                    <th class="text-center" scope="col">Deleted by</th>
+                    <th class="text-center" scope="col">Actions</th>
                 </tr>
-            }
-            </tbody>
-        </table>
-    </div>
+                </thead>
+                <tbody>
+                @for (int i = 0; i < Model.DeletedExams.Count; i++)
+                {
+                    <tr>
+                        <td class="text-center align-middle">
+                            @(i + 1)
+                        </td>
+                        <td class="text-center align-middle">
+                            @Model.DeletedExams[i].Name
+                        </td>
+                        <td class="text-center align-middle">
+                            @Model.DeletedExams[i].ExamStartDateTime
+                        </td>
+                        <td class="text-center align-middle">
+                            @Model.DeletedExams[i].ExamEndDateTime
+                        </td>
+                        <td class="text-center align-middle">
+                            @Model.DeletedExams[i].CourseName
+                        </td>
+                        <td class="text-center align-middle">
+                            @Model.DeletedExams[i].DeletedOn
+                        </td>
+                        <td class="text-center align-middle">
+                            @Model.DeletedExams[i].DeletedBy
+                        </td>
+                        <td class="text-center align-middle">
+                            <a class="btn btn-primary" asp-controller="Exam" asp-action="Details" asp-route-id="@Model.DeletedExams[i].Id">Details</a>
+                            <form id="restoreExamForm-@Model.DeletedExams[i].Id" asp-action="RestoreExam" method="post" asp-route-examId="@Model.DeletedExams[i].Id" class="d-inline-block">
+                                <button type="button" class="btn btn-success" data-exam-id="@Model.DeletedExams[i].Id" data-exam-name="@Model.DeletedExams[i].Name" onclick="openRestoreExamModal(this)">Restore</button>
+                            </form>
+                            <form id="deleteExamForm-@Model.DeletedExams[i].Id" asp-action="DeleteExamPermanently" method="post" asp-route-examId="@Model.DeletedExams[i].Id" class="d-inline-block">
+                                <button type="button" class="btn btn-danger" data-exam-id="@Model.DeletedExams[i].Id" data-exam-name="@Model.DeletedExams[i].Name" onclick="openDeleteExamModal(this)">Delete permanently</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
 
-    <div class="tab-pane" id="deleted-users" role="tabpanel" aria-labelledby="justified-tab-2">
-        Deleted users
-        
-        <table class="table">
-            <thead>
-            <tr>
-                <th scope="col">#</th>
-            </tr>
-            </thead>
-            <tbody>
-            @for (int i = 0; i < Model.DeletedUsers.Count; i++)
-            {
+        <div class="tab-pane" id="deleted-users" role="tabpanel" aria-labelledby="justified-tab-2">
+            <div class="text-center">
+                <h1 class="display-4">Deleted users</h1>
+            </div>
+            <table class="table">
+                <thead>
                 <tr>
-                    <th scope="row">@(i + 1)</th>
+                    <th class="text-center" scope="col">#</th>
+                    <th class="text-center" scope="col">Name</th>
+                    <th class="text-center" scope="col">Role</th>
+                    <th class="text-center" scope="col">Deleted on</th>
+                    <th class="text-center" scope="col">Deleted by</th>
+                    <th class="text-center" scope="col">Actions</th>
                 </tr>
-            }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                @for (int i = 0; i < Model.DeletedUsers.Count; i++)
+                {
+                    <tr>
+                        <td class="text-center align-middle">
+                            @(i + 1)
+                        </td>
+                        <td class="text-center align-middle">
+                            @Model.DeletedUsers[i].FirstName @Model.DeletedUsers[i].LastName
+                        </td>
+                        <td class="text-center align-middle">
+                            @Model.DeletedUsers[i].Role
+                        </td>
+                        <td class="text-center align-middle">
+                            @Model.DeletedUsers[i].DeletedOn
+                        </td>
+                        <td class="text-center align-middle">
+                            @Model.DeletedUsers[i].DeletedBy
+                        </td>
+                        <td class="text-center align-middle">
+                            <a class="btn btn-primary d-inline-block" asp-controller="UserManagement" asp-action="UserDetails" asp-route-userId="@Model.DeletedUsers[i].Id">
+                                Details
+                            </a>
+                            <form id="restoreUserForm-@Model.DeletedUsers[i].Id" asp-action="RestoreUser" method="post" asp-route-userId="@Model.DeletedUsers[i].Id" class="d-inline-block">
+                                <button type="button" class="btn btn-success" data-user-id="@Model.DeletedUsers[i].Id" data-user-name="@Model.DeletedUsers[i].FirstName @Model.DeletedUsers[i].LastName" onclick="openRestoreUserModal(this)">Restore</button>
+                            </form>
+                            <form id="deleteUserForm-@Model.DeletedUsers[i].Id" asp-action="DeleteUserPermanently" method="post" asp-route-userId="@Model.DeletedUsers[i].Id" class="d-inline-block">
+                                <button type="button" class="btn btn-danger" data-user-id="@Model.DeletedUsers[i].Id" data-user-name="@Model.DeletedUsers[i].FirstName @Model.DeletedUsers[i].LastName" onclick="openDeleteUserModal(this)">Delete permanently</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
+
+@* Modal window to confirm course permanent deletion *@
+<div class="modal fade" id="deleteCourseConfirmationModal" tabindex="-1" aria-labelledby="deleteCourseConfirmationLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-center">
+                <h1 class="modal-title fs-5 text-center" id="deleteCourseConfirmationLabel">Delete confirmation</h1>
+                <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                You are going to delete course "<span id="courseNameInModalWindow"></span>". This action cannot be undone. Confirm deletion?
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="confirmCourseDeleteButton" class="btn btn-primary">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Modal window to confirm exam permanent deletion *@
+<div class="modal fade" id="deleteExamConfirmationModal" tabindex="-1" aria-labelledby="deleteExamConfirmationLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-center">
+                <h1 class="modal-title fs-5 text-center" id="deleteExamConfirmationLabel">Delete confirmation</h1>
+                <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                You are going to delete exam "<span id="examNameInModalWindow"></span>". This action cannot be undone. Confirm deletion?
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="confirmExamDeleteButton" class="btn btn-primary">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Modal window to confirm user permanent deletion *@
+<div class="modal fade" id="deleteUserConfirmationModal" tabindex="-1" aria-labelledby="deleteUserConfirmationLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-center">
+                <h1 class="modal-title fs-5 text-center" id="deleteUserConfirmationLabel">Delete confirmation</h1>
+                <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                You are going to delete user "<span id="userNameInModalWindow"></span>". This action cannot be undone. Confirm deletion?
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="confirmUserDeleteButton" class="btn btn-primary">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Modal window to confirm course restore *@
+<div class="modal fade" id="restoreCourseConfirmationModal" tabindex="-1" aria-labelledby="restoreCourseConfirmationLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-center">
+                <h1 class="modal-title fs-5 text-center" id="restoreCourseConfirmationLabel">Restore confirmation</h1>
+                <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                You are going to restore course "<span id="restoreCourseNameInModalWindow"></span>". Confirm restoring?
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="confirmCourseRestoreButton" class="btn btn-primary">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Modal window to confirm exam restore *@
+<div class="modal fade" id="restoreExamConfirmationModal" tabindex="-1" aria-labelledby="restoreExamConfirmationLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-center">
+                <h1 class="modal-title fs-5 text-center" id="restoreExamConfirmationLabel">Restore confirmation</h1>
+                <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                You are going to restore exam "<span id="restoreExamNameInModalWindow"></span>". Confirm restoring?
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="confirmExamRestoreButton" class="btn btn-primary">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Modal window to confirm user restore *@
+<div class="modal fade" id="restoreUserConfirmationModal" tabindex="-1" aria-labelledby="restoreUserConfirmationLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-center">
+                <h1 class="modal-title fs-5 text-center" id="restoreUserConfirmationLabel">Restore confirmation</h1>
+                <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                You are going to restore user "<span id="restoreUserNameInModalWindow"></span>". Confirm restoring?
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="confirmUserRestoreButton" class="btn btn-primary">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script>
+        function openDeleteCourseModal(button) {
+            const courseId = button.getAttribute('data-course-id');
+            const courseName = button.getAttribute('data-course-name');
+            const form = document.getElementById(`deleteCourseForm-${courseId}`);
+            document.getElementById('courseNameInModalWindow').textContent = courseName;
+            const deleteModal = new bootstrap.Modal(document.getElementById('deleteCourseConfirmationModal'));
+            deleteModal.show();
+            document.getElementById('confirmCourseDeleteButton').onclick = function () {
+                form.submit();
+            };
+        }
+
+        function openDeleteExamModal(button) {
+            const examId = button.getAttribute('data-exam-id');
+            const examName = button.getAttribute('data-exam-name');
+            const form = document.getElementById(`deleteExamForm-${examId}`);
+            document.getElementById('examNameInModalWindow').textContent = examName;
+            const deleteModal = new bootstrap.Modal(document.getElementById('deleteExamConfirmationModal'));
+            deleteModal.show();
+            document.getElementById('confirmExamDeleteButton').onclick = function () {
+                form.submit();
+            };
+        }
+
+        function openDeleteUserModal(button) {
+            const userId = button.getAttribute('data-user-id');
+            const userName = button.getAttribute('data-user-name');
+            const form = document.getElementById(`deleteUserForm-${userId}`);
+            document.getElementById('userNameInModalWindow').textContent = userName;
+            const deleteModal = new bootstrap.Modal(document.getElementById('deleteUserConfirmationModal'));
+            deleteModal.show();
+            document.getElementById('confirmUserDeleteButton').onclick = function () {
+                form.submit();
+            };
+        }
+
+        function openRestoreCourseModal(button) {
+            const courseId = button.getAttribute('data-course-id');
+            const courseName = button.getAttribute('data-course-name');
+            const form = document.getElementById(`restoreCourseForm-${courseId}`);
+            document.getElementById('restoreCourseNameInModalWindow').textContent = courseName;
+            const deleteModal = new bootstrap.Modal(document.getElementById('restoreCourseConfirmationModal'));
+            deleteModal.show();
+            document.getElementById('confirmCourseRestoreButton').onclick = function () {
+                form.submit();
+            };
+        }
+
+        function openRestoreExamModal(button) {
+            const examId = button.getAttribute('data-exam-id');
+            const examName = button.getAttribute('data-exam-name');
+            const form = document.getElementById(`restoreExamForm-${examId}`);
+            document.getElementById('restoreExamNameInModalWindow').textContent = examName;
+            const deleteModal = new bootstrap.Modal(document.getElementById('restoreExamConfirmationModal'));
+            deleteModal.show();
+            document.getElementById('confirmExamRestoreButton').onclick = function () {
+                form.submit();
+            };
+        }
+
+        function openRestoreUserModal(button) {
+            const userId = button.getAttribute('data-user-id');
+            const userName = button.getAttribute('data-user-name');
+            const form = document.getElementById(`restoreUserForm-${userId}`);
+            document.getElementById('restoreUserNameInModalWindow').textContent = userName;
+            const deleteModal = new bootstrap.Modal(document.getElementById('restoreUserConfirmationModal'));
+            deleteModal.show();
+            document.getElementById('confirmUserRestoreButton').onclick = function () {
+                form.submit();
+            };
+        }
+    </script>
+}

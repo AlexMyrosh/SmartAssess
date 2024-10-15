@@ -52,8 +52,12 @@ namespace Business_Logic_Layer.Services.Interfaces
 
         Task UpdateUserRoleAsync(string userId, string roleName);
 
-        Task SoftDeleteAsync(string userId);
+        Task SoftDeleteAsync(string userId, ClaimsPrincipal deletedByUserClaimsPrincipal);
 
         Task<List<UserModel>> GetAllRemovedUsersAsync();
+
+        Task RestoreAsync(string userId);
+
+        Task HardDeleteAsync(string userId);
     }
 }

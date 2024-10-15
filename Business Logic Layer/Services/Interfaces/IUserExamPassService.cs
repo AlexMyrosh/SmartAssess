@@ -10,9 +10,9 @@ namespace Business_Logic_Layer.Services.Interfaces
 
         Task CompleteAttemptAsync(UserExamAttemptModel model);
 
-        Task<IEnumerable<UserExamAttemptModel>> GetAllAsync(bool includeDeleted = false);
+        Task<IEnumerable<UserExamAttemptModel>> GetAllAsync();
 
-        Task<IEnumerable<UserExamAttemptModel>> GetAllWithDetailsAsync(bool includeDeleted = false);
+        Task<IEnumerable<UserExamAttemptModel>> GetAllWithDetailsAsync();
 
         Task<UserExamAttemptModel?> GetByIdAsync(Guid id);
 

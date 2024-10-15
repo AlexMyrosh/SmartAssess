@@ -165,17 +165,44 @@ namespace Business_Logic_Layer.Services.Implementations
             await userManager.AddToRoleAsync(userEntity, roleName);
         }
 
-        public async Task SoftDeleteAsync(string userId)
+        public async Task SoftDeleteAsync(string userId, ClaimsPrincipal deletedByUserClaimsPrincipal)
         {
-            await unitOfWork.UserRepository.SoftDeleteAsync(userId);
-            await unitOfWork.SaveAsync();
+            var deletedByUserId = userManager.GetUserId(deletedByUserClaimsPrincipal);
+            if (!string.IsNullOrWhiteSpace(deletedByUserId))
+            {
+                await unitOfWork.UserRepository.SoftDeleteAsync(userId, deletedByUserId);
+                await unitOfWork.SaveAsync();
+            }
         }
 
         public async Task<List<UserModel>> GetAllRemovedUsersAsync()
         {
-            var userEntities = await userManager.Users.Where(x => x.IsDeleted).ToListAsync();
+            var userEntities = await unitOfWork.UserRepository.GetAllRemovedAsync();
+            foreach (var userEntity in userEntities)
+            {
+                userEntity.Role = (await userManager.GetRolesAsync(userEntity)).First();
+            }
+
             var userModels = mapper.Map<List<UserModel>>(userEntities);
             return userModels;
+        }
+
+        public async Task RestoreAsync(string userId)
+        {
+            var userEntity = await unitOfWork.UserRepository.GetByIdAsync(userId);
+            if (userEntity is not null)
+            {
+                userEntity.IsDeleted = false;
+                userEntity.DeletedById = null;
+                userEntity.DeletedOn = null;
+                await unitOfWork.SaveAsync();
+            }
+        }
+
+        public async Task HardDeleteAsync(string userId)
+        {
+            var userEntity = await unitOfWork.UserRepository.GetByIdAsync(userId);
+            await userManager.DeleteAsync(userEntity);
         }
 
         public async Task<bool> IsUserExistByUsernameAsync(string username)

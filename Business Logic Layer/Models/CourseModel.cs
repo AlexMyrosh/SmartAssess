@@ -10,6 +10,10 @@
 
         public bool IsCurrentUserApplied { get; set; }
 
+        public DateTimeOffset? DeletedOn { get; set; }
+
+        public UserModel? DeletedBy { get; set; }
+
         public List<ExamModel> Exams { get; set; }
 
         public List<UserModel> Users { get; set; }

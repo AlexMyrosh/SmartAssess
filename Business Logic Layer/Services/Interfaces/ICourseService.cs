@@ -17,7 +17,7 @@ namespace Business_Logic_Layer.Services.Interfaces
 
         Task<Guid> CreateAsync(CourseModel model, string createdByTeacherId);
 
-        Task<bool> SoftDeleteAsync(Guid id);
+        Task<bool> SoftDeleteAsync(Guid id, ClaimsPrincipal deletedByUserClaimsPrincipal);
 
         Task<bool> HardDeleteAsync(Guid id);
 
@@ -42,5 +42,7 @@ namespace Business_Logic_Layer.Services.Interfaces
         Task RemoveUserFromCourseAsync(string userId, Guid courseId);
 
         Task<List<CourseModel>> GetAllRemovedCoursesAsync();
+
+        Task RestoreAsync(Guid courseId);
     }
 }
