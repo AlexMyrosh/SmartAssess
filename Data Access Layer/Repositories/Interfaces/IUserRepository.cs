@@ -16,5 +16,7 @@ namespace Data_Access_Layer.Repositories.Interfaces
         Task<List<UserEntity>> GetAllRemovedAsync();
 
         Task<PaginationUserEntity> GetAllDeletedByFilterWithPaginationAsync(Expression<Func<UserEntity, bool>> filter, int pageSize, int pageNumber = 1);
+
+        Task<PaginationUserEntity> GetAllByFilterWithPaginationAsync(Expression<Func<UserEntity, bool>> filter, int pageSize, int pageNumber = 1);
     }
 }

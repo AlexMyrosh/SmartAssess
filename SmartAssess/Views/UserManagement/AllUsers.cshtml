@@ -4,99 +4,89 @@
     ViewData["Title"] = "AllUsers";
 }
 <div class="container-fluid">
-    <table class="table">
-        <thead>
-        <tr>
-            <th class="text-center" scope="col">#</th>
-            <th class="text-center" scope="col">Name</th>
-            <th class="text-center" scope="col">Role</th>
-            <th class="text-center" scope="col">Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-            @for (var i = 0; i < Model.Users.Count; i++)
-            {
-            <tr>
-                <td class="text-center align-middle">
-                    @(i + 1) 
-                </td>
-                <td class="text-center align-middle">
-                    @Model.Users[i].FirstName @Model.Users[i].LastName
-                </td>
-                <td class="text-center align-middle">
-                    @Model.Users[i].Role
-                </td>
-                <td class="text-center align-middle">
-                    <button type="button" class="btn btn-success d-inline-block"
-                            data-bs-toggle="modal" 
-                            data-bs-target="#roleUpdateModalWindow"
-                            data-user-id="@Model.Users[i].Id"
-                            data-user-role="@Model.Users[i].Role">
-                        Update role
-                    </button>
-
-                    <a class="btn btn-primary d-inline-block" asp-controller="UserManagement" asp-action="UserDetails" asp-route-userId="@Model.Users[i].Id">
-                        Details
-                    </a>
-
-                    <form id="deleteUserForm-@Model.Users[i].Id" asp-action="DeleteUser" method="post" asp-route-userId="@Model.Users[i].Id" class="d-inline-block">
-                        <button type="button" class="btn btn-danger" data-user-id="@Model.Users[i].Id" data-user-name="@Model.Users[i].FirstName @Model.Users[i].LastName" onclick="openDeleteUserModal(this)">Delete</button>
-                    </form>
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
-</div>
-
-<!-- Modal For Role Update -->
-<div class="modal fade" id="roleUpdateModalWindow" tabindex="-1" aria-labelledby="roleUpdateModalWindowLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-            <form id="roleUpdateForm" asp-action="UpdateUserRole" method="post">
-                <input type="hidden" name="UserId" />
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="roleUpdateModalWindowLabel">Update user role</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    @foreach (var role in new[] { RoleNames.Student, RoleNames.Teacher, RoleNames.Admin })
-                    {
-                        <div>
-                            <input type="radio" id="@role" name="SelectedRole" value="@role" />
-                            <label for="@role">@role</label>
-                        </div>
-                    }
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-success">Save</button>
-                </div>
-            </form>
+    @if (Model.Users.Any())
+    {
+        <div class="text-center">
+            <h1 class="display-4">All users</h1>
         </div>
-    </div>
-</div>
-
-@* Modal window to confirm user deletion *@
-<div class="modal fade" id="deleteUserConfirmationModal" tabindex="-1" aria-labelledby="deleteUserConfirmationLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header d-flex justify-content-center">
-                <h1 class="modal-title fs-5 text-center" id="deleteUserConfirmationLabel">Delete confirmation</h1>
-                <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center">
-                You are going to delete user "<span id="userNameInModalWindow"></span>". Confirm deletion?
-            </div>
-            <div class="modal-footer d-flex justify-content-center">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" id="confirmUserDeleteButton" class="btn btn-primary">Confirm</button>
-            </div>
+        <div class="form-floating mb-3">
+            <input type="text" id="searchUsersInput" name="searchQuery" class="form-control" placeholder="Search users..." aria-label="Search users" onkeyup="filterUsers()">
+            <label for="searchUsersInput" class="form-label">Search for users</label>
         </div>
-    </div>
+
+        <div id="courseListAndPagination">
+            @await Html.PartialAsync("PartialViews/_UserListAndPagination", Model)
+        </div>
+    }
+    else
+    {
+        <div class="text-center" style="margin-top: 16%;">
+            <h1 class="display-4">There is no other users</h1>
+        </div>
+    }
 </div>
 
 @section Scripts{
+    <script>
+        function filterUsers() {
+            var searchQuery = $('#searchUsersInput').val();
+
+            $.ajax({
+                url: '@Url.Action("PaginateAllUsers", "UserManagement")',
+                type: 'GET',
+                data: { searchQuery: searchQuery, pageNumber: 1 },
+                success: function (data) {
+                    var parsedData = $.parseHTML(data);
+                    var userListHtml = $(parsedData).filter('#userList').html();
+                    var paginationHtml = $(parsedData).filter('#usersPaginationContainer').html();
+                    if (userListHtml !== undefined && !isEmptyRow(userListHtml)) {
+                        $('#userList').html(userListHtml);
+                    } else {
+                        $('#userList').html('<div class="text-center mt-5 mb-5"><h1>Nothing found</h1></div>');
+                    }
+
+                    if (paginationHtml !== undefined) {
+                        $('#usersPaginationContainer').html(paginationHtml);
+                    }
+                },
+                error: function () {
+                    alert('Error loading users.');
+                }
+            });
+        }
+
+        $(document).on('click', '.pagination-button', function (e) {
+            e.preventDefault();
+            var page = $(this).data('page');
+            var searchQuery = $('#searchUsersInput').val();
+
+            $.ajax({
+                url: '@Url.Action("PaginateAllUsers", "UserManagement")',
+                type: 'GET',
+                data: { searchQuery: searchQuery, pageNumber: page },
+                success: function (data) {
+                    var parsedData = $.parseHTML(data);
+                    var userListHtml = $(parsedData).filter('#userList').html();
+                    var paginationHtml = $(parsedData).filter('#usersPaginationContainer').html();
+                    if (userListHtml !== undefined) {
+                        $('#userList').html(userListHtml);
+                    }
+
+                    if (paginationHtml !== undefined) {
+                        $('#usersPaginationContainer').html(paginationHtml);
+                    }
+                },
+                error: function () {
+                    alert('Error loading users.');
+                }
+            });
+        });
+
+        function isEmptyRow(htmlString) {
+            var parsedRowValue = $($.parseHTML(htmlString)).filter('.row').html();
+            return parsedRowValue.trim().length === 0
+        }
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var roleUpdateModal = document.getElementById('roleUpdateModalWindow');

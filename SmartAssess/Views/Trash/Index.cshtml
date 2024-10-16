@@ -179,7 +179,7 @@
         $(document).on('click', '.pagination-button', function (e) {
             e.preventDefault();
             var page = $(this).data('page');
-            var searchQuery = $('#searchInput').val();
+            var searchQuery = $('#searchDeletedCoursesInput').val();
 
             $.ajax({
                 url: '@Url.Action("PaginateDeletedCourses", "Trash")',
@@ -202,6 +202,7 @@
                 }
             });
         });
+        // TODO: Add for exams and users
     </script>
 
     <script>

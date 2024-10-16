@@ -1,0 +1,92 @@
+﻿@model List<Presentation_Layer.ViewModels.UserManagement.Shared.UserViewModel>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th class="text-center" scope="col">#</th>
+        <th class="text-center" scope="col">Name</th>
+        <th class="text-center" scope="col">Role</th>
+        <th class="text-center" scope="col">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @for (var i = 0; i < Model.Count; i++)
+    {
+        <tr>
+            <td class="text-center align-middle">
+                @(i + 1) 
+            </td>
+            <td class="text-center align-middle">
+                @Model[i].FirstName @Model[i].LastName
+            </td>
+            <td class="text-center align-middle">
+                @Model[i].Role
+            </td>
+            <td class="text-center align-middle">
+                <button type="button" class="btn btn-success d-inline-block"
+                        data-bs-toggle="modal" 
+                        data-bs-target="#roleUpdateModalWindow"
+                        data-user-id="@Model[i].Id"
+                        data-user-role="@Model[i].Role">
+                    Update role
+                </button>
+
+                <a class="btn btn-primary d-inline-block" asp-controller="UserManagement" asp-action="UserDetails" asp-route-userId="@Model[i].Id">
+                    Details
+                </a>
+
+                <form id="deleteUserForm-@Model[i].Id" asp-action="DeleteUser" method="post" asp-route-userId="@Model[i].Id" class="d-inline-block">
+                    <button type="button" class="btn btn-danger" data-user-id="@Model[i].Id" data-user-name="@Model[i].FirstName @Model[i].LastName" onclick="openDeleteUserModal(this)">Delete</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<!-- Modal For Role Update -->
+<div class="modal fade" id="roleUpdateModalWindow" tabindex="-1" aria-labelledby="roleUpdateModalWindowLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <form id="roleUpdateForm" asp-action="UpdateUserRole" method="post">
+                <input type="hidden" name="UserId" />
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="roleUpdateModalWindowLabel">Update user role</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @foreach (var role in new[] { RoleNames.Student, RoleNames.Teacher, RoleNames.Admin })
+                    {
+                        <div>
+                            <input type="radio" id="@role" name="SelectedRole" value="@role" />
+                            <label for="@role">@role</label>
+                        </div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@* Modal window to confirm user deletion *@
+<div class="modal fade" id="deleteUserConfirmationModal" tabindex="-1" aria-labelledby="deleteUserConfirmationLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-center">
+                <h1 class="modal-title fs-5 text-center" id="deleteUserConfirmationLabel">Delete confirmation</h1>
+                <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                You are going to delete user "<span id="userNameInModalWindow"></span>". Confirm deletion?
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="confirmUserDeleteButton" class="btn btn-primary">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -140,6 +140,13 @@ namespace Presentation_Layer.AutoMapperProfiles
                     TotalItems = src.TotalItems
                 }))
                 .ForMember(dest => dest.Users, opt => opt.MapFrom(src => src.Items));
+
+            CreateMap<PaginationUserModel, ViewModels.UserManagement.AllUsersViewModel>()
+                .ForMember(dest => dest.Pagination, opt => opt.MapFrom(src => new ViewModels.UserManagement.PaginationViewModel
+                {
+                    TotalItems = src.TotalItems
+                }))
+                .ForMember(dest => dest.Users, opt => opt.MapFrom(src => src.Items));
         }
     }
 }

@@ -78,5 +78,25 @@ namespace Data_Access_Layer.Repositories.Implementations
             result.Items = courseEntities;
             return result;
         }
+
+        public async Task<PaginationUserEntity> GetAllByFilterWithPaginationAsync(Expression<Func<UserEntity, bool>> filter, int pageSize, int pageNumber = 1)
+        {
+            var query = _sqlContext.Users
+                .Where(course => !course.IsDeleted)
+                .Where(filter);
+
+            var result = new PaginationUserEntity
+            {
+                TotalItems = await query.CountAsync()
+            };
+
+            var courseEntities = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            result.Items = courseEntities;
+            return result;
+        }
     }
 }

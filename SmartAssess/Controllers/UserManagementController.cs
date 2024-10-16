@@ -11,12 +11,26 @@ namespace Presentation_Layer.Controllers
         IMapper mapper)
         : Controller
     {
+        private const int PageSize = 10;
+
         [HttpGet]
         public async Task<IActionResult> AllUsers()
         {
-            var userModels = await accountService.GetAllUsersAsync(User);
-            var viewModel = mapper.Map<AllUsersViewModel>(userModels);
+            var paginationUserModel = await accountService.GetAllBySearchQueryWithPaginationAsync(User, PageSize);
+            var viewModel = mapper.Map<AllUsersViewModel>(paginationUserModel);
+            viewModel.Pagination.PageSize = PageSize;
+            viewModel.Pagination.PageNumber = 1;
             return View(viewModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> PaginateAllUsers(int pageNumber = 1, string searchQuery = "")
+        {
+            var paginationUserModel = await accountService.GetAllBySearchQueryWithPaginationAsync(User, PageSize, searchQuery, pageNumber);
+            var viewModel = mapper.Map<AllUsersViewModel>(paginationUserModel);
+            viewModel.Pagination.PageSize = PageSize;
+            viewModel.Pagination.PageNumber = pageNumber;
+            return PartialView("PartialViews/_UserListAndPagination", viewModel);
         }
 
         [HttpPost]
