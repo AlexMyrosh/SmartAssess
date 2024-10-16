@@ -176,7 +176,7 @@
             return parsedRowValue.trim().length === 0
         }
 
-        $(document).on('click', '.pagination-button', function (e) {
+        $(document).on('click', '.deletedCourse-pagination-button', function (e) {
             e.preventDefault();
             var page = $(this).data('page');
             var searchQuery = $('#searchDeletedCoursesInput').val();
@@ -202,7 +202,60 @@
                 }
             });
         });
-        // TODO: Add for exams and users
+
+        $(document).on('click', '.deletedExam-pagination-button', function (e) {
+            e.preventDefault();
+            var page = $(this).data('page');
+            var searchQuery = $('#searchDeletedExamsInput').val();
+
+            $.ajax({
+                url: '@Url.Action("PaginateDeletedExams", "Trash")',
+                type: 'GET',
+                data: { searchQuery: searchQuery, pageNumber: page },
+                success: function (data) {
+                    var parsedData = $.parseHTML(data);
+                    var examListHtml = $(parsedData).filter('#deletedExamList').html();
+                    var paginationHtml = $(parsedData).filter('#deletedExamsPaginationContainer').html();
+                    if (examListHtml !== undefined) {
+                        $('#deletedExamList').html(examListHtml);
+                    }
+
+                    if (paginationHtml !== undefined) {
+                        $('#deletedExamsPaginationContainer').html(paginationHtml);
+                    }
+                },
+                error: function () {
+                    alert('Error loading exams.');
+                }
+            });
+        });
+
+        $(document).on('click', '.deletedUser-pagination-button', function (e) {
+            e.preventDefault();
+            var page = $(this).data('page');
+            var searchQuery = $('#searchDeletedUsersInput').val();
+
+            $.ajax({
+                url: '@Url.Action("PaginateDeletedUsers", "Trash")',
+                type: 'GET',
+                data: { searchQuery: searchQuery, pageNumber: page },
+                success: function (data) {
+                    var parsedData = $.parseHTML(data);
+                    var userListHtml = $(parsedData).filter('#deletedUserList').html();
+                    var paginationHtml = $(parsedData).filter('#deletedUsersPaginationContainer').html();
+                    if (userListHtml !== undefined) {
+                        $('#deletedUserList').html(userListHtml);
+                    }
+
+                    if (paginationHtml !== undefined) {
+                        $('#deletedUsersPaginationContainer').html(paginationHtml);
+                    }
+                },
+                error: function () {
+                    alert('Error loading users.');
+                }
+            });
+        });
     </script>
 
     <script>

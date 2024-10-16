@@ -4,7 +4,7 @@
     <ul class="pagination">
         <!-- Previous Arrow -->
         <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
-            <a class="page-link pagination-button" aria-label="Previous" href="#" data-page="@(Model.PageNumber - 1)">
+            <a class="page-link deletedCourse-pagination-button" aria-label="Previous" href="#" data-page="@(Model.PageNumber - 1)">
                 <span aria-hidden="true">&laquo;</span>
             </a>
         </li>
@@ -13,7 +13,7 @@
         @if (Model.PageNumber != 1)
         {
             <li class="page-item">
-                <a class="page-link pagination-button" href="#" data-page="1">1</a>
+                <a class="page-link deletedCourse-pagination-button" href="#" data-page="1">1</a>
             </li>
         }
 
@@ -29,7 +29,7 @@
         @if (Model.PageNumber > 2)
         {
             <li class="page-item">
-                <a href="#" class="page-link pagination-button" data-page="@(Model.PageNumber - 1)">@(Model.PageNumber - 1)</a>
+                <a href="#" class="page-link deletedCourse-pagination-button" data-page="@(Model.PageNumber - 1)">@(Model.PageNumber - 1)</a>
             </li>
         }
 
@@ -42,7 +42,7 @@
         @if (Model.PageNumber < Model.TotalPages - 1)
         {
             <li class="page-item">
-                <a href="#" class="page-link pagination-button" data-page="@(Model.PageNumber + 1)">@(Model.PageNumber + 1)</a>
+                <a href="#" class="page-link deletedCourse-pagination-button" data-page="@(Model.PageNumber + 1)">@(Model.PageNumber + 1)</a>
             </li>
         }
 
@@ -58,13 +58,13 @@
         @if (Model.PageNumber != Model.TotalPages && Model.TotalPages != 0)
         {
             <li class="page-item">
-                <a href="#" class="page-link pagination-button" data-page="@(Model.TotalPages)">@Model.TotalPages</a>
+                <a href="#" class="page-link deletedCourse-pagination-button" data-page="@(Model.TotalPages)">@Model.TotalPages</a>
             </li>
         }
 
         <!-- Next Arrow -->
         <li class="page-item @(Model.PageNumber == Model.TotalPages || Model.TotalPages == 0 ? "disabled" : "")">
-            <a href="#" class="page-link pagination-button" aria-label="Next" data-page="@(Model.PageNumber + 1)">
+            <a href="#" class="page-link deletedCourse-pagination-button" aria-label="Next" data-page="@(Model.PageNumber + 1)">
                 <span aria-hidden="true">&raquo;</span>
             </a>
         </li>

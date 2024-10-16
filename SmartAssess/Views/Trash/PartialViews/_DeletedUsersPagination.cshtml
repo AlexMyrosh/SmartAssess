@@ -1,0 +1,72 @@
+﻿@model Presentation_Layer.ViewModels.Trash.PaginationViewModel
+
+<nav aria-label="Page navigation">
+    <ul class="pagination">
+        <!-- Previous Arrow -->
+        <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+            <a class="page-link deletedUser-pagination-button" aria-label="Previous" href="#" data-page="@(Model.PageNumber - 1)">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+
+        <!-- First Page (only show if not on first page) -->
+        @if (Model.PageNumber != 1)
+        {
+            <li class="page-item">
+                <a class="page-link deletedUser-pagination-button" href="#" data-page="1">1</a>
+            </li>
+        }
+
+        <!-- Dots before current page if necessary -->
+        @if (Model.PageNumber > 3)
+        {
+            <li class="page-item disabled">
+                <span class="page-link">...</span>
+            </li>
+        }
+
+        <!-- Previous of Current Page -->
+        @if (Model.PageNumber > 2)
+        {
+            <li class="page-item">
+                <a href="#" class="page-link deletedUser-pagination-button" data-page="@(Model.PageNumber - 1)">@(Model.PageNumber - 1)</a>
+            </li>
+        }
+
+        <!-- Current Page -->
+        <li class="page-item active ">
+            <span class="page-link">@Model.PageNumber</span>
+        </li>
+
+        <!-- Next of Current Page -->
+        @if (Model.PageNumber < Model.TotalPages - 1)
+        {
+            <li class="page-item">
+                <a href="#" class="page-link deletedUser-pagination-button" data-page="@(Model.PageNumber + 1)">@(Model.PageNumber + 1)</a>
+            </li>
+        }
+
+        <!-- Dots after current page if necessary -->
+        @if (Model.PageNumber < Model.TotalPages - 2)
+        {
+            <li class="page-item disabled">
+                <span class="page-link">...</span>
+            </li>
+        }
+
+        <!-- Last Page (only show if not on last page) -->
+        @if (Model.PageNumber != Model.TotalPages && Model.TotalPages != 0)
+        {
+            <li class="page-item">
+                <a href="#" class="page-link deletedUser-pagination-button" data-page="@(Model.TotalPages)">@Model.TotalPages</a>
+            </li>
+        }
+
+        <!-- Next Arrow -->
+        <li class="page-item @(Model.PageNumber == Model.TotalPages || Model.TotalPages == 0 ? "disabled" : "")">
+            <a href="#" class="page-link deletedUser-pagination-button" aria-label="Next" data-page="@(Model.PageNumber + 1)">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</nav>
