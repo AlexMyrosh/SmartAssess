@@ -80,6 +80,13 @@ namespace Business_Logic_Layer.Services.Implementations
             return paginationCourseModel;
         }
 
+        public async Task<PaginationCourseModel> GetAllDeletedBySearchQueryWithPaginationAsync(int pageSize, string searchQuery = "", int pageNumber = 1)
+        {
+            var paginationCourseEntity = await unitOfWork.CourseRepository.GetAllDeletedByFilterWithPaginationAsync(course => course.Name.Contains(searchQuery), pageSize, pageNumber);
+            var paginationCourseModel = mapper.Map<PaginationCourseModel>(paginationCourseEntity);
+            return paginationCourseModel;
+        }
+
         public async Task<IEnumerable<CourseModel>> GetAllWithDetailsAsync(bool includeDeleted = false)
         {
             var courseEntities = await unitOfWork.CourseRepository.GetAllWithDetailsAsync(includeDeleted);

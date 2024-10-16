@@ -118,6 +118,14 @@ namespace Presentation_Layer.AutoMapperProfiles
 
             CreateMap<CourseModel, ViewModels.Trash.Shared.CourseViewModel>()
                 .ForMember(dest => dest.DeletedBy, opt => opt.MapFrom(src => $"{src.DeletedBy.FirstName} {src.DeletedBy.LastName}"));
+
+
+            CreateMap<PaginationCourseModel, ViewModels.Trash.DeletedCourseListWithPaginationViewModel>()
+                .ForMember(dest => dest.Pagination, opt => opt.MapFrom(src => new ViewModels.Trash.PaginationViewModel
+                {
+                    TotalItems = src.TotalItems
+                }))
+                .ForMember(dest => dest.Courses, opt => opt.MapFrom(src => src.Items));
         }
     }
 }

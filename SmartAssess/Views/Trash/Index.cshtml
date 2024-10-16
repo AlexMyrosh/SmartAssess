@@ -17,48 +17,26 @@
     </ul>
     <div class="tab-content pt-5" id="tab-content">
         <div class="tab-pane active" id="deleted-courses" role="tabpanel" aria-labelledby="justified-tab-0">
-            <div class="text-center">
-                <h1 class="display-4">Deleted courses</h1>
-            </div>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th class="text-center" scope="col">#</th>
-                    <th class="text-center" scope="col">Name</th>
-                    <th class="text-center" scope="col">Deleted on</th>
-                    <th class="text-center" scope="col">Deleted by</th>
-                    <th class="text-center" scope="col">Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                @for (int i = 0; i < Model.DeletedCourses.Count; i++)
-                {
-                    <tr>
-                        <td class="text-center align-middle">
-                            @(i + 1)
-                        </td>
-                        <td class="text-center align-middle">
-                            @Model.DeletedCourses[i].Name
-                        </td>
-                        <td class="text-center align-middle">
-                            @Model.DeletedCourses[i].DeletedOn
-                        </td>
-                        <td class="text-center align-middle">
-                            @Model.DeletedCourses[i].DeletedBy
-                        </td>
-                        <td class="text-center align-middle">
-                            <a class="btn btn-primary" asp-controller="Course" asp-action="Details" asp-route-id="@Model.DeletedCourses[i].Id">Details</a>
-                            <form id="restoreCourseForm-@Model.DeletedCourses[i].Id" asp-action="RestoreCourse" method="post" asp-route-courseId="@Model.DeletedCourses[i].Id" class="d-inline-block">
-                                <button type="button" class="btn btn-success" data-course-id="@Model.DeletedCourses[i].Id" data-course-name="@Model.DeletedCourses[i].Name" onclick="openRestoreCourseModal(this)">Restore</button>
-                            </form>
-                            <form id="deleteCourseForm-@Model.DeletedCourses[i].Id" asp-action="DeleteCoursePermanently" method="post" asp-route-courseId="@Model.DeletedCourses[i].Id" class="d-inline-block">
-                                <button type="button" class="btn btn-danger" data-course-id="@Model.DeletedCourses[i].Id" data-course-name="@Model.DeletedCourses[i].Name" onclick="openDeleteCourseModal(this)">Delete permanently</button>
-                            </form>
-                        </td>
-                    </tr>
-                }
-                </tbody>
-            </table>
+            @if (Model.DeletedCoursesWithPagination.Courses.Any())
+            {
+                <div class="text-center">
+                    <h1 class="display-4">Deleted courses</h1>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="text" id="searchDeletedCoursesInput" name="searchQuery" class="form-control" placeholder="Search courses..." aria-label="Search courses" onkeyup="filterDeletedCourses()">
+                    <label for="searchDeletedCoursesInput" class="form-label">Search for courses</label>
+                </div>
+
+                <div id="courseListAndPagination">
+                    @await Html.PartialAsync("PartialViews/_DeletedCourseListAndPagination", Model.DeletedCoursesWithPagination)
+                </div>
+            }
+            else
+            {
+                <div class="text-center" style="margin-top: 13%;">
+                    <h1 class="display-4">There is no deleted courses</h1>
+                </div>
+            }
         </div>
 
         <div class="tab-pane" id="deleted-exams" role="tabpanel" aria-labelledby="justified-tab-1">
@@ -171,25 +149,6 @@
     </div>
 </div>
 
-@* Modal window to confirm course permanent deletion *@
-<div class="modal fade" id="deleteCourseConfirmationModal" tabindex="-1" aria-labelledby="deleteCourseConfirmationLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header d-flex justify-content-center">
-                <h1 class="modal-title fs-5 text-center" id="deleteCourseConfirmationLabel">Delete confirmation</h1>
-                <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center">
-                You are going to delete course "<span id="courseNameInModalWindow"></span>". This action cannot be undone. Confirm deletion?
-            </div>
-            <div class="modal-footer d-flex justify-content-center">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" id="confirmCourseDeleteButton" class="btn btn-primary">Confirm</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 @* Modal window to confirm exam permanent deletion *@
 <div class="modal fade" id="deleteExamConfirmationModal" tabindex="-1" aria-labelledby="deleteExamConfirmationLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -223,25 +182,6 @@
             <div class="modal-footer d-flex justify-content-center">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="button" id="confirmUserDeleteButton" class="btn btn-primary">Confirm</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-@* Modal window to confirm course restore *@
-<div class="modal fade" id="restoreCourseConfirmationModal" tabindex="-1" aria-labelledby="restoreCourseConfirmationLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header d-flex justify-content-center">
-                <h1 class="modal-title fs-5 text-center" id="restoreCourseConfirmationLabel">Restore confirmation</h1>
-                <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center">
-                You are going to restore course "<span id="restoreCourseNameInModalWindow"></span>". Confirm restoring?
-            </div>
-            <div class="modal-footer d-flex justify-content-center">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" id="confirmCourseRestoreButton" class="btn btn-primary">Confirm</button>
             </div>
         </div>
     </div>
@@ -289,7 +229,68 @@
 @section Scripts
 {
     <script>
-        function openDeleteCourseModal(button) {
+        function filterDeletedCourses() {
+            var searchQuery = $('#searchDeletedCoursesInput').val();
+
+            $.ajax({
+                url: '@Url.Action("PaginateDeletedCourses", "Trash")',
+                type: 'GET',
+                data: { searchQuery: searchQuery, pageNumber: 1 },
+                success: function (data) {
+                    var parsedData = $.parseHTML(data);
+                    var courseListHtml = $(parsedData).filter('#deletedCourseList').html();
+                    var paginationHtml = $(parsedData).filter('#deletedCoursesPaginationContainer').html();
+                    if (courseListHtml !== undefined && !isEmptyRow(courseListHtml)) {
+                        $('#deletedCourseList').html(courseListHtml);
+                    } else {
+                        $('#deletedCourseList').html('<div class="text-center mt-5 mb-5"><h1>Nothing found</h1></div>');
+                    }
+
+                    if (paginationHtml !== undefined) {
+                        $('#deletedCoursesPaginationContainer').html(paginationHtml);
+                    }
+                },
+                error: function () {
+                    alert('Error loading courses.');
+                }
+            });
+        }
+
+        function isEmptyRow(htmlString) {
+            var parsedRowValue = $($.parseHTML(htmlString)).filter('.row').html();
+            return parsedRowValue.trim().length === 0
+        }
+
+        $(document).on('click', '.pagination-button', function (e) {
+            e.preventDefault();
+            var page = $(this).data('page');
+            var searchQuery = $('#searchInput').val();
+
+            $.ajax({
+                url: '@Url.Action("PaginateDeletedCourses", "Trash")',
+                type: 'GET',
+                data: { searchQuery: searchQuery, pageNumber: page },
+                success: function (data) {
+                    var parsedData = $.parseHTML(data);
+                    var courseListHtml = $(parsedData).filter('#deletedCourseList').html();
+                    var paginationHtml = $(parsedData).filter('#deletedCoursesPaginationContainer').html();
+                    if (courseListHtml !== undefined) {
+                        $('#deletedCourseList').html(courseListHtml);
+                    }
+
+                    if (paginationHtml !== undefined) {
+                        $('#deletedCoursesPaginationContainer').html(paginationHtml);
+                    }
+                },
+                error: function () {
+                    alert('Error loading courses.');
+                }
+            });
+        });
+    </script>
+
+    <script>
+         function openDeleteCourseModal(button) {
             const courseId = button.getAttribute('data-course-id');
             const courseName = button.getAttribute('data-course-name');
             const form = document.getElementById(`deleteCourseForm-${courseId}`);
@@ -297,6 +298,18 @@
             const deleteModal = new bootstrap.Modal(document.getElementById('deleteCourseConfirmationModal'));
             deleteModal.show();
             document.getElementById('confirmCourseDeleteButton').onclick = function () {
+                form.submit();
+            };
+        }
+
+        function openRestoreCourseModal(button) {
+            const courseId = button.getAttribute('data-course-id');
+            const courseName = button.getAttribute('data-course-name');
+            const form = document.getElementById(`restoreCourseForm-${courseId}`);
+            document.getElementById('restoreCourseNameInModalWindow').textContent = courseName;
+            const deleteModal = new bootstrap.Modal(document.getElementById('restoreCourseConfirmationModal'));
+            deleteModal.show();
+            document.getElementById('confirmCourseRestoreButton').onclick = function () {
                 form.submit();
             };
         }
@@ -321,18 +334,6 @@
             const deleteModal = new bootstrap.Modal(document.getElementById('deleteUserConfirmationModal'));
             deleteModal.show();
             document.getElementById('confirmUserDeleteButton').onclick = function () {
-                form.submit();
-            };
-        }
-
-        function openRestoreCourseModal(button) {
-            const courseId = button.getAttribute('data-course-id');
-            const courseName = button.getAttribute('data-course-name');
-            const form = document.getElementById(`restoreCourseForm-${courseId}`);
-            document.getElementById('restoreCourseNameInModalWindow').textContent = courseName;
-            const deleteModal = new bootstrap.Modal(document.getElementById('restoreCourseConfirmationModal'));
-            deleteModal.show();
-            document.getElementById('confirmCourseRestoreButton').onclick = function () {
                 form.submit();
             };
         }

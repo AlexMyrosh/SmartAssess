@@ -12,20 +12,35 @@ namespace Presentation_Layer.Controllers
         IExamService _examService,
         IMapper _mapper) : Controller
     {
+        private const int PageSize = 10;
+
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var deletedCourses = await _courseService.GetAllRemovedCoursesAsync();
+            var deletedCourses = await _courseService.GetAllDeletedBySearchQueryWithPaginationAsync(PageSize);
             var deletedExams = await _examService.GetAllRemovedExamsAsync();
             var deletedUsers = await _accountService.GetAllRemovedUsersAsync();
             var viewModel = new TrashViewModel
             {
-                DeletedCourses = _mapper.Map<List<CourseViewModel>>(deletedCourses),
+                DeletedCoursesWithPagination = _mapper.Map<DeletedCourseListWithPaginationViewModel>(deletedCourses),
                 DeletedExams = _mapper.Map<List<ExamViewModel>>(deletedExams),
                 DeletedUsers = _mapper.Map<List<UserViewModel>>(deletedUsers)
             };
 
+            viewModel.DeletedCoursesWithPagination.Pagination.PageSize = PageSize;
+            viewModel.DeletedCoursesWithPagination.Pagination.PageNumber = 1;
+
             return View(viewModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> PaginateDeletedCourses(int pageNumber = 1, string searchQuery = "")
+        {
+            var paginationCourseModel = await _courseService.GetAllDeletedBySearchQueryWithPaginationAsync(PageSize, searchQuery, pageNumber);
+            var viewModel = _mapper.Map<DeletedCourseListWithPaginationViewModel>(paginationCourseModel);
+            viewModel.Pagination.PageSize = PageSize;
+            viewModel.Pagination.PageNumber = pageNumber;
+            return PartialView("PartialViews/_DeletedCourseListAndPagination", viewModel);
         }
 
         [HttpPost]

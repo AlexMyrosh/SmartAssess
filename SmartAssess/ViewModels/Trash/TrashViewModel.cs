@@ -4,7 +4,7 @@ namespace Presentation_Layer.ViewModels.Trash
 {
     public class TrashViewModel
     {
-        public List<CourseViewModel> DeletedCourses { get; set; }
+        public DeletedCourseListWithPaginationViewModel DeletedCoursesWithPagination { get; set; }
 
         public List<ExamViewModel> DeletedExams { get; set; }
 
