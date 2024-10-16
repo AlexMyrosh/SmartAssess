@@ -36,7 +36,7 @@ namespace Data_Access_Layer.Models
 
         public string? DeletedById { get; set; }
 
-        public UserEntity? DeletedBy { get; set; }
+        public virtual UserEntity? DeletedBy { get; set; }
 
         [NotMapped]
         public string Role { get; set; }
@@ -47,10 +47,10 @@ namespace Data_Access_Layer.Models
 
         public virtual List<CourseEntity> TeachingCourses { get; set; }
 
-        public List<CourseEntity> DeletedCourses { get; set; }
+        public virtual List<CourseEntity> DeletedCourses { get; set; }
 
-        public List<ExamEntity> DeletedExams { get; set; }
+        public virtual List<ExamEntity> DeletedExams { get; set; }
 
-        public List<UserEntity> DeletedUsers { get; set; }
+        public virtual List<UserEntity> DeletedUsers { get; set; }
     }
 }

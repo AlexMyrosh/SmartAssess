@@ -10,6 +10,8 @@ namespace Business_Logic_Layer.AutoMapperProfiles
         {
             CreateMap<ExamQuestionModel, ExamQuestionEntity>().ReverseMap();
             CreateMap<PaginationCourseModel, PaginationCourseEntity>().ReverseMap();
+            CreateMap<PaginationExamModel, PaginationExamEntity>().ReverseMap();
+            CreateMap<PaginationUserModel, PaginationUserEntity>().ReverseMap();
             CreateMap<UserAnswerModel, UserAnswerEntity>().ReverseMap();
             CreateMap<UserModel, UserEntity>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));

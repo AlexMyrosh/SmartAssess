@@ -205,6 +205,18 @@ namespace Business_Logic_Layer.Services.Implementations
             await userManager.DeleteAsync(userEntity);
         }
 
+        public async Task<PaginationUserModel> GetAllDeletedBySearchQueryWithPaginationAsync(int pageSize, string searchQuery = "", int pageNumber = 1)
+        {
+            var paginationUserEntity = await unitOfWork.UserRepository.GetAllDeletedByFilterWithPaginationAsync(user => (user.FirstName + " " + user.LastName).Contains(searchQuery), pageSize, pageNumber);
+            foreach (var userEntity in paginationUserEntity.Items)
+            {
+                userEntity.Role = (await userManager.GetRolesAsync(userEntity)).First();
+            }
+
+            var paginationUserModel = mapper.Map<PaginationUserModel>(paginationUserEntity);
+            return paginationUserModel;
+        }
+
         public async Task<bool> IsUserExistByUsernameAsync(string username)
         {
             var user = await userManager.FindByNameAsync(username);

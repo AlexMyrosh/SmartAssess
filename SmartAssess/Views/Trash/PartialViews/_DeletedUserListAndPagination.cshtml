@@ -1,0 +1,11 @@
+﻿@model Presentation_Layer.ViewModels.Trash.DeletedUserListWithPaginationViewModel
+
+<div id="deletedUserList">
+    <div class="row">
+        @Html.Partial("PartialViews/_DeletedUserList", Model.Users)
+    </div>
+</div>
+
+<div class="d-flex justify-content-center" id="deletedUsersPaginationContainer" style="font-size: larger;">
+    @Html.Partial("PartialViews/_Pagination", Model.Pagination)
+</div>

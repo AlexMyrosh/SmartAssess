@@ -22,5 +22,7 @@ namespace Data_Access_Layer.Repositories.Interfaces
         public Task<IEnumerable<ExamEntity>> GetAllExamsByFilterWithDetailsAsync(Expression<Func<ExamEntity, bool>> filters, bool includeDeleted = false);
 
         Task<List<ExamEntity>> GetAllRemovedAsync();
+
+        Task<PaginationExamEntity> GetAllDeletedByFilterWithPaginationAsync(Expression<Func<ExamEntity, bool>> filter, int pageSize, int pageNumber = 1);
     }
 }

@@ -110,5 +110,27 @@ namespace Data_Access_Layer.Repositories.Implementations
 
             return examEntities;
         }
+
+        public async Task<PaginationExamEntity> GetAllDeletedByFilterWithPaginationAsync(Expression<Func<ExamEntity, bool>> filter, int pageSize, int pageNumber = 1)
+        {
+            var query = _sqlContext.Exams
+                .Include(exam => exam.Course)
+                .Include(exam => exam.DeletedBy)
+                .Where(course => course.IsDeleted)
+                .Where(filter);
+
+            var result = new PaginationExamEntity
+            {
+                TotalItems = await query.CountAsync()
+            };
+
+            var courseEntities = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            result.Items = courseEntities;
+            return result;
+        }
     }
 }

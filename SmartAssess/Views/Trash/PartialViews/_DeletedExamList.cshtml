@@ -1,0 +1,91 @@
+﻿@model List<Presentation_Layer.ViewModels.Trash.Shared.ExamViewModel>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th class="text-center" scope="col">#</th>
+            <th class="text-center" scope="col">Name</th>
+            <th class="text-center" scope="col">Start date</th>
+            <th class="text-center" scope="col">End date</th>
+            <th class="text-center" scope="col">Course Name</th>
+            <th class="text-center" scope="col">Deleted on</th>
+            <th class="text-center" scope="col">Deleted by</th>
+            <th class="text-center" scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            <tr>
+                <td class="text-center align-middle">
+                    @(i + 1)
+                </td>
+                <td class="text-center align-middle">
+                    @Model[i].Name
+                </td>
+                <td class="text-center align-middle">
+                    @Model[i].ExamStartDateTime
+                </td>
+                <td class="text-center align-middle">
+                    @Model[i].ExamEndDateTime
+                </td>
+                <td class="text-center align-middle">
+                    @Model[i].CourseName
+                </td>
+                <td class="text-center align-middle">
+                    @Model[i].DeletedOn
+                </td>
+                <td class="text-center align-middle">
+                    @Model[i].DeletedBy
+                </td>
+                <td class="text-center align-middle">
+                    <a class="btn btn-primary" asp-controller="Exam" asp-action="Details" asp-route-id="@Model[i].Id">Details</a>
+                    <form id="restoreExamForm-@Model[i].Id" asp-action="RestoreExam" method="post" asp-route-examId="@Model[i].Id" class="d-inline-block">
+                        <button type="button" class="btn btn-success" data-exam-id="@Model[i].Id" data-exam-name="@Model[i].Name" onclick="openRestoreExamModal(this)">Restore</button>
+                    </form>
+                    <form id="deleteExamForm-@Model[i].Id" asp-action="DeleteExamPermanently" method="post" asp-route-examId="@Model[i].Id" class="d-inline-block">
+                        <button type="button" class="btn btn-danger" data-exam-id="@Model[i].Id" data-exam-name="@Model[i].Name" onclick="openDeleteExamModal(this)">Delete permanently</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@* Modal window to confirm exam permanent deletion *@
+<div class="modal fade" id="deleteExamConfirmationModal" tabindex="-1" aria-labelledby="deleteExamConfirmationLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-center">
+                <h1 class="modal-title fs-5 text-center" id="deleteExamConfirmationLabel">Delete confirmation</h1>
+                <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                You are going to delete exam "<span id="examNameInModalWindow"></span>". This action cannot be undone. Confirm deletion?
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="confirmExamDeleteButton" class="btn btn-primary">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Modal window to confirm exam restore *@
+<div class="modal fade" id="restoreExamConfirmationModal" tabindex="-1" aria-labelledby="restoreExamConfirmationLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-center">
+                <h1 class="modal-title fs-5 text-center" id="restoreExamConfirmationLabel">Restore confirmation</h1>
+                <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                You are going to restore exam "<span id="restoreExamNameInModalWindow"></span>". Confirm restoring?
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="confirmExamRestoreButton" class="btn btn-primary">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>

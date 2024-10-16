@@ -1,4 +1,5 @@
 ﻿using Data_Access_Layer.Models;
+using System.Linq.Expressions;
 
 namespace Data_Access_Layer.Repositories.Interfaces
 {
@@ -13,5 +14,7 @@ namespace Data_Access_Layer.Repositories.Interfaces
         Task SoftDeleteAsync(string id, string deletedByUserId);
 
         Task<List<UserEntity>> GetAllRemovedAsync();
+
+        Task<PaginationUserEntity> GetAllDeletedByFilterWithPaginationAsync(Expression<Func<UserEntity, bool>> filter, int pageSize, int pageNumber = 1);
     }
 }

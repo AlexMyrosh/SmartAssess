@@ -126,6 +126,20 @@ namespace Presentation_Layer.AutoMapperProfiles
                     TotalItems = src.TotalItems
                 }))
                 .ForMember(dest => dest.Courses, opt => opt.MapFrom(src => src.Items));
+
+            CreateMap<PaginationExamModel, ViewModels.Trash.DeletedExamListWithPaginationViewModel>()
+                .ForMember(dest => dest.Pagination, opt => opt.MapFrom(src => new ViewModels.Trash.PaginationViewModel
+                {
+                    TotalItems = src.TotalItems
+                }))
+                .ForMember(dest => dest.Exams, opt => opt.MapFrom(src => src.Items));
+
+            CreateMap<PaginationUserModel, ViewModels.Trash.DeletedUserListWithPaginationViewModel>()
+                .ForMember(dest => dest.Pagination, opt => opt.MapFrom(src => new ViewModels.Trash.PaginationViewModel
+                {
+                    TotalItems = src.TotalItems
+                }))
+                .ForMember(dest => dest.Users, opt => opt.MapFrom(src => src.Items));
         }
     }
 }

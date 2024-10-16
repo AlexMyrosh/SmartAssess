@@ -1,0 +1,11 @@
+﻿@model Presentation_Layer.ViewModels.Trash.DeletedExamListWithPaginationViewModel
+
+<div id="deletedExamList">
+    <div class="row">
+        @Html.Partial("PartialViews/_DeletedExamList", Model.Exams)
+    </div>
+</div>
+
+<div class="d-flex justify-content-center" id="deletedExamsPaginationContainer" style="font-size: larger;">
+    @Html.Partial("PartialViews/_Pagination", Model.Pagination)
+</div>

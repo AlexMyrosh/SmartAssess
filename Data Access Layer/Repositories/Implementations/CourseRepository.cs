@@ -72,6 +72,7 @@ namespace Data_Access_Layer.Repositories.Implementations
         public async Task<PaginationCourseEntity> GetAllDeletedByFilterWithPaginationAsync(Expression<Func<CourseEntity, bool>> filter, int pageSize, int pageNumber = 1)
         {
             var query = _sqlContext.Courses
+                .Include(course => course.DeletedBy)
                 .Where(course => course.IsDeleted)
                 .Where(filter);
 

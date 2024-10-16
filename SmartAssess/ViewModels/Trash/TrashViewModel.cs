@@ -1,13 +1,11 @@
-﻿using Presentation_Layer.ViewModels.Trash.Shared;
-
-namespace Presentation_Layer.ViewModels.Trash
+﻿namespace Presentation_Layer.ViewModels.Trash
 {
     public class TrashViewModel
     {
         public DeletedCourseListWithPaginationViewModel DeletedCoursesWithPagination { get; set; }
 
-        public List<ExamViewModel> DeletedExams { get; set; }
+        public DeletedExamListWithPaginationViewModel DeletedExamsWithPagination { get; set; }
 
-        public List<UserViewModel> DeletedUsers { get; set; }
+        public DeletedUserListWithPaginationViewModel DeletedUsersWithPagination { get; set; }
     }
 }

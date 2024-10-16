@@ -26,5 +26,7 @@ namespace Business_Logic_Layer.Services.Interfaces
         Task<List<ExamModel>> GetAllRemovedExamsAsync();
 
         Task RestoreAsync(Guid examId);
+
+        Task<PaginationExamModel> GetAllDeletedBySearchQueryWithPaginationAsync(int pageSize, string searchQuery = "", int pageNumber = 1);
     }
 }

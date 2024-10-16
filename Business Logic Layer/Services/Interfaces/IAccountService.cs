@@ -59,5 +59,7 @@ namespace Business_Logic_Layer.Services.Interfaces
         Task RestoreAsync(string userId);
 
         Task HardDeleteAsync(string userId);
+
+        Task<PaginationUserModel> GetAllDeletedBySearchQueryWithPaginationAsync(int pageSize, string searchQuery = "", int pageNumber = 1);
     }
 }

@@ -1,0 +1,85 @@
+﻿@model List<Presentation_Layer.ViewModels.Trash.Shared.UserViewModel>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th class="text-center" scope="col">#</th>
+            <th class="text-center" scope="col">Name</th>
+            <th class="text-center" scope="col">Role</th>
+            <th class="text-center" scope="col">Deleted on</th>
+            <th class="text-center" scope="col">Deleted by</th>
+            <th class="text-center" scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            <tr>
+                <td class="text-center align-middle">
+                    @(i + 1)
+                </td>
+                <td class="text-center align-middle">
+                    @Model[i].FirstName @Model[i].LastName
+                </td>
+                <td class="text-center align-middle">
+                    @Model[i].Role
+                </td>
+                <td class="text-center align-middle">
+                    @Model[i].DeletedOn
+                </td>
+                <td class="text-center align-middle">
+                    @Model[i].DeletedBy
+                </td>
+                <td class="text-center align-middle">
+                    <a class="btn btn-primary d-inline-block" asp-controller="UserManagement" asp-action="UserDetails" asp-route-userId="@Model[i].Id">
+                        Details
+                    </a>
+                    <form id="restoreUserForm-@Model[i].Id" asp-action="RestoreUser" method="post" asp-route-userId="@Model[i].Id" class="d-inline-block">
+                        <button type="button" class="btn btn-success" data-user-id="@Model[i].Id" data-user-name="@Model[i].FirstName @Model[i].LastName" onclick="openRestoreUserModal(this)">Restore</button>
+                    </form>
+                    <form id="deleteUserForm-@Model[i].Id" asp-action="DeleteUserPermanently" method="post" asp-route-userId="@Model[i].Id" class="d-inline-block">
+                        <button type="button" class="btn btn-danger" data-user-id="@Model[i].Id" data-user-name="@Model[i].FirstName @Model[i].LastName" onclick="openDeleteUserModal(this)">Delete permanently</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@* Modal window to confirm user permanent deletion *@
+<div class="modal fade" id="deleteUserConfirmationModal" tabindex="-1" aria-labelledby="deleteUserConfirmationLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-center">
+                <h1 class="modal-title fs-5 text-center" id="deleteUserConfirmationLabel">Delete confirmation</h1>
+                <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                You are going to delete user "<span id="userNameInModalWindow"></span>". This action cannot be undone. Confirm deletion?
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="confirmUserDeleteButton" class="btn btn-primary">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Modal window to confirm user restore *@
+<div class="modal fade" id="restoreUserConfirmationModal" tabindex="-1" aria-labelledby="restoreUserConfirmationLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-center">
+                <h1 class="modal-title fs-5 text-center" id="restoreUserConfirmationLabel">Restore confirmation</h1>
+                <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                You are going to restore user "<span id="restoreUserNameInModalWindow"></span>". Confirm restoring?
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="confirmUserRestoreButton" class="btn btn-primary">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>

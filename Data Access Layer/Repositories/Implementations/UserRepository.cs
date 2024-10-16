@@ -1,4 +1,5 @@
-﻿using Data_Access_Layer.Context;
+﻿using System.Linq.Expressions;
+using Data_Access_Layer.Context;
 using Data_Access_Layer.Models;
 using Data_Access_Layer.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -56,6 +57,26 @@ namespace Data_Access_Layer.Repositories.Implementations
                 .ToListAsync();
 
             return examEntities;
+        }
+
+        public async Task<PaginationUserEntity> GetAllDeletedByFilterWithPaginationAsync(Expression<Func<UserEntity, bool>> filter, int pageSize, int pageNumber = 1)
+        {
+            var query = _sqlContext.Users
+                .Where(course => course.IsDeleted)
+                .Where(filter);
+
+            var result = new PaginationUserEntity
+            {
+                TotalItems = await query.CountAsync()
+            };
+
+            var courseEntities = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            result.Items = courseEntities;
+            return result;
         }
     }
 }

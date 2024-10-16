@@ -53,6 +53,13 @@ namespace Business_Logic_Layer.Services.Implementations
             }
         }
 
+        public async Task<PaginationExamModel> GetAllDeletedBySearchQueryWithPaginationAsync(int pageSize, string searchQuery = "", int pageNumber = 1)
+        {
+            var paginationExamEntity = await unitOfWork.ExamRepository.GetAllDeletedByFilterWithPaginationAsync(exam => exam.Name.Contains(searchQuery), pageSize, pageNumber);
+            var paginationExamModel = mapper.Map<PaginationExamModel>(paginationExamEntity);
+            return paginationExamModel;
+        }
+
         public async Task<IEnumerable<ExamModel>> GetAllWithDetailsAsync(bool includeDeleted = false)
         {
             var examEntities = await unitOfWork.ExamRepository.GetAllWithDetailsAsync(includeDeleted);
