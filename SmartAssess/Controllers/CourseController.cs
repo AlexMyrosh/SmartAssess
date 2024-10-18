@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Business_Logic_Layer.Models;
 using Business_Logic_Layer.Services.Interfaces;
+using Data_Access_Layer.Roles;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Presentation_Layer.ViewModels.Course;
@@ -131,7 +132,15 @@ namespace Presentation_Layer.Controllers
         public async Task<IActionResult> Delete(Guid id)
         {
             await courseService.SoftDeleteAsync(id, User);
-            return RedirectToAction("AppliedByTeacherCourses");
+            var currentUserRole = await accountService.GetUserRoleAsync(User);
+            if (currentUserRole == RoleNames.Teacher)
+            {
+                return RedirectToAction("AppliedByTeacherCourses");
+            }
+            else
+            {
+                return RedirectToAction("All", "Course");
+            }
         }
 
         [HttpPost]

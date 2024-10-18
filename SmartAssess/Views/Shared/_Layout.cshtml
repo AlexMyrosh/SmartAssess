@@ -66,14 +66,23 @@
                         }
                     </ul>
                     <ul class="navbar-nav">
+                        <li class="nav-item nav-link">
+                            <form id="languageSwitcher" method="post" asp-controller="Home" asp-action="SetLanguage">
+                                <select class="form-select" name="culture" onchange="this.form.submit();">
+                                    <option value="en" selected>English</option>
+                                    <option value="fr">Ukrainian</option>
+                                </select>
+                                <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                            </form>
+                        </li>
                         @if (User.Identity!.IsAuthenticated)
                         {
-                            <li class="nav-item nav-link">
+                            <li class="nav-item nav-link" style="padding-top: 14px;">
                                 <span>Hello,
                                     <a id="UserProfileLink" asp-controller="Account" asp-action="Details" class="text-decoration-none">@user?.FirstName @user?.LastName</a>
                                 </span>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" style="padding-top: 6px;">
                                 <form asp-area="" asp-controller="Account" asp-action="Logout" method="post">
                                     <button type="submit" class="nav-link text-dark border-0 bg-transparent">Log out</button>
                                 </form>
@@ -81,10 +90,10 @@
                         }
                         else
                         {
-                            <li class="nav-item">
+                            <li class="nav-item" style="padding-top: 6px;">
                                 <a asp-area="" asp-controller="Account" asp-action="Register" class="nav-link text-dark">Register</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" style="padding-top: 6px;">
                                 <a asp-area="" asp-controller="Account" asp-action="Login" class="nav-link text-dark">Log in</a>
                             </li>
                         }

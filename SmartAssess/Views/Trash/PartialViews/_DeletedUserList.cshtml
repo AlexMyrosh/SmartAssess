@@ -1,4 +1,4 @@
-﻿@model List<Presentation_Layer.ViewModels.Trash.Shared.UserViewModel>
+﻿@model Presentation_Layer.ViewModels.Trash.DeletedUserListWithPaginationViewModel
 
 <table class="table">
     <thead>
@@ -12,33 +12,33 @@
         </tr>
     </thead>
     <tbody>
-        @for (int i = 0; i < Model.Count; i++)
+        @for (int i = 0; i < Model.Users.Count; i++)
         {
             <tr>
                 <td class="text-center align-middle">
-                    @(i + 1)
+                    @(i + 1 + 10 * (Model.Pagination.PageNumber - 1))
                 </td>
                 <td class="text-center align-middle">
-                    @Model[i].FirstName @Model[i].LastName
+                    @Model.Users[i].FirstName @Model.Users[i].LastName
                 </td>
                 <td class="text-center align-middle">
-                    @Model[i].Role
+                    @Model.Users[i].Role
                 </td>
                 <td class="text-center align-middle">
-                    @Model[i].DeletedOn
+                    @Model.Users[i].DeletedOn
                 </td>
                 <td class="text-center align-middle">
-                    @Model[i].DeletedBy
+                    @Model.Users[i].DeletedBy
                 </td>
                 <td class="text-center align-middle">
-                    <a class="btn btn-primary d-inline-block" asp-controller="UserManagement" asp-action="UserDetails" asp-route-userId="@Model[i].Id">
+                    <a class="btn btn-primary d-inline-block" asp-controller="UserManagement" asp-action="UserDetails" asp-route-userId="@Model.Users[i].Id">
                         Details
                     </a>
-                    <form id="restoreUserForm-@Model[i].Id" asp-action="RestoreUser" method="post" asp-route-userId="@Model[i].Id" class="d-inline-block">
-                        <button type="button" class="btn btn-success" data-user-id="@Model[i].Id" data-user-name="@Model[i].FirstName @Model[i].LastName" onclick="openRestoreUserModal(this)">Restore</button>
+                    <form id="restoreUserForm-@Model.Users[i].Id" asp-action="RestoreUser" method="post" asp-route-userId="@Model.Users[i].Id" class="d-inline-block">
+                        <button type="button" class="btn btn-success" data-user-id="@Model.Users[i].Id" data-user-name="@Model.Users[i].FirstName @Model.Users[i].LastName" onclick="openRestoreUserModal(this)">Restore</button>
                     </form>
-                    <form id="deleteUserForm-@Model[i].Id" asp-action="DeleteUserPermanently" method="post" asp-route-userId="@Model[i].Id" class="d-inline-block">
-                        <button type="button" class="btn btn-danger" data-user-id="@Model[i].Id" data-user-name="@Model[i].FirstName @Model[i].LastName" onclick="openDeleteUserModal(this)">Delete permanently</button>
+                    <form id="deleteUserForm-@Model.Users[i].Id" asp-action="DeleteUserPermanently" method="post" asp-route-userId="@Model.Users[i].Id" class="d-inline-block">
+                        <button type="button" class="btn btn-danger" data-user-id="@Model.Users[i].Id" data-user-name="@Model.Users[i].FirstName @Model.Users[i].LastName" onclick="openDeleteUserModal(this)">Delete permanently</button>
                     </form>
                 </td>
             </tr>

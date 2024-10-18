@@ -203,6 +203,12 @@
     </div>
 }
 
+<div id="noResultsContainer" class="text-center mb-5 mt-5" style="display:none;">
+    <h1 class="display-4">
+        Nothing found, try update the filters
+    </h1>
+</div>
+
 <!-- Notification message -->
 <div class="toast-container position-fixed bottom-0 end-0 p-3">
     <div id="testToast" class="toast bg-success text-white" role="alert" aria-live="assertive" aria-atomic="true">
@@ -376,6 +382,14 @@
             // Append sorted rows back to their parent container
             const parentContainer = document.querySelector('.accordion');
             sortedRows.forEach(row => parentContainer.appendChild(row));
+
+            const rowsAfterFitlers = document.querySelectorAll('.accordion-item');
+            const allHiddenAfterFilters = Array.from(rowsAfterFitlers).every(el => el.style.display === 'none');
+            if (allHiddenAfterFilters) {
+                document.getElementById('noResultsContainer').style.display = "block";
+            } else {
+                document.getElementById('noResultsContainer').style.display = "none";
+            }
         }
     </script>
 

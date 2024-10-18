@@ -101,6 +101,13 @@ namespace Business_Logic_Layer.Services.Implementations
             return code;
         }
 
+        public async Task<string> GetUserRoleAsync(ClaimsPrincipal userPrincipal)
+        {
+            var userEntity = await userManager.GetUserAsync(userPrincipal);
+            var result = await userManager.GetRolesAsync(userEntity);
+            return result.First();
+        }
+
         public async Task<string> GenerateChangeEmailTokenAsync(string userId, string newEmail)
         {
             var userEntity = await unitOfWork.UserRepository.GetByIdAsync(userId);

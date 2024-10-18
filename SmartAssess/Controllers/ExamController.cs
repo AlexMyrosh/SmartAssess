@@ -30,7 +30,10 @@ namespace Presentation_Layer.Controllers
                 {
                     new()
                 },
-                CourseId = courseModel.Id
+                CourseId = courseModel.Id,
+                CourseName = courseModel.Name,
+                ExamStartDateTime = DateTimeOffset.Now.Date,
+                ExamEndDateTime = DateTimeOffset.Now.Date
             };
 
             return View(examViewModel);

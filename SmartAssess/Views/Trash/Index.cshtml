@@ -90,6 +90,22 @@
 @section Scripts
 {
     <script>
+
+        document.addEventListener("DOMContentLoaded", function(){
+            let tabElementToOpen;
+            if ('@Model.TabToOpen' === 'Deleted courses') {
+                tabElementToOpen = document.getElementById('justified-tab-0');
+            }
+            else if ('@Model.TabToOpen' === 'Deleted exams') {
+                tabElementToOpen = document.getElementById('justified-tab-1');
+            }
+            else{
+                tabElementToOpen = document.getElementById('justified-tab-2');
+            }
+
+            tabElementToOpen.click();
+        });
+
         function filterDeletedCourses() {
             var searchQuery = $('#searchDeletedCoursesInput').val();
 

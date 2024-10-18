@@ -60,6 +60,8 @@ namespace Business_Logic_Layer.Services.Interfaces
 
         Task HardDeleteAsync(string userId);
 
+        Task<string> GetUserRoleAsync(ClaimsPrincipal userPrincipal);
+
         Task<PaginationUserModel> GetAllDeletedBySearchQueryWithPaginationAsync(int pageSize, string searchQuery = "", int pageNumber = 1);
 
         Task<PaginationUserModel> GetAllBySearchQueryWithPaginationAsync(ClaimsPrincipal userClaimsPrincipal, int pageSize, string searchQuery = "", int pageNumber = 1);

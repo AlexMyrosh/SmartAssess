@@ -7,5 +7,7 @@
         public DeletedExamListWithPaginationViewModel DeletedExamsWithPagination { get; set; }
 
         public DeletedUserListWithPaginationViewModel DeletedUsersWithPagination { get; set; }
+
+        public string TabToOpen { get; set; }
     }
 }

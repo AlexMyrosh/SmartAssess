@@ -1,4 +1,4 @@
-﻿@model List<Presentation_Layer.ViewModels.Trash.Shared.CourseViewModel>
+﻿@model Presentation_Layer.ViewModels.Trash.DeletedCourseListWithPaginationViewModel
 
 <table class="table">
     <thead>
@@ -11,28 +11,28 @@
     </tr>
     </thead>
     <tbody>
-    @for (int i = 0; i < Model.Count; i++)
+    @for (int i = 0; i < Model.Courses.Count; i++)
     {
         <tr>
             <td class="text-center align-middle">
-                @(i + 1)
+                @(i + 1 + 10 * (Model.Pagination.PageNumber - 1))
             </td>
             <td class="text-center align-middle">
-                @Model[i].Name
+                    @Model.Courses[i].Name
             </td>
             <td class="text-center align-middle">
-                @Model[i].DeletedOn
+                    @Model.Courses[i].DeletedOn
             </td>
             <td class="text-center align-middle">
-                @Model[i].DeletedBy
+                    @Model.Courses[i].DeletedBy
             </td>
             <td class="text-center align-middle">
-                <a class="btn btn-primary" asp-controller="Course" asp-action="Details" asp-route-id="@Model[i].Id">Details</a>
-                <form id="restoreCourseForm-@Model[i].Id" asp-action="RestoreCourse" method="post" asp-route-courseId="@Model[i].Id" class="d-inline-block">
-                    <button type="button" class="btn btn-success" data-course-id="@Model[i].Id" data-course-name="@Model[i].Name" onclick="openRestoreCourseModal(this)">Restore</button>
+                    <a class="btn btn-primary" asp-controller="Course" asp-action="Details" asp-route-id="@Model.Courses[i].Id">Details</a>
+                    <form id="restoreCourseForm-@Model.Courses[i].Id" asp-action="RestoreCourse" method="post" asp-route-courseId="@Model.Courses[i].Id" class="d-inline-block">
+                        <button type="button" class="btn btn-success" data-course-id="@Model.Courses[i].Id" data-course-name="@Model.Courses[i].Name" onclick="openRestoreCourseModal(this)">Restore</button>
                 </form>
-                <form id="deleteCourseForm-@Model[i].Id" asp-action="DeleteCoursePermanently" method="post" asp-route-courseId="@Model[i].Id" class="d-inline-block">
-                    <button type="button" class="btn btn-danger" data-course-id="@Model[i].Id" data-course-name="@Model[i].Name" onclick="openDeleteCourseModal(this)">Delete permanently</button>
+                    <form id="deleteCourseForm-@Model.Courses[i].Id" asp-action="DeleteCoursePermanently" method="post" asp-route-courseId="@Model.Courses[i].Id" class="d-inline-block">
+                        <button type="button" class="btn btn-danger" data-course-id="@Model.Courses[i].Id" data-course-name="@Model.Courses[i].Name" onclick="openDeleteCourseModal(this)">Delete permanently</button>
                 </form>
             </td>
         </tr>
@@ -77,10 +77,3 @@
         </div>
     </div>
 </div>
-
-@section Scripts
-{
-    <script>
-
-    </script>
-}

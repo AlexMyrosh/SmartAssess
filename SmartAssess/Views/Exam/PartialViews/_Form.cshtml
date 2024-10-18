@@ -14,14 +14,14 @@
     <div class="row">
         <div class="col">
             <div class="form-floating mb-3">
-                <input for="examStartDateTimeForm" type="datetime-local" asp-for="ExamStartDateTime" class="form-control" />
+                <input for="examStartDateTimeForm" type="datetime-local" asp-for="ExamStartDateTime" class="form-control" value="@Model.ExamStartDateTime.ToString("yyyy-MM-ddTHH:mm")" />
                 <label id="examStartDateTimeForm" asp-for="ExamStartDateTime" class="form-label"></label>
             </div>
         </div>
 
         <div class="col">
             <div class="form-floating mb-3">
-                <input for="examEndDateTimeForm" type="datetime-local" asp-for="ExamEndDateTime" class="form-control" />
+                <input for="examEndDateTimeForm" type="datetime-local" asp-for="ExamEndDateTime" class="form-control" value="@Model.ExamEndDateTime.ToString("yyyy-MM-ddTHH:mm")" />
                 <label id="examEndDateTimeForm" asp-for="ExamEndDateTime" class="form-label"></label>
             </div>
         </div>
@@ -52,13 +52,13 @@
         <div class="col">
             <div class="form-floating">
                 @Html.DropDownListFor(model => model.FinalGradeCalculationMethod,
-                         Enum.GetValues(typeof(FinalGradeCalculationMethodViewModel)).Cast<FinalGradeCalculationMethodViewModel>()
-                         .Select(e => new SelectListItem
-                {
-                    Value = e.ToString(),
-                    Text = e.ToString()
-                }),
-                         new { @class = "form-select", id = "finalGradeCalculationMethodForm" })
+                    Enum.GetValues(typeof(FinalGradeCalculationMethodViewModel)).Cast<FinalGradeCalculationMethodViewModel>()
+                        .Select(e => new SelectListItem
+                        {
+                            Value = e.ToString(),
+                            Text = e.ToString()
+                        }),
+                    new { @class = "form-select", id = "finalGradeCalculationMethodForm" })
                 <label for="finalGradeCalculationMethodForm" asp-for="FinalGradeCalculationMethod"></label>
             </div>
         </div>
