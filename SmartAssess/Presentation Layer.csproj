@@ -28,9 +28,4 @@
     <ProjectReference Include="..\Business Logic Layer\Business Logic Layer.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="FluentValidator\Course\" />
-    <Folder Include="FluentValidator\ExamAssessment\" />
-  </ItemGroup>
-
 </Project>

@@ -5,9 +5,9 @@ namespace Data_Access_Layer.Repositories.Interfaces
 {
     public interface ICourseRepository
     {
-        Task<IEnumerable<CourseEntity>> GetAllAsync(bool includeDeleted = false);
+        Task<List<CourseEntity>> GetAllAsync(bool includeDeleted = false);
 
-        Task<IEnumerable<CourseEntity>> GetAllWithDetailsAsync(bool includeDeleted = false);
+        Task<List<CourseEntity>> GetAllWithDetailsAsync(bool includeDeleted = false);
 
         Task<CourseEntity?> GetByIdAsync(Guid id);
 
@@ -19,13 +19,13 @@ namespace Data_Access_Layer.Repositories.Interfaces
 
         Task<bool> HardDeleteAsync(Guid id);
 
-        Task<IEnumerable<CourseEntity>> GetAllWithDetailsByFilterAsync(Expression<Func<CourseEntity, bool>> filter, bool includeDeleted = false);
+        Task<List<CourseEntity>> GetAllWithDetailsByFilterAsync(Expression<Func<CourseEntity, bool>> filter, bool includeDeleted = false);
 
         Task<PaginationCourseEntity> GetAllDeletedByFilterWithPaginationAsync(Expression<Func<CourseEntity, bool>> filter, int pageSize, int pageNumber = 1);
 
         Task<PaginationCourseEntity> GetAllByFilterWithPaginationAsync(Expression<Func<CourseEntity, bool>> filter, int pageSize, int pageNumber = 1, bool includeDeleted = false);
 
-        Task<IEnumerable<CourseEntity>> GetAllByFilterAsync(Expression<Func<CourseEntity, bool>> filter, string userId, bool includeDeleted = false);
+        Task<List<CourseEntity>> GetAllByFilterAsync(Expression<Func<CourseEntity, bool>> filter, string userId, bool includeDeleted = false);
 
         Task<List<CourseEntity>> GetAllRemovedAsync();
     }

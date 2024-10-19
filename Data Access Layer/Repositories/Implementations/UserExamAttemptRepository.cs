@@ -6,30 +6,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Data_Access_Layer.Repositories.Implementations
 {
-    public class UserExamAttemptRepository : IUserExamPassRepository
+    public class UserExamAttemptRepository(SqlContext sqlContext) : IUserExamPassRepository
     {
-        private readonly SqlContext _sqlContext;
-
-        public UserExamAttemptRepository(SqlContext sqlContext)
-        {
-            _sqlContext = sqlContext;
-        }
-
         public async Task<Guid> CreateAsync(UserExamAttemptEntity entity)
         {
-            var entityEntry = await _sqlContext.UserExamAttempts.AddAsync(entity);
+            var entityEntry = await sqlContext.UserExamAttempts.AddAsync(entity);
             return entityEntry.Entity.Id;
         }
 
-        public async Task<IEnumerable<UserExamAttemptEntity>> GetAllAsync()
+        public async Task<List<UserExamAttemptEntity>> GetAllAsync()
         {
-            var userExamAttemptEntities = await _sqlContext.UserExamAttempts.ToListAsync();
+            var userExamAttemptEntities = await sqlContext.UserExamAttempts.ToListAsync();
             return userExamAttemptEntities;
         }
 
-        public async Task<IEnumerable<UserExamAttemptEntity>> GetAllWithDetailsAsync()
+        public async Task<List<UserExamAttemptEntity>> GetAllWithDetailsAsync()
         {
-            var userExamAttemptEntities = await _sqlContext.Set<UserExamAttemptEntity>()
+            var userExamAttemptEntities = await sqlContext.Set<UserExamAttemptEntity>()
                 .Include(entity => entity.Exam)
                 .ThenInclude(exam => exam.Course)
                 .Include(entity => entity.User)
@@ -42,13 +35,13 @@ namespace Data_Access_Layer.Repositories.Implementations
 
         public async Task<UserExamAttemptEntity?> GetByIdAsync(Guid id)
         {
-            var userExamAttemptEntity = await _sqlContext.Set<UserExamAttemptEntity>().FindAsync(id);
+            var userExamAttemptEntity = await sqlContext.UserExamAttempts.FindAsync(id);
             return userExamAttemptEntity;
         }
 
         public async Task<UserExamAttemptEntity?> GetByIdWithDetailsAsync(Guid id)
         {
-            var userExamAttemptEntity = await _sqlContext.Set<UserExamAttemptEntity>()
+            var userExamAttemptEntity = await sqlContext.Set<UserExamAttemptEntity>()
                 .Include(entity => entity.Exam)
                 .ThenInclude(exam => exam.Course)
                 .Include(entity => entity.User)
@@ -63,7 +56,7 @@ namespace Data_Access_Layer.Repositories.Implementations
 
         public Task<UserExamAttemptEntity?> GetStartedAttemptAsync(Guid examId, string userId)
         {
-            var entity = _sqlContext.UserExamAttempts
+            var entity = sqlContext.UserExamAttempts
                 .Include(entity => entity.Exam)
                 .ThenInclude(exam => exam.Course)
                 .Include(entity => entity.Exam)
@@ -78,21 +71,9 @@ namespace Data_Access_Layer.Repositories.Implementations
             return entity;
         }
 
-        public async Task<bool> HardDeleteAsync(Guid id)
-        {
-            var userExamAttemptEntity = await _sqlContext.UserExamAttempts.FindAsync(id);
-            if (userExamAttemptEntity != null)
-            {
-                _sqlContext.UserExamAttempts.Remove(userExamAttemptEntity);
-                return true;
-            }
-
-            return false;
-        }
-
         public void Update(UserExamAttemptEntity entity)
         {
-            _sqlContext.UserExamAttempts.Update(entity);
+            sqlContext.UserExamAttempts.Update(entity);
         }
     }
 }

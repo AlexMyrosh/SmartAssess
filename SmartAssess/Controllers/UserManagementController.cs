@@ -1,5 +1,7 @@
 using AutoMapper;
 using Business_Logic_Layer.Services.Interfaces;
+using Data_Access_Layer.Roles;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Presentation_Layer.ViewModels.Account;
 using Presentation_Layer.ViewModels.UserManagement;
@@ -14,6 +16,7 @@ namespace Presentation_Layer.Controllers
         private const int PageSize = 10;
 
         [HttpGet]
+        [Authorize(Roles = $"{RoleNames.Admin}")]
         public async Task<IActionResult> AllUsers()
         {
             var paginationUserModel = await accountService.GetAllBySearchQueryWithPaginationAsync(User, PageSize);
@@ -24,6 +27,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = $"{RoleNames.Admin}")]
         public async Task<IActionResult> PaginateAllUsers(int pageNumber = 1, string searchQuery = "")
         {
             var paginationUserModel = await accountService.GetAllBySearchQueryWithPaginationAsync(User, PageSize, searchQuery, pageNumber);
@@ -34,6 +38,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = $"{RoleNames.Admin}")]
         public async Task<IActionResult> UpdateUserRole(string userId, string selectedRole)
         {
             await accountService.UpdateUserRoleAsync(userId, selectedRole);
@@ -41,15 +46,17 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = $"{RoleNames.Teacher},{RoleNames.Admin}")]
         public async Task<IActionResult> UserDetails(string userId)
         {
-            var userModel = await accountService.GetUserAsync(userId);
+            var userModel = await accountService.GetUserAsync(userId, true);
             var viewModel = mapper.Map<AccountDetailsViewModel>(userModel);
             viewModel.IsInReadonlyMode = true;
             return View("~/Views/Account/Details.cshtml", viewModel);
         }
 
         [HttpPost]
+        [Authorize(Roles = $"{RoleNames.Admin}")]
         public async Task<IActionResult> DeleteUser(string userId)
         {
             await accountService.SoftDeleteAsync(userId, User);

@@ -73,6 +73,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Logout()
         {
             await signInManager.SignOutAsync();
@@ -298,6 +299,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<JsonResult> ChangePassword(ChangePasswordViewModel model)
         {
             if (!ModelState.IsValid)

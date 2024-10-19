@@ -18,16 +18,11 @@
                     @Html.HiddenFor(model => model.CourseId)
                     <input type="submit" value="Create" class="btn btn-outline-success" />
                 </div>
-                <div asp-validation-summary="All" class="text-danger"></div>
             </div>
         </div>
     </form>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-
     <script src="~/js/Exam.js"></script>
 }

@@ -96,7 +96,7 @@
                 </div>
                 @for (var i = 0; i < Model.Questions.Count; i++)
                 {
-                    <div class="card mb-3" style="background-color: #f2f2f2; border-radius: 15px;">
+                    <div class="card mb-3 question" style="background-color: #f2f2f2; border-radius: 15px;">
                         <div class="card-body">
                             <h5 class="card-title" style="display: flex; justify-content: center; align-items: center;">
                                 Question @(i + 1)
@@ -106,7 +106,53 @@
                         </div>
                     </div>
                 }
+                
+                <div class="container d-flex justify-content-center">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination" id="pagination-nav">
+                            @for (int i = 0; i < Model.Questions.Count; i++)
+                            {
+                                <li class="page-item me-2" data-page="@i">
+                                    <a class="page-link" href="javascript:void(0);" onclick="showQuestion(@i)">
+                                        @(i + 1)
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialize to show the first question
+        showQuestion(0);
+    });
+
+    function showQuestion(currentPage) {
+        debugger;
+        let allPageItems = document.querySelectorAll('#pagination-nav .page-item');
+        let allQuestions = document.querySelectorAll(".question");
+
+        // Update the active class on pagination items
+        allPageItems.forEach((item, index) => {
+            if (index === currentPage) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+
+        // Display the corresponding question
+        allQuestions.forEach((item, index) => {
+            if (index === currentPage) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+    }
+</script>

@@ -37,7 +37,7 @@ namespace Business_Logic_Layer.Services.Implementations
 
         public async Task<UserModel?> GetUserAsync(ClaimsPrincipal userPrincipal)
         {
-            var userEntityId = (await userManager.GetUserAsync(userPrincipal))?.Id;
+            var userEntityId = userManager.GetUserId(userPrincipal);
             var userEntity = await unitOfWork.UserRepository.GetByIdWithDetailsAsync(userEntityId);
             var userModel = mapper.Map<UserModel>(userEntity);
             userModel.Roles = await userManager.GetRolesAsync(userEntity);
@@ -59,13 +59,14 @@ namespace Business_Logic_Layer.Services.Implementations
 
             user.EducationalInstitution = user.EducationalInstitution is null ? string.Empty : user.EducationalInstitution;
             mapper.Map(user, userFromDb);
+            userFromDb.AboutUser = user.AboutUser;
             var identityResult = await userManager.UpdateAsync(userFromDb);
             return identityResult;
         }
 
         public async Task<bool> ResetPasswordEmailAsync(string email, string callbackUrl)
         {
-            var user = await userManager.FindByEmailAsync(email);
+            var user = await unitOfWork.UserRepository.GetByEmailAsync(email);
             if (user == null || !await userManager.IsEmailConfirmedAsync(user))
             {
                 return false;
@@ -84,7 +85,7 @@ namespace Business_Logic_Layer.Services.Implementations
 
         public async Task<string> GenerateResetTokenAsync(string email)
         {
-            var user = await userManager.FindByEmailAsync(email);
+            var user = await unitOfWork.UserRepository.GetByEmailAsync(email);
             if (user is null)
             {
                 throw new ArgumentException("Unable to get user by email", nameof(email));
@@ -117,7 +118,7 @@ namespace Business_Logic_Layer.Services.Implementations
 
         public async Task<IdentityResult> ResetPasswordAsync(string email, string code, string newPassword)
         {
-            var user = await userManager.FindByEmailAsync(email);
+            var user = await unitOfWork.UserRepository.GetByEmailAsync(email);
             if (user is null)
             {
                 throw new ArgumentException("Unable to get user by email", nameof(email));
@@ -129,7 +130,7 @@ namespace Business_Logic_Layer.Services.Implementations
 
         public async Task<bool> VerifyUserTokenAsync(string email, string token)
         {
-            var user = await userManager.FindByEmailAsync(email);
+            var user = await unitOfWork.UserRepository.GetByEmailAsync(email);
             if (user is null)
             {
                 return false;
@@ -147,21 +148,19 @@ namespace Business_Logic_Layer.Services.Implementations
         public async Task<List<UserModel>> GetAllUsersAsync(ClaimsPrincipal userClaimsPrincipal, bool includeDeleted = false)
         {
             var userId = userManager.GetUserId(userClaimsPrincipal);
-            var userEntities = await userManager.Users.Where(x=>x.Id != userId && (x.IsDeleted == false || x.IsDeleted == includeDeleted)).ToListAsync();
-            
+            var userEntities = await unitOfWork.UserRepository.GetAllByFilterAsync(x => x.Id != userId, includeDeleted);
             foreach (var userEntity in userEntities)
             {
                 userEntity.Role = (await userManager.GetRolesAsync(userEntity)).First();
             }
 
             var userModels = mapper.Map<List<UserModel>>(userEntities);
-            
             return userModels;
         }
 
         public async Task UpdateUserRoleAsync(string userId, string roleName)
         {
-            var userEntity = userManager.Users.FirstOrDefault(u => u.Id == userId);
+            var userEntity = await unitOfWork.UserRepository.GetByIdAsync(userId);
             if (userEntity is null)
             {
                 return;
@@ -184,7 +183,7 @@ namespace Business_Logic_Layer.Services.Implementations
 
         public async Task<List<UserModel>> GetAllRemovedUsersAsync()
         {
-            var userEntities = await unitOfWork.UserRepository.GetAllRemovedAsync();
+            var userEntities = await unitOfWork.UserRepository.GetAllDeletedAsync();
             foreach (var userEntity in userEntities)
             {
                 userEntity.Role = (await userManager.GetRolesAsync(userEntity)).First();
@@ -196,7 +195,7 @@ namespace Business_Logic_Layer.Services.Implementations
 
         public async Task RestoreAsync(string userId)
         {
-            var userEntity = await unitOfWork.UserRepository.GetByIdAsync(userId);
+            var userEntity = await userManager.FindByIdAsync(userId);
             if (userEntity is not null)
             {
                 userEntity.IsDeleted = false;
@@ -208,7 +207,7 @@ namespace Business_Logic_Layer.Services.Implementations
 
         public async Task HardDeleteAsync(string userId)
         {
-            var userEntity = await unitOfWork.UserRepository.GetByIdAsync(userId);
+            var userEntity = await userManager.FindByIdAsync(userId);
             await userManager.DeleteAsync(userEntity);
         }
 
@@ -237,11 +236,6 @@ namespace Business_Logic_Layer.Services.Implementations
             return paginationUserModel;
         }
 
-        public async Task<bool> IsUserExistByUsernameAsync(string username)
-        {
-            var user = await userManager.FindByNameAsync(username);
-            return user != null;
-        }
 
         public async Task<bool> IsUserExistByEmailAsync(string email)
         {
@@ -251,7 +245,7 @@ namespace Business_Logic_Layer.Services.Implementations
 
         public async Task<IdentityResult> ConfirmEmailAsync(string userId, string code)
         {
-            var userEntity = await userManager.FindByIdAsync(userId);
+            var userEntity = await unitOfWork.UserRepository.GetByIdAsync(userId);
             if (userEntity is null)
             {
                 throw new ArgumentException("Unable to get user by id", nameof(userId));
@@ -274,9 +268,9 @@ namespace Business_Logic_Layer.Services.Implementations
             return result;
         }
 
-        public async Task<UserModel?> GetUserAsync(string id)
+        public async Task<UserModel?> GetUserAsync(string id, bool canBeDeleted = false)
         {
-            var userEntity = await unitOfWork.UserRepository.GetByIdWithDetailsAsync(id);
+            var userEntity = await unitOfWork.UserRepository.GetByIdWithDetailsAsync(id, canBeDeleted);
             var userModel = mapper.Map<UserModel>(userEntity);
             return userModel;
         }
@@ -310,7 +304,7 @@ namespace Business_Logic_Layer.Services.Implementations
 
         public async Task<UserModel?> GetUserByEmailAsync(string email)
         {
-            var userEntity = await userManager.FindByEmailAsync(email);
+            var userEntity = await unitOfWork.UserRepository.GetByEmailAsync(email);
             var userModel = mapper.Map<UserModel>(userEntity);
             return userModel;
         }

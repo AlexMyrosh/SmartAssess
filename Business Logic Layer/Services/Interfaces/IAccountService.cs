@@ -10,7 +10,7 @@ namespace Business_Logic_Layer.Services.Interfaces
 
         Task<UserModel?> GetUserAsync(ClaimsPrincipal userPrincipal);
 
-        Task<UserModel?> GetUserAsync(string id);
+        Task<UserModel?> GetUserAsync(string id, bool canBeDeleted = false);
 
         Task<UserModel?> GetUserByEmailAsync(string email);
 
@@ -27,8 +27,6 @@ namespace Business_Logic_Layer.Services.Interfaces
         Task<string> GenerateChangeEmailTokenAsync(string userId, string newEmail);
 
         Task<IdentityResult> ResetPasswordAsync(string email, string code, string newPassword);
-
-        Task<bool> IsUserExistByUsernameAsync(string username);
 
         Task<bool> IsUserExistByEmailAsync(string email);
 

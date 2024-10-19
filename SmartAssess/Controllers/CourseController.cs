@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Presentation_Layer.ViewModels.Course;
 using Presentation_Layer.ViewModels.Course.Shared;
 
-
 namespace Presentation_Layer.Controllers
 {
     [Authorize]
@@ -20,6 +19,7 @@ namespace Presentation_Layer.Controllers
         private const int PageSize = 12;
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> All()
         {
             var paginationCourseModel = await courseService.GetAllBySearchQueryWithPaginationAsync(PageSize);
@@ -30,6 +30,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> PaginateAllCourses(int pageNumber = 1, string searchQuery = "")
         {
             var paginationCourseModel = await courseService.GetAllBySearchQueryWithPaginationAsync(PageSize, searchQuery, pageNumber);
@@ -40,6 +41,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = $"{RoleNames.Student}")]
         public async Task<IActionResult> Applied()
         {
             var paginationCourseModel = await courseService.GetAllAppliedByUserBySearchQueryWithPaginationAsync(User, PageSize);
@@ -50,6 +52,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = $"{RoleNames.Student}")]
         public async Task<IActionResult> PaginateAppliedCourses(int pageNumber = 1, string searchQuery = "")
         { 
             var paginationCourseModel = await courseService.GetAllAppliedByUserBySearchQueryWithPaginationAsync(User, PageSize, searchQuery, pageNumber);
@@ -60,6 +63,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = $"{RoleNames.Teacher}")]
         public async Task<IActionResult> AppliedByTeacherCourses()
         {
             var paginationCourseModel = await courseService.GetAllAppliedByTeacherBySearchQueryWithPaginationAsync(User, PageSize);
@@ -70,6 +74,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = $"{RoleNames.Teacher}")]
         public async Task<IActionResult> PaginateAppliedByTeacherCourses(int pageNumber = 1, string searchQuery = "")
         {
             var paginationCourseModel = await courseService.GetAllAppliedByTeacherBySearchQueryWithPaginationAsync(User, PageSize, searchQuery, pageNumber);
@@ -80,6 +85,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = $"{RoleNames.Student}")]
         public async Task<IActionResult> ApplyForCourse(Guid courseId)
         {
             await courseService.AddUserForCourseAsync(User, courseId);
@@ -87,6 +93,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = $"{RoleNames.Teacher}")]
         public async Task<IActionResult> ApplyForCoursesAsTeacher(Guid courseId)
         {
             await courseService.AddTeacherForCourseAsync(User, courseId);
@@ -94,6 +101,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = $"{RoleNames.Student}")]
         public async Task<IActionResult> LeaveCourse(Guid courseId)
         {
             await courseService.RemoveUserFromCourseAsync(User, courseId);
@@ -101,6 +109,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = $"{RoleNames.Teacher}")]
         public async Task<IActionResult> LeaveCourseAsTeacher(Guid courseId)
         {
             await courseService.RemoveTeacherFromCourseAsync(User, courseId);
@@ -108,6 +117,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Details(Guid id)
         {
             var courseModel = await courseService.GetByIdWithDetailsAsync(id, User);
@@ -116,6 +126,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = $"{RoleNames.Teacher},{RoleNames.Admin}")]
         public async Task<JsonResult> Create(CourseViewModel viewModel)
         {
             if (ModelState.IsValid)
@@ -129,6 +140,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = $"{RoleNames.Teacher},{RoleNames.Admin}")]
         public async Task<IActionResult> Delete(Guid id)
         {
             await courseService.SoftDeleteAsync(id, User);
@@ -144,6 +156,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = $"{RoleNames.Teacher},{RoleNames.Admin}")]
         public async Task<IActionResult> UpdateLongDescription(Guid courseId, string longDescription)
         {
             await courseService.UpdateLongDescriptionAsync(courseId, longDescription);
@@ -151,6 +164,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = $"{RoleNames.Teacher},{RoleNames.Admin}")]
         public async Task<IActionResult> RemoveUserFromCourse(string userId, Guid courseId)
         {
             await courseService.RemoveUserFromCourseAsync(userId, courseId);

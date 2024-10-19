@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Business_Logic_Layer.Models;
 using Business_Logic_Layer.Services.Interfaces;
+using Data_Access_Layer.Roles;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Presentation_Layer.ViewModels.Exam;
@@ -13,6 +14,7 @@ namespace Presentation_Layer.Controllers
         : Controller
     {
         [HttpGet]
+        [Authorize(Roles = $"{RoleNames.Teacher},{RoleNames.Admin}")]
         public async Task<IActionResult> Details(Guid id)
         {
             var examModel = await examService.GetByIdWithDetailsAsync(id);
@@ -21,6 +23,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = $"{RoleNames.Teacher},{RoleNames.Admin}")]
         public async Task<IActionResult> Create(Guid courseId)
         {
             var courseModel = await courseService.GetByIdAsync(courseId);
@@ -40,6 +43,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = $"{RoleNames.Teacher},{RoleNames.Admin}")]
         public async Task<IActionResult> Create(ExamViewModel examViewModel)
         {
             if (ModelState.IsValid)
@@ -53,6 +57,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = $"{RoleNames.Teacher},{RoleNames.Admin}")]
         public async Task<IActionResult> Delete(Guid examId, Guid courseId)
         {
             await examService.SoftDeleteAsync(examId, User);
@@ -60,6 +65,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = $"{RoleNames.Teacher},{RoleNames.Admin}")]
         public async Task<IActionResult> Update(Guid id)
         {
             var examModel = await examService.GetByIdWithDetailsAsync(id);
@@ -68,6 +74,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = $"{RoleNames.Teacher},{RoleNames.Admin}")]
         public async Task<IActionResult> Update(ExamViewModel examViewModel)
         {
             if (ModelState.IsValid)
@@ -81,6 +88,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = $"{RoleNames.Teacher},{RoleNames.Admin}")]
         public async Task<IActionResult> Result(Guid id)
         {
             var exam = await examService.GetByIdWithDetailsAsync(id);
@@ -89,6 +97,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = $"{RoleNames.Teacher},{RoleNames.Admin}")]
         public async Task<IActionResult> Statistic(Guid id)
         {
             var exam = await examService.GetByIdWithDetailsAsync(id);

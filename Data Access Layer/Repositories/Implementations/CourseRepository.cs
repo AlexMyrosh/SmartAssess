@@ -6,33 +6,26 @@ using System.Linq.Expressions;
 
 namespace Data_Access_Layer.Repositories.Implementations
 {
-    public class CourseRepository : ICourseRepository
+    public class CourseRepository(SqlContext sqlContext) : ICourseRepository
     {
-        private readonly SqlContext _sqlContext;
-
-        public CourseRepository(SqlContext sqlContext)
-        {
-            _sqlContext = sqlContext;
-        }
-
         public async Task<Guid> CreateAsync(CourseEntity entity)
         {
-            var entityEntry = await _sqlContext.Courses.AddAsync(entity);
+            var entityEntry = await sqlContext.Courses.AddAsync(entity);
             return entityEntry.Entity.Id;
         }
 
-        public async Task<IEnumerable<CourseEntity>> GetAllAsync(bool includeDeleted = false)
+        public async Task<List<CourseEntity>> GetAllAsync(bool includeDeleted = false)
         {
-            var courseEntities = await _sqlContext.Courses
+            var courseEntities = await sqlContext.Courses
                 .Where(course => course.IsDeleted == false || course.IsDeleted == includeDeleted)
                 .ToListAsync();
 
             return courseEntities;
         }
 
-        public async Task<IEnumerable<CourseEntity>> GetAllByFilterAsync(Expression<Func<CourseEntity, bool>> filter, string userId, bool includeDeleted = false)
+        public async Task<List<CourseEntity>> GetAllByFilterAsync(Expression<Func<CourseEntity, bool>> filter, string userId, bool includeDeleted = false)
         {
-            var courseEntities = await _sqlContext
+            var courseEntities = await sqlContext
                 .Courses
                 .Where(course => course.IsDeleted == false || course.IsDeleted == includeDeleted)
                 .Where(filter)
@@ -51,7 +44,7 @@ namespace Data_Access_Layer.Repositories.Implementations
 
         public async Task<PaginationCourseEntity> GetAllByFilterWithPaginationAsync(Expression<Func<CourseEntity, bool>> filter, int pageSize, int pageNumber = 1, bool includeDeleted = false)
         {
-            var query = _sqlContext.Courses
+            var query = sqlContext.Courses
                 .Where(course => course.IsDeleted == false || course.IsDeleted == includeDeleted)
                 .Where(filter);
 
@@ -71,7 +64,7 @@ namespace Data_Access_Layer.Repositories.Implementations
 
         public async Task<PaginationCourseEntity> GetAllDeletedByFilterWithPaginationAsync(Expression<Func<CourseEntity, bool>> filter, int pageSize, int pageNumber = 1)
         {
-            var query = _sqlContext.Courses
+            var query = sqlContext.Courses
                 .Include(course => course.DeletedBy)
                 .Where(course => course.IsDeleted)
                 .Where(filter);
@@ -92,7 +85,7 @@ namespace Data_Access_Layer.Repositories.Implementations
 
         public async Task<List<CourseEntity>> GetAllRemovedAsync()
         {
-            var courseEntities = await _sqlContext.Courses
+            var courseEntities = await sqlContext.Courses
                 .Where(course => course.IsDeleted)
                 .Include(course => course.DeletedBy)
                 .ToListAsync();
@@ -100,9 +93,9 @@ namespace Data_Access_Layer.Repositories.Implementations
             return courseEntities;
         }
 
-        public async Task<IEnumerable<CourseEntity>> GetAllWithDetailsAsync(bool includeDeleted = false)
+        public async Task<List<CourseEntity>> GetAllWithDetailsAsync(bool includeDeleted = false)
         {
-            var courseEntities = await _sqlContext.Courses
+            var courseEntities = await sqlContext.Courses
                 .Include(course => course.Exams)
                 .Include(course => course.Users)
                 .Where(course => course.IsDeleted == false || course.IsDeleted == includeDeleted)
@@ -111,9 +104,9 @@ namespace Data_Access_Layer.Repositories.Implementations
             return courseEntities;
         }
 
-        public async Task<IEnumerable<CourseEntity>> GetAllWithDetailsByFilterAsync(Expression<Func<CourseEntity, bool>> filter, bool includeDeleted = false)
+        public async Task<List<CourseEntity>> GetAllWithDetailsByFilterAsync(Expression<Func<CourseEntity, bool>> filter, bool includeDeleted = false)
         {
-            var courseEntities = await _sqlContext.Courses
+            var courseEntities = await sqlContext.Courses
                 .Include(course => course.Exams)
                 .Include(course => course.Users)
                 .Where(course => course.IsDeleted == false || course.IsDeleted == includeDeleted)
@@ -125,13 +118,17 @@ namespace Data_Access_Layer.Repositories.Implementations
 
         public async Task<CourseEntity?> GetByIdAsync(Guid id)
         {
-            var courseEntity = await _sqlContext.Courses.FindAsync(id);
+            var courseEntity = await sqlContext.Courses
+                .Where(x=>!x.IsDeleted && x.Id == id)
+                .FirstOrDefaultAsync();
+
             return courseEntity;
         }
 
         public async Task<CourseEntity?> GetByIdWithDetailsAsync(Guid id)
         {
-            var courseEntity = await _sqlContext.Courses
+            var courseEntity = await sqlContext.Courses
+                .Where(x => !x.IsDeleted && x.Id == id)
                 .Include(course => course.Exams.Where(exam => !exam.IsDeleted))
                 .ThenInclude(exam => exam.UserExamAttempts)
                 .ThenInclude(attempt => attempt.User)
@@ -139,17 +136,17 @@ namespace Data_Access_Layer.Repositories.Implementations
                 .ThenInclude(exam => exam.Questions)
                 .Include(course => course.Users)
                 .Include(course => course.Teachers)
-                .FirstOrDefaultAsync(course => course.Id == id);
+                .FirstOrDefaultAsync();
 
             return courseEntity;
         }
 
         public async Task<bool> HardDeleteAsync(Guid id)
         {
-            var courseEntity = await _sqlContext.Courses.FindAsync(id);
+            var courseEntity = await sqlContext.Courses.FindAsync(id);
             if (courseEntity != null)
             {
-                _sqlContext.Courses.Remove(courseEntity);
+                sqlContext.Courses.Remove(courseEntity);
                 return true;
             }
 
@@ -158,7 +155,7 @@ namespace Data_Access_Layer.Repositories.Implementations
 
         public async Task<bool> SoftDeleteAsync(Guid id, string deletedByUserId)
         {
-            var courseEntity = await _sqlContext.Courses.FindAsync(id);
+            var courseEntity = await sqlContext.Courses.FindAsync(id);
             if (courseEntity != null)
             {
                 courseEntity.IsDeleted = true;

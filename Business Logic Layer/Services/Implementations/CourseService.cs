@@ -104,7 +104,12 @@ namespace Business_Logic_Layer.Services.Implementations
         public async Task<CourseModel?> GetByIdWithDetailsAsync(Guid id, ClaimsPrincipal currentUserPrincipal)
         {
             var courseEntity = await unitOfWork.CourseRepository.GetByIdWithDetailsAsync(id);
-            courseEntity.Users.ForEach(async x=>x.Role = (await userManager.GetRolesAsync(x)).First());
+            foreach (var user in courseEntity.Users)
+            {
+                var roles = await userManager.GetRolesAsync(user);
+                user.Role = roles.First();
+            }
+
             var courseModel = mapper.Map<CourseModel>(courseEntity);
             var currentUser = await userManager.GetUserAsync(currentUserPrincipal);
 

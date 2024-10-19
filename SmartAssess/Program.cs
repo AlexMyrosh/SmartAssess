@@ -21,6 +21,11 @@ using Serilog;
 using Presentation_Layer.ViewModels.Account;
 using Presentation_Layer.FluentValidator.Exam;
 using Presentation_Layer.ViewModels.Exam.Shared;
+using Presentation_Layer.FluentValidator.Course;
+using Presentation_Layer.ViewModels.Course.Shared;
+using Presentation_Layer.FluentValidator.ExamAssessment;
+using Presentation_Layer.ViewModels.ExamAssessment;
+using Presentation_Layer.ViewModels.ExamAssessment.Shared;
 
 namespace Presentation_Layer
 {
@@ -115,7 +120,12 @@ namespace Presentation_Layer
             services.AddScoped<IValidator<LoginViewModel>, LoginViewModelValidator>();
             services.AddScoped<IValidator<RegisterViewModel>, RegisterViewModelValidator>();
             services.AddScoped<IValidator<ResetPasswordViewModel>, ResetPasswordViewModelValidator>();
+            services.AddScoped<IValidator<CourseViewModel>, CourseViewModelValidator>();
+            services.AddScoped<IValidator<ViewModels.Exam.ExamViewModel>, ExamViewModelValidator>();
             services.AddScoped<IValidator<QuestionViewModel>, QuestionViewModelValidator>();
+            services.AddScoped<IValidator<ExamManualEvaluationViewModel>, ExamManualEvaluationViewModelValidator>();
+            services.AddScoped<IValidator<QuestionAnswerViewModel>, QuestionAnswerViewModelValidator>();
+            services.AddScoped<IValidator<TakeExamViewModel>, TakeExamViewModelValidator>();
 
             services.AddScoped<IExamService, ExamService>();
             services.AddScoped<IAccountService, AccountService>();

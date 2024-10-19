@@ -205,7 +205,7 @@
                 <div class="mb-1 wow fadeIn">
                     <div class="text-start mb-1-6 wow fadeIn">
                         <div class="d-flex flex-md-row flex-column align-items-center">
-                            @if (!string.IsNullOrWhiteSpace(Model.AboutUser))
+                            @if (!Model.IsInReadonlyMode || !string.IsNullOrWhiteSpace(Model.AboutUser))
                             {
                                 <h2 class="h1 mb-0 text-primary">#About Me</h2>
                             }

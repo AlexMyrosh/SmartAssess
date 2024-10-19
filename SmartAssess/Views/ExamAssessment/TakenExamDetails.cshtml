@@ -27,30 +27,30 @@
                         @Model.ExamDescription
                     </pre>
                     <div class="container mt-5">
-                            <div class="container">
-                                <div class="row">
-                                    @if (Model.IsExamAssessed)
-                                    {
-                                        <div class="col d-flex align-items-stretch mb-3">
-                                            <div class="card bg-c-blue order-card flex-fill">
-                                                <div class="card-body">
-                                                    <h2 class="m-b-20 text-center">Exam grade</h2>
-                                                <h3 class="text-center"><span>@Model.TotalGrade of @Model.MaxPossibleExamGrade</span></h3>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    }
-                                    else
-                                    {
+                        <div class="container">
+                            <div class="row">
+                                @if (Model.IsExamAssessed)
+                                {
                                     <div class="col d-flex align-items-stretch mb-3">
-                                            <div class="card bg-c-blue order-card flex-fill">
-                                                <div class="card-body">
-                                                    <h2 class="m-b-20 text-center">Max possible grade</h2>
-                                                <h3 class="text-center"><span>@Model.MaxPossibleExamGrade</span></h3>
-                                                </div>
+                                        <div class="card bg-c-blue order-card flex-fill">
+                                            <div class="card-body">
+                                                <h2 class="m-b-20 text-center">Exam grade</h2>
+                                                <h3 class="text-center"><span>@Model.TotalGrade of @Model.MaxPossibleExamGrade</span></h3>
                                             </div>
                                         </div>
-                                    }
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col d-flex align-items-stretch mb-3">
+                                        <div class="card bg-c-blue order-card flex-fill">
+                                            <div class="card-body">
+                                                <h2 class="m-b-20 text-center">Max possible grade</h2>
+                                                <h3 class="text-center"><span>@Model.MaxPossibleExamGrade</span></h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
 
                                 <div class="col d-flex align-items-stretch mb-3">
                                     <div class="card bg-c-teal order-card flex-fill">
@@ -62,75 +62,75 @@
                                 </div>
 
                                 <div class="col d-flex align-items-stretch mb-3">
-                                        <div class="card bg-c-indigo order-card flex-fill">
-                                            <div class="card-body">
-                                                <h2 class="m-b-20 text-center">Threshold score</h2>
+                                    <div class="card bg-c-indigo order-card flex-fill">
+                                        <div class="card-body">
+                                            <h2 class="m-b-20 text-center">Threshold score</h2>
                                             <h3 class="text-center"><span>@Model.MinExamPassGrade</span></h3>
-                                            </div>
                                         </div>
                                     </div>
+                                </div>
 
-                                    @if (Model.IsExamAssessed)
+                                @if (Model.IsExamAssessed)
+                                {
+                                    @if (Model.TotalGrade >= Model.MinExamPassGrade)
                                     {
-                                        @if (Model.TotalGrade >= Model.MinExamPassGrade)
-                                        {
                                         <div class="col d-flex align-items-stretch mb-3">
-                                                <div class="card bg-c-green order-card flex-fill">
-                                                    <div class="card-body">
-                                                        <h2 class="m-b-20 text-center">PASSED</h2>
-                                                    </div>
+                                            <div class="card bg-c-green order-card flex-fill">
+                                                <div class="card-body">
+                                                    <h2 class="m-b-20 text-center">PASSED</h2>
                                                 </div>
                                             </div>
-                                        }
-                                        else
-                                        {
-                                        <div class="col d-flex align-items-stretch mb-3">
-                                                <div class="card bg-c-red order-card flex-fill">
-                                                    <div class="card-body">
-                                                        <h2 class="text-center">FAILED</h2>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        }
+                                        </div>
                                     }
                                     else
                                     {
-                                    <div class="col d-flex align-items-stretch mb-3">
-                                            <div class="card bg-c-yellow order-card flex-fill">
+                                        <div class="col d-flex align-items-stretch mb-3">
+                                            <div class="card bg-c-red order-card flex-fill">
                                                 <div class="card-body">
-                                                    <h2 class="text-center">Exam is not assessed yet</h2>
+                                                    <h2 class="text-center">FAILED</h2>
                                                 </div>
                                             </div>
                                         </div>
                                     }
+                                }
+                                else
+                                {
+                                    <div class="col d-flex align-items-stretch mb-3">
+                                        <div class="card bg-c-yellow order-card flex-fill">
+                                            <div class="card-body">
+                                                <h2 class="text-center">Exam is not assessed yet</h2>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
 
 
-                                    @if (Model.IsExamAssessed)
+                                @if (Model.IsExamAssessed)
+                                {
+                                    @if (Model.IsAssessedByAi)
                                     {
-                                        @if (Model.IsAssessedByAi)
-                                        {
                                         <div class="col d-flex align-items-stretch mb-3">
-                                                <div class="card bg-c-purple order-card flex-fill">
-                                                    <div class="card-body">
-                                                        <h2 class="m-b-20 text-center">Assessed by AI</h2>
-                                                    </div>
+                                            <div class="card bg-c-purple order-card flex-fill">
+                                                <div class="card-body">
+                                                    <h2 class="m-b-20 text-center">Assessed by AI</h2>
                                                 </div>
                                             </div>
-                                        }
-                                        else
-                                        {
-                                        <div class="col d-flex align-items-stretch mb-3">
-                                                <div class="card bg-c-cyan order-card flex-fill">
-                                                    <div class="card-body">
-                                                        <h2 class="m-b-20 text-center">Assessed manually</h2>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        }
+                                        </div>
                                     }
-                                </div>
+                                    else
+                                    {
+                                        <div class="col d-flex align-items-stretch mb-3">
+                                            <div class="card bg-c-cyan order-card flex-fill">
+                                                <div class="card-body">
+                                                    <h2 class="m-b-20 text-center">Assessed manually</h2>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
                             </div>
                         </div>
+                    </div>
                 </div>
                 @if (!string.IsNullOrWhiteSpace(Model.GeneralFeedback))
                 {
@@ -148,7 +148,7 @@
                     </div>
                     @for (var i = 0; i < Model.QuestionAnswers.Count; i++)
                     {
-                        <div class="card mb-3" style="background-color: #f2f2f2; border-radius: 15px;">
+                        <div class="card mb-3 question" style="background-color: #f2f2f2; border-radius: 15px;">
                             <div class="card-body">
                                 <h5 class="card-title text-center">Question @(i + 1)</h5>
                                 <p class="card-text text-center">@Model.QuestionAnswers[i].QuestionText</p>
@@ -175,8 +175,54 @@
                             </div>
                         </div>
                     }
+                    
+                    <div class="container d-flex justify-content-center">
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination" id="pagination-nav">
+                                @for (int i = 0; i < Model.QuestionAnswers.Count; i++)
+                                {
+                                    <li class="page-item me-2" data-page="@i">
+                                        <a class="page-link" href="javascript:void(0);" onclick="showQuestion(@i)">
+                                            @(i + 1)
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </nav>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialize to show the first question
+        showQuestion(0);
+    });
+
+    function showQuestion(currentPage) {
+        debugger;
+        let allPageItems = document.querySelectorAll('#pagination-nav .page-item');
+        let allQuestions = document.querySelectorAll(".question");
+
+        // Update the active class on pagination items
+        allPageItems.forEach((item, index) => {
+            if (index === currentPage) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+
+        // Display the corresponding question
+        allQuestions.forEach((item, index) => {
+            if (index === currentPage) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+    }
+</script>

@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Business_Logic_Layer.Services.Interfaces;
+using Data_Access_Layer.Roles;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Presentation_Layer.ViewModels.Trash;
 
@@ -14,6 +16,7 @@ namespace Presentation_Layer.Controllers
         private const int PageSize = 10;
 
         [HttpGet]
+        [Authorize(Roles = $"{RoleNames.Admin}")]
         public async Task<IActionResult> Index(string tab = "Deleted courses")
         {
             var deletedCourses = await _courseService.GetAllDeletedBySearchQueryWithPaginationAsync(PageSize);
@@ -39,6 +42,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = $"{RoleNames.Admin}")]
         public async Task<IActionResult> PaginateDeletedCourses(int pageNumber = 1, string searchQuery = "")
         {
             var paginationCourseModel = await _courseService.GetAllDeletedBySearchQueryWithPaginationAsync(PageSize, searchQuery, pageNumber);
@@ -49,6 +53,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = $"{RoleNames.Admin}")]
         public async Task<IActionResult> PaginateDeletedExams(int pageNumber = 1, string searchQuery = "")
         {
             var paginationExamModel = await _examService.GetAllDeletedBySearchQueryWithPaginationAsync(PageSize, searchQuery, pageNumber);
@@ -59,6 +64,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = $"{RoleNames.Admin}")]
         public async Task<IActionResult> PaginateDeletedUsers(int pageNumber = 1, string searchQuery = "")
         {
             var paginationUserModel = await _accountService.GetAllDeletedBySearchQueryWithPaginationAsync(PageSize, searchQuery, pageNumber);
@@ -69,6 +75,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = $"{RoleNames.Admin}")]
         public async Task<IActionResult> RestoreCourse(Guid courseId)
         {
             await _courseService.RestoreAsync(courseId);
@@ -76,6 +83,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = $"{RoleNames.Admin}")]
         public async Task<IActionResult> DeleteCoursePermanently(Guid courseId)
         {
             await _courseService.HardDeleteAsync(courseId);
@@ -83,6 +91,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = $"{RoleNames.Admin}")]
         public async Task<IActionResult> RestoreExam(Guid examId)
         {
             await _examService.RestoreAsync(examId);
@@ -90,6 +99,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = $"{RoleNames.Admin}")]
         public async Task<IActionResult> DeleteExamPermanently(Guid examId)
         {
             await _examService.HardDeleteAsync(examId);
@@ -97,6 +107,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = $"{RoleNames.Admin}")]
         public async Task<IActionResult> RestoreUser(string userId)
         {
             await _accountService.RestoreAsync(userId);
@@ -104,6 +115,7 @@ namespace Presentation_Layer.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = $"{RoleNames.Admin}")]
         public async Task<IActionResult> DeleteUserPermanently(string userId)
         {
             RemoveUserPhoto(userId);
