@@ -28,7 +28,6 @@ namespace Presentation_Layer.Controllers
             {
                 var userModel = mapper.Map<UserModel>(model);
                 var result = await accountService.CreateAsync(userModel, model.Password);
-
                 if (result.Succeeded)
                 {
                     var createdUser = await accountService.GetUserByEmailAsync(model.Email);
@@ -283,19 +282,25 @@ namespace Presentation_Layer.Controllers
         public async Task<IActionResult> ConfirmEmail(string userId, string code)
         {
             var result = await accountService.ConfirmEmailAsync(userId, code);
+            var isUserSignedIn = signInManager.IsSignedIn(User);
             if (result.Succeeded)
             {
                 TempData["SuccessNotification"] = "Email confirmed successfully";
-                return RedirectToAction("Details");
-            }
+                if (isUserSignedIn)
+                {
+                    return RedirectToAction("Details");
+                }
 
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError("", error.Description);
+                return RedirectToAction("Index", "Home");
             }
 
             TempData["ErrorNotification"] = "Email confirmation failed";
-            return RedirectToAction("Details");
+            if (isUserSignedIn)
+            {
+                return RedirectToAction("Details");
+            }
+
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
@@ -382,7 +387,7 @@ namespace Presentation_Layer.Controllers
 
         private async Task SendConfirmationEmailAsync(UserModel userEntity)
         {
-            var confirmationToken = await accountService.GenerateEmailConfirmationTokenAsync(userEntity);
+            var confirmationToken = await accountService.GenerateEmailConfirmationTokenAsync(userEntity.Id);
             var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = userEntity.Id, code = confirmationToken }, protocol: HttpContext.Request.Scheme);
             await accountService.SendConfirmationEmailAsync(userEntity.Email, callbackUrl);
         }

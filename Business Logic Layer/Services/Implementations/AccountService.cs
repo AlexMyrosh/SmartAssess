@@ -7,7 +7,6 @@ using Data_Access_Layer.Models;
 using Data_Access_Layer.Roles;
 using Data_Access_Layer.UnitOfWork.Interfaces;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace Business_Logic_Layer.Services.Implementations
 {
@@ -95,9 +94,9 @@ namespace Business_Logic_Layer.Services.Implementations
             return code;
         }
 
-        public async Task<string> GenerateEmailConfirmationTokenAsync(UserModel user)
+        public async Task<string> GenerateEmailConfirmationTokenAsync(string userId)
         {
-            var userEntity = mapper.Map<UserEntity>(user);
+            var userEntity = await userManager.FindByIdAsync(userId);
             var code = await userManager.GenerateEmailConfirmationTokenAsync(userEntity);
             return code;
         }

@@ -1,5 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Home";
+    var successNotification = TempData["SuccessNotification"] as string;
+    var errorNotification = TempData["ErrorNotification"] as string;
 }
 
 <div class="text-center" style="margin-top: 16%">
@@ -7,5 +9,38 @@
     @if (!User.Identity.IsAuthenticated)
     {
         <h3>Sign up to gain access to full range of features.</h3>
+    }
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    @if (!string.IsNullOrEmpty(successNotification))
+    {
+        <div class="toast bg-success text-white show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-body">
+                <div class="d-flex gap-4">
+                    <span><i class="fa fa-check-circle fa-lg"></i></span>
+                    <div class="d-flex flex-grow-1 align-items-center">
+                        <span class="fw-semibold">@successNotification</span>
+                        <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(errorNotification))
+    {
+        <div class="toast bg-danger text-white show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-body">
+                <div class="d-flex gap-4">
+                    <span><i class="fa fa-exclamation-circle fa-lg"></i></span>
+                    <div class="d-flex flex-grow-1 align-items-center">
+                        <span class="fw-semibold">@errorNotification</span>
+                        <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
     }
 </div>

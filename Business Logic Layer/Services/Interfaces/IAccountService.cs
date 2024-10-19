@@ -30,7 +30,7 @@ namespace Business_Logic_Layer.Services.Interfaces
 
         Task<bool> IsUserExistByEmailAsync(string email);
 
-        Task<string> GenerateEmailConfirmationTokenAsync(UserModel user);
+        Task<string> GenerateEmailConfirmationTokenAsync(string userId);
 
         Task<IdentityResult> ConfirmEmailAsync(string userId, string code);
 
