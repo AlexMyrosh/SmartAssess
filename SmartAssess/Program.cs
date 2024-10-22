@@ -15,6 +15,7 @@ using Presentation_Layer.AutoMapperProfiles;
 using Presentation_Layer.Extensions;
 using FluentValidation.AspNetCore;
 using Business_Logic_Layer.Models;
+using Presentation_Layer.Filters;
 using Presentation_Layer.FluentValidator.Account;
 using Serilog.Sinks.MSSqlServer;
 using Serilog;
@@ -141,7 +142,7 @@ namespace Presentation_Layer
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            //services.AddScoped<ErrorHandlingFilter>();
+            services.AddScoped<ErrorHandlingFilter>();
 
             services.AddControllersWithViews(options =>
                 {

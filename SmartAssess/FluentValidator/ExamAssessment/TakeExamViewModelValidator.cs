@@ -8,7 +8,7 @@ namespace Presentation_Layer.FluentValidator.ExamAssessment
         public TakeExamViewModelValidator()
         {
             RuleFor(x => x.AttemptId).NotEmpty().WithMessage("Attempt Id is null");
-            RuleFor(x => x.TakenTimeToComplete).NotEmpty().WithMessage("Taken Time To Complete is null");
+            //RuleFor(x => x.TakenTimeToComplete).NotEmpty().WithMessage("Taken Time To Complete is null");
         }
     }
 }
