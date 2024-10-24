@@ -9,7 +9,7 @@ namespace Data_Access_Layer.Repositories.Interfaces
 
         Task<List<ExamEntity>> GetAllWithDetailsAsync(bool includeDeleted = false);
 
-        Task<ExamEntity?> GetByIdAsync(Guid id);
+        Task<ExamEntity?> GetByIdAsync(Guid id, bool canBeDeleted = false);
 
         Task<ExamEntity?> GetByIdWithDetailsAsync(Guid id);
 

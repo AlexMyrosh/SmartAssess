@@ -116,10 +116,10 @@ namespace Data_Access_Layer.Repositories.Implementations
             return courseEntities;
         }
 
-        public async Task<CourseEntity?> GetByIdAsync(Guid id)
+        public async Task<CourseEntity?> GetByIdAsync(Guid id, bool canBeDeleted = false)
         {
             var courseEntity = await sqlContext.Courses
-                .Where(x=>!x.IsDeleted && x.Id == id)
+                .Where(x=>(x.IsDeleted == false || x.IsDeleted == canBeDeleted) && x.Id == id)
                 .FirstOrDefaultAsync();
 
             return courseEntity;

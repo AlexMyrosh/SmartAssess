@@ -48,7 +48,7 @@ namespace Data_Access_Layer.Models
 
         public string? DeletedById { get; set; }
 
-        public UserEntity? DeletedBy { get; set; }
+        public virtual UserEntity? DeletedBy { get; set; }
 
         [Required]
         public Guid CourseId { get; set; }

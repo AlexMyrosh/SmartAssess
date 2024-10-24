@@ -24,7 +24,7 @@ namespace Data_Access_Layer.Models
 
         public string? DeletedById { get; set; }
 
-        public UserEntity? DeletedBy { get; set; }
+        public virtual UserEntity? DeletedBy { get; set; }
 
         public virtual List<ExamEntity> Exams { get; set; }
 

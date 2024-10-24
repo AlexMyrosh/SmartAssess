@@ -282,7 +282,7 @@ namespace Business_Logic_Layer.Services.Implementations
 
         public async Task RestoreAsync(Guid courseId)
         {
-            var courseEntity = await unitOfWork.CourseRepository.GetByIdAsync(courseId);
+            var courseEntity = await unitOfWork.CourseRepository.GetByIdAsync(courseId, true);
             if (courseEntity is not null)
             {
                 courseEntity.IsDeleted = false;

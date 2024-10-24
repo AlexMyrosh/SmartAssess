@@ -43,7 +43,7 @@ namespace Business_Logic_Layer.Services.Implementations
 
         public async Task RestoreAsync(Guid examId)
         {
-            var examEntity = await unitOfWork.ExamRepository.GetByIdAsync(examId);
+            var examEntity = await unitOfWork.ExamRepository.GetByIdAsync(examId, true);
             if (examEntity is not null)
             {
                 examEntity.IsDeleted = false;

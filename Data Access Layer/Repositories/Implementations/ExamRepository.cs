@@ -34,10 +34,10 @@ namespace Data_Access_Layer.Repositories.Implementations
             return examEntities;
         }
 
-        public async Task<ExamEntity?> GetByIdAsync(Guid id)
+        public async Task<ExamEntity?> GetByIdAsync(Guid id, bool canBeDeleted = false)
         {
             var examEntity = await sqlContext.Exams
-                .Where(x => !x.IsDeleted && x.Id == id)
+                .Where(x => (x.IsDeleted == false || x.IsDeleted == canBeDeleted) && x.Id == id)
                 .FirstOrDefaultAsync();
 
             return examEntity;
