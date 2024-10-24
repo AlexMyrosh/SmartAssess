@@ -316,3 +316,9 @@ html {
     background-color: #007bff;
     border-color: #007bff;
 }
+
+pre {
+    white-space: pre-line;
+    font-family: Montserrat;
+    font-size: 16px;
+}

@@ -8,7 +8,6 @@ using Presentation_Layer.ViewModels.ExamAssessment;
 
 namespace Presentation_Layer.Controllers
 {
-    [Authorize]
     public class ExamAssessmentController(
         ICourseService courseService,
         IUserExamPassService userExamPassService,
@@ -31,6 +30,7 @@ namespace Presentation_Layer.Controllers
         {
             var examPassModel = await userExamPassService.GetByIdWithDetailsAsync(id);
             var viewModel = mapper.Map<TakenExamDetailsViewModel>(examPassModel);
+            viewModel.GeneralFeedback = viewModel.GeneralFeedback.Trim();
             return View(viewModel);
         }
 
@@ -92,7 +92,7 @@ namespace Presentation_Layer.Controllers
         [HttpPost]
         [Authorize(Roles = $"{RoleNames.Teacher},{RoleNames.Admin}")]
         public async Task AiEvaluation(Guid userExamAttemptId)
-        {
+        { 
             await openAiService.ExamEvaluationAsync(userExamAttemptId);
         }
     }

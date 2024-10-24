@@ -42,13 +42,9 @@ namespace Presentation_Layer
 
             await app.InitializeWebApplicationAsync();
 
-            // Configure the HTTP request pipeline.
-            if (!app.Environment.IsDevelopment())
-            {
-                app.UseHsts();
-                app.UseStatusCodePagesWithReExecute("/Error/{0}");
-            }
-
+            //app.UseHsts();
+            //app.UseStatusCodePagesWithReExecute("/Error/{0}");
+            app.UseDeveloperExceptionPage();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();

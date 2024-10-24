@@ -48,6 +48,13 @@ namespace Business_Logic_Layer.Services.Implementations
             return userModel;
         }
 
+        public async Task<UserModel?> GetUserByUsernameAsync(string username)
+        {
+            var userEntity = await unitOfWork.UserRepository.GetByUsernameAsync(username);
+            var userModel = mapper.Map<UserModel>(userEntity);
+            return userModel;
+        }
+
         public async Task<IdentityResult?> UpdateAsync(UserModel user)
         {
             var userFromDb = await unitOfWork.UserRepository.GetByIdAsync(user.Id);

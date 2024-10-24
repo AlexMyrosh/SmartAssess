@@ -24,7 +24,7 @@ public class ListCourseModelsToMyPassedExamsViewModelConverter : ITypeConverter<
 
             foreach (var exam in course.Exams)
             {
-                if (exam.UserExamAttempts.Count == 0)
+                if (exam.UserExamAttempts.Count(x=>x.Status == ExamAttemptStatusModel.Completed) == 0)
                 {
                     continue;
                 }

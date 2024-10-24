@@ -1,4 +1,5 @@
-﻿@model Presentation_Layer.ViewModels.ExamAssessment.TakenExamDetailsViewModel
+﻿@using System.Text.RegularExpressions
+@model Presentation_Layer.ViewModels.ExamAssessment.TakenExamDetailsViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -23,7 +24,7 @@
                     <div class="text-center">
                         <h1 class="display-4">Exam description</h1>
                     </div>
-                    <pre style="white-space: pre-line; font-family: 'Montserrat'; font-size: 16px;">
+                    <pre>
                         @Model.ExamDescription
                     </pre>
                     <div class="container mt-5">
@@ -138,7 +139,10 @@
                         <div class="text-center">
                             <h1 class="display-4">Overall exam feedback</h1>
                         </div>
-                        <p>@Model.GeneralFeedback</p>
+
+                        <pre>
+                            @Html.Raw(Regex.Replace(Model.GeneralFeedback, @"\*\*(.*?)\*\*", "<strong>$1</strong>"))
+                        </pre>
                     </div>
                 }
 
@@ -159,7 +163,7 @@
                                 }
                                 else
                                 {
-                                    <p class="card-text text-center">@Model.QuestionAnswers[i].AnswerText</p>
+                                    <pre>@Model.QuestionAnswers[i].AnswerText</pre>
                                 }
                                 
                                 @if (Model.IsExamAssessed)
@@ -170,7 +174,10 @@
                                 @if (!string.IsNullOrWhiteSpace(Model.QuestionAnswers[i].QuestionAnswerFeedback))
                                 {
                                     <h5 class="card-title">Feedback</h5>
-                                    <p class="card-text">@Model.QuestionAnswers[i].QuestionAnswerFeedback</p>
+                                    <pre>
+                                        @Html.Raw(Regex.Replace(Model.QuestionAnswers[i].QuestionAnswerFeedback, @"\*\*(.*?)\*\*", "<strong>$1</strong>"))
+                                    </pre>
+
                                 }
                             </div>
                         </div>
@@ -203,7 +210,6 @@
     });
 
     function showQuestion(currentPage) {
-        debugger;
         let allPageItems = document.querySelectorAll('#pagination-nav .page-item');
         let allQuestions = document.querySelectorAll(".question");
 

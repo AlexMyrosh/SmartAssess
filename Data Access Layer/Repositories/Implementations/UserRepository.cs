@@ -26,6 +26,15 @@ namespace Data_Access_Layer.Repositories.Implementations
             return userEntity;
         }
 
+        public async Task<UserEntity?> GetByUsernameAsync(string username)
+        {
+            var userEntity = await sqlContext.Users
+                .Where(x => !x.IsDeleted && x.UserName.ToLower() == username.ToLower())
+                .FirstOrDefaultAsync();
+
+            return userEntity;
+        }
+
         public async Task<UserEntity?> GetByIdWithoutTrackingAsync(string id)
         {
             var userEntity = await sqlContext.Users

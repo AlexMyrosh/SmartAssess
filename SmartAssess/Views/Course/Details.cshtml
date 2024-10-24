@@ -222,13 +222,13 @@
                                 <div class="card-footer text-muted">
                                     @if (User.IsInRole(RoleNames.Student))
                                     {
-                                        @if (Model.Exams[i].UserAttemptCount >= Model.Exams[i].MaxAttemptsAllowed)
-                                        {
-                                            <button class="btn btn-success disabled">Start attempt</button>
-                                        }
-                                        else if (Model.Exams[i].StartedAttemptId != null)
+                                        @if (Model.Exams[i].StartedAttemptId != null)
                                         {
                                             @Html.ActionLink("Continue attempt", "TakeExam", "ExamAssessment", new { examId = Model.Exams[i].Id }, new { @class = "btn btn-success" })
+                                        }
+                                        else if (Model.Exams[i].UserAttemptCount >= Model.Exams[i].MaxAttemptsAllowed)
+                                        {
+                                            <button class="btn btn-success disabled">Start attempt</button>
                                         }
                                         else
                                         {
@@ -340,6 +340,7 @@
             });
 
             $('#courseLongDescriptionSaveButton').on('click', function () {
+                debugger;
                 var newLongDescription = $('#courseLongDescriptionEdit').val().trim();;
                 $.ajax({
                     url: '@Url.Action("UpdateLongDescription", "Course")',
@@ -352,12 +353,9 @@
                             $('#editCourseDescriptionButton').show();
                             $('#courseLongDescriptionSaveButton').hide();
                             $('#courseLongDescriptionCancelButton').hide();
-                        } else {
-                            alert('Failed to update long description: ' + response.message);
+                        }else{
+                            alert("Error");
                         }
-                    },
-                    error: function () {
-                        alert('Error updating long description.');
                     }
                 });
             });

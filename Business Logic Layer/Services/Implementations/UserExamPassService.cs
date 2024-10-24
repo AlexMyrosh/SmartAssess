@@ -164,7 +164,7 @@ namespace Business_Logic_Layer.Services.Implementations
             }
 
             model = _mapper.Map<UserExamAttemptModel>(userAttempt);
-            model.Exam.UserAttemptCount = model.Exam.UserExamAttempts.Count(x => x.User.Id == userId);
+            model.Exam.UserAttemptCount = model.Exam.UserExamAttempts.Count(x => x.User?.Id == userId);
             return model;
         }
 

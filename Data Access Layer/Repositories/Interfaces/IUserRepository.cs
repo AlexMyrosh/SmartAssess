@@ -9,6 +9,8 @@ namespace Data_Access_Layer.Repositories.Interfaces
 
         Task<UserEntity?> GetByEmailAsync(string email);
 
+        Task<UserEntity?> GetByUsernameAsync(string username);
+
         Task<UserEntity?> GetByIdWithDetailsAsync(string id, bool canBeDeleted = false);
 
         Task<UserEntity?> GetByIdWithoutTrackingAsync(string id);

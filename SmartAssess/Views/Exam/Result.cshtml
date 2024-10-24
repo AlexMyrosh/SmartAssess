@@ -236,11 +236,11 @@
                 type: 'POST',
                 data: { userExamAttemptId: userExamAttemptId }, // Pass the ID to the controller
                 success: function (response) {
-                    alert("AI evaluation completed");
-                },
-                error: function (error) {
-                    // Handle error response
-                    alert("Error during AI evaluation");
+                    var toastEl = $('#testToast');
+                    var toastMessage = $('#testToastMessage');
+                    toastMessage.text(`AI evaluation completed`);
+                    var toast = new bootstrap.Toast(toastEl);
+                    toast.show();
                 }
             });
 

@@ -26,6 +26,34 @@
     }
 </div>
 
+<!-- Modal For Role Update -->
+<div class="modal fade" id="roleUpdateModalWindow" tabindex="-1" aria-labelledby="roleUpdateModalWindowLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <form id="roleUpdateForm" asp-action="UpdateUserRole" method="post">
+                <input type="hidden" name="UserId" />
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="roleUpdateModalWindowLabel">Update user role</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @foreach (var role in new[] { RoleNames.Student, RoleNames.Teacher, RoleNames.Admin })
+                    {
+                        <div>
+                            <input type="radio" id="@role" name="SelectedRole" value="@role" />
+                            <label for="@role">@role</label>
+                        </div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @section Scripts{
     <script>
         function filterUsers() {
@@ -48,9 +76,6 @@
                     if (paginationHtml !== undefined) {
                         $('#usersPaginationContainer').html(paginationHtml);
                     }
-                },
-                error: function () {
-                    alert('Error loading users.');
                 }
             });
         }
@@ -75,9 +100,6 @@
                     if (paginationHtml !== undefined) {
                         $('#usersPaginationContainer').html(paginationHtml);
                     }
-                },
-                error: function () {
-                    alert('Error loading users.');
                 }
             });
         });

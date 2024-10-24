@@ -62,6 +62,13 @@ namespace Presentation_Layer.Controllers
                 var result = await signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, false);
                 if (result.Succeeded)
                 {
+                    var userEntity = await accountService.GetUserByUsernameAsync(model.UserName);
+                    if (userEntity == null)
+                    {
+                        ModelState.AddModelError("", "User is not available");
+                        return View(model);
+                    }
+
                     return RedirectToAction("Index", "Home");
                 }
 

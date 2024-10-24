@@ -229,45 +229,48 @@
                         <button id="cancelButton" style="display:none;" class="btn btn-warning">Cancel</button>
                     }
                 </div>
-                <div class="mb-5 wow fadeIn" style="height: 60%;">
-                    <div class="text-start mb-1-6 wow fadeIn">
-                        <h2 class="mb-0 text-primary">#Courses</h2>
-                    </div>
-                    <div class="row mt-n4" style="width: 98%; height: 100%;">
-                        @for(var i = 0; i < Model.Courses.Count; i++)
-                        {
-                            <div class="col-sm-6 col-xl-4 mt-4">
-                                <div class="card text-center border-0 rounded-3">
-                                    <div class="card-body">
-                                        <i class="ti-bookmark-alt icon-box medium rounded-3 mb-4"></i>
-                                        <h3 class="h5 mb-3">@Html.ActionLink(Model.Courses[i].Name, "Details", "Course", new { id = Model.Courses[i].Id }, new { style = "text-decoration: none; color: black;" })</h3>
-                                    </div>
-                                </div>
-                            </div>
-
-                            if (Model.Courses.Count > 6 && i == 4 && !Model.IsInReadonlyMode)
+                @if (!User.IsInRole(RoleNames.Admin))
+                {
+                    <div class="mb-5 wow fadeIn" style="height: 60%;">
+                        <div class="text-start mb-1-6 wow fadeIn">
+                            <h2 class="mb-0 text-primary">#Courses</h2>
+                        </div>
+                        <div class="row mt-n4" style="width: 98%; height: 100%;">
+                            @for(var i = 0; i < Model.Courses.Count; i++)
                             {
                                 <div class="col-sm-6 col-xl-4 mt-4">
-                                    <div class="card text-center border-0 rounded-3" style="height: 100%;">
-                                        <div class="card-body d-flex justify-content-center align-items-center" style="height: 100%;">
-                                            <a asp-controller="Course" asp-action="Applied">
-                                                <h3 class="h5 mb-3">See all courses...</h3>
-                                            </a>
+                                    <div class="card text-center border-0 rounded-3">
+                                        <div class="card-body">
+                                            <i class="ti-bookmark-alt icon-box medium rounded-3 mb-4"></i>
+                                            <h3 class="h5 mb-3">@Html.ActionLink(Model.Courses[i].Name, "Details", "Course", new { id = Model.Courses[i].Id }, new { style = "text-decoration: none; color: black;" })</h3>
                                         </div>
                                     </div>
                                 </div>
 
-                                break;
+                                if (Model.Courses.Count > 6 && i == 4 && !Model.IsInReadonlyMode)
+                                {
+                                    <div class="col-sm-6 col-xl-4 mt-4">
+                                        <div class="card text-center border-0 rounded-3" style="height: 100%;">
+                                            <div class="card-body d-flex justify-content-center align-items-center" style="height: 100%;">
+                                                <a asp-controller="Course" asp-action="Applied">
+                                                    <h3 class="h5 mb-3">See all courses...</h3>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    break;
+                                }
                             }
-                        }
-                        @if (Model.Courses.Count == 0)
-                        {
-                            <h1 class="display-4" style="text-align: center; display: flex;justify-content: center;align-items: center;height: 100%;">
-                                No applied courses
-                            </h1>
-                        }
+                            @if (Model.Courses.Count == 0)
+                            {
+                                <h1 class="display-4" style="text-align: center; display: flex;justify-content: center;align-items: center;height: 100%;">
+                                    No applied courses
+                                </h1>
+                            }
+                        </div>
                     </div>
-                </div>
+                }
             </div>
         </div>
     </div>
@@ -510,7 +513,6 @@
     @* Update user email logic *@
     <script>
             $('#updateEmailButton').on('click', function () {
-                debugger;
                 var newEmailValue = $('#newEmailField').val();
 
                 // Validate new email
@@ -520,7 +522,6 @@
                     data: { newEmail: newEmailValue },
                     success: function (response) {
                         if (response.success) {
-                            debugger;
                             $('#closeEmailUpdateButton').click();
                             $('#closeErrorsforEmailChangeButton').click();
                             $('#newEmailField').val('');
@@ -537,13 +538,11 @@
                             });
                         }
                         else{
-                            debugger;
                             $('#emailChangeErrorContainer').show();
                             $('#emailChangeErrorText').text(response.message);
                         }
                     },
                     error: function (error) {
-                        debugger;
                         $('#emailChangeErrorContainer').show();
                         $('#emailChangeErrorText').text(response.message);
                     }
@@ -621,9 +620,6 @@
                             }));
                         });
                     }
-                },
-                error: function () {
-                    alert('Error retrieving countries. Please try again later.');
                 }
             });
         });
@@ -651,9 +647,6 @@
                             }));
                         });
                     }
-                },
-                error: function () {
-                    alert('Error retrieving cities. Please try again later.');
                 }
             });
         }
@@ -699,7 +692,6 @@
                     data: { userId: '@Model.Id', country: newCountryName, city: newCityName, educationalInstitution: newEducationalInstitutionName },
                     success: function (response) {
                         if (response.success) {
-                            debugger;
                             if (!newCityName || newCityName.trim() === "") {
                                 newCityName = "City not specified";  // Assign a new value
                             }
@@ -718,12 +710,7 @@
                             $('#userInfoContainer').show();
                             $('#editUserInfoButton').show();
                             $('#userInfoEditContainer').hide();
-                        } else {
-                            alert('Failed to update first and last name: ' + response.message);
                         }
-                    },
-                    error: function () {
-                        alert('Error updating description.');
                     }
                 });
             });
@@ -786,12 +773,7 @@
                             $('#editNameButton').show();
                             $('#saveNameButton').hide();
                             $('#cancelNameButton').hide();
-                        } else {
-                            alert('Failed to update first and last name: ' + response.message);
                         }
-                    },
-                    error: function () {
-                        alert('Error updating description.');
                     }
                 });
             });
@@ -839,12 +821,7 @@
                             $('#editButton').show();
                             $('#saveButton').hide();
                             $('#cancelButton').hide();
-                        } else {
-                            alert('Failed to update description: ' + response.message);
                         }
-                    },
-                    error: function () {
-                        alert('Error updating description.');
                     }
                 });
             });

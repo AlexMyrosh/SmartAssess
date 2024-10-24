@@ -53,6 +53,11 @@ namespace Presentation_Layer.Controllers
                 return RedirectToAction("Details", "Course", new { id = examViewModel.CourseId });
             }
 
+            var errors = ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage).ToList();
+            TempData["Notification"] = string.Join("\n", errors);
+
             return View(examViewModel);
         }
 
@@ -84,6 +89,10 @@ namespace Presentation_Layer.Controllers
                 return RedirectToAction("Details", "Course", new { id = examViewModel.CourseId });
             }
 
+            var errors = ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage).ToList();
+            TempData["Notification"] = string.Join("\n", errors);
             return View(examViewModel);
         }
 

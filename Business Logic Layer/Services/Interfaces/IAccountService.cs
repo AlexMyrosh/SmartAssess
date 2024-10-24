@@ -10,6 +10,8 @@ namespace Business_Logic_Layer.Services.Interfaces
 
         Task<UserModel?> GetUserAsync(ClaimsPrincipal userPrincipal);
 
+        Task<UserModel?> GetUserByUsernameAsync(string username);
+
         Task<UserModel?> GetUserAsync(string id, bool canBeDeleted = false);
 
         Task<UserModel?> GetUserByEmailAsync(string email);
