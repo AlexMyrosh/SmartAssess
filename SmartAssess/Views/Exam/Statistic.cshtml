@@ -1,9 +1,9 @@
 ﻿@model Presentation_Layer.ViewModels.Exam.ExamStatisticViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "ExamStatistic";
-    // var orderedByGradeFromMaxToMin = Model.AssessedUserAttempts.OrderByDescending(x => x.TotalGrade).ToList();
-    // var orderedByGradeFromMinToMax = Model.AssessedUserAttempts.OrderBy(x => x.TotalGrade).ToList();
+    ViewData["Title"] = Localizer["ExamStatistic"];
 }
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -16,7 +16,7 @@
                     <img src="/images/banners/banner-5.jpg">
                     <div class="centered">
                         <h1 class="display-1" style="font-size: 6vw; font-weight: 400;">
-                            Exam statistic
+                            @Localizer["ExamStatistic"]
                         </h1>
                     </div>
                 </div>
@@ -27,8 +27,8 @@
                     <div class="col d-flex align-items-stretch">
                         <div class="card bg-c-blue order-card flex-fill">
                             <div class="card-body">
-                                <h2 class="m-b-20 text-center">Passed exams</h2>
-                                <h3 class="text-center"><span>@Model.ExamTakerCount students</span></h3>
+                                <h2 class="m-b-20 text-center">@Localizer["StudentsPassed"]</h2>
+                                <h3 class="text-center"><span>@Model.ExamTakerCount</span></h3>
                             </div>
                         </div>
                     </div>
@@ -36,7 +36,7 @@
                     <div class="col d-flex align-items-stretch">
                         <div class="card bg-c-pink order-card flex-fill">
                             <div class="card-body">
-                                <h2 class="m-b-20 text-center">Average time to complete</h2>
+                                <h2 class="m-b-20 text-center">@Localizer["AverageTimeToComplete"]</h2>
                                 @if (Model.IsExamTakenByStudents)
                                 {
                                     <h3 class="text-center">
@@ -54,7 +54,7 @@
                     <div class="col d-flex align-items-stretch">
                         <div class="card bg-c-purple order-card flex-fill">
                             <div class="card-body">
-                                <h2 class="m-b-20 text-center">Average grade</h2>
+                                <h2 class="m-b-20 text-center">@Localizer["AverageGrade"]</h2>
                                 @if (Model.IsExamTakenByStudents)
                                 {
                                     <h3 class="text-center"><span>@Math.Round(Model.ExamTakerAverageGrade, 2)</span></h3>
@@ -75,7 +75,7 @@
                             <div class="card ccard radius-t-0 h-100">
                                 <div class="card-header pb-3 brc-secondary-l3">
                                     <h5 class="card-title mb-2 mb-md-0 text-dark-m3">
-                                        Top 5 students with best grades
+                                        @Localizer["TopStudentsWithBestGrades"]
                                     </h5>
                                 </div>
                                 @for (var i = 0; i < Model.AssessedUserAttemptsFromMaxToMinGrade.Count; i++)
@@ -103,7 +103,7 @@
 
                                 <div class="card-header pb-3 brc-secondary-l3">
                                     <h5 class="card-title mb-2 mb-md-0 text-dark-m3">
-                                        Top 5 students with worse grades
+                                        @Localizer["TopStudentsWithWorseGrades"]
                                     </h5>
                                 </div>
 
@@ -133,7 +133,7 @@
                 {
                     <div class="text-center mb-5">
                         <h1 class="display-1">
-                            There is no assessed exams yet
+                            @Localizer["ThereIsNoAssessedExamsYet"]
                         </h1>
                     </div>
                 }
@@ -142,18 +142,18 @@
                 {
                     <div class="row">
                         <div class="col-md-6 d-flex flex-column align-items-center justify-content-center  mb-5 mt-5" style="height: 50vh;">
-                            <h5 class="text-center">Passed vs Not Passed</h5>
+                            <h5 class="text-center">@Localizer["PassedNotPassed"]</h5>
                             <canvas id="passedNotPasssedDoughnutChart"></canvas>
                         </div>
                         <div class="col-md-6 d-flex flex-column align-items-center justify-content-center  mb-5 mt-5" style="height: 50vh;">
-                            <h5 class="text-center">Checked Manually vs With AI</h5>
+                            <h5 class="text-center">@Localizer["CheckedManuallyWithAI"]</h5>
                             <canvas id="checkedManuallyOrWithAIDoughnutChart"></canvas>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 justify-content-center d-block mx-auto mb-5">
-                            <h5 class="text-center">Grade Distribution of Students</h5>
+                            <h5 class="text-center">@Localizer["GradeDistributionOfStudents"]</h5>
                             <canvas id="gradeWithNumberOfStudentsCategoriesChart"></canvas>
                         </div>
                     </div>
@@ -171,7 +171,7 @@
         var myChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: ['Passed', 'Failed', 'With no assessed attempts'],
+                labels: ['@Localizer["Passed"]', '@Localizer["Failed"]', '@Localizer["WithNoAssessedAttempts"]'],
                 datasets: [{
                     data: [
                         @Model.PassedExamNumberOfUsers,
@@ -207,7 +207,7 @@
         var myChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: ['Checked by AI', 'Checked manually', 'Not assessed'],
+                labels: ['@Localizer["CheckedByAI"]', '@Localizer["CheckedManually"]', '@Localizer["NotAssessed"]'],
                 datasets: [{
                     data: [
                         @Model.ExamAssessedByAiNumberOfUserAttempts,
@@ -215,14 +215,14 @@
                         @Model.WaitingForAssessmentNumberOfUserAttempts
                         ],
                     backgroundColor: [
-                        'rgba(76, 175, 80, 0.2)',  // Checked by AI (Light Green)
-                        'rgba(33, 150, 243, 0.2)',  // Checked manually (Light Blue)
-                        'rgba(128, 128, 128, 0.2)'     // Not checked (Light Red)
+                        'rgba(76, 175, 80, 0.2)',
+                        'rgba(33, 150, 243, 0.2)',
+                        'rgba(128, 128, 128, 0.2)'
                     ],
                     borderColor: [
-                        'rgba(76, 175, 80, 1)',  // Checked by AI (Green)
-                        'rgba(33, 150, 243, 1)',  // Checked manually (Blue)
-                        'rgba(128, 128, 128, 1)'     // Not checked (Red)
+                        'rgba(76, 175, 80, 1)',
+                        'rgba(33, 150, 243, 1)',
+                        'rgba(128, 128, 128, 1)'
                     ],
                     borderWidth: 1
                 }]
@@ -255,14 +255,14 @@
                     x: {
                         title: {
                             display: true,
-                            text: 'Grade'
+                            text: '@Localizer["Grade"]'
                         },
                         beginAtZero: true
                     },
                     y: {
                         title: {
                             display: true,
-                            text: 'Number of Students'
+                            text: '@Localizer["NumberOfStudents"]'
                         },
                         beginAtZero: true,
                         ticks: {

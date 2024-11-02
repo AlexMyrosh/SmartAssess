@@ -1,7 +1,9 @@
 ﻿@model Presentation_Layer.ViewModels.Account.RegisterViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = Localizer["Register"];
     var outerRadius = 24;
     var innerRadius = outerRadius - 16;
     var outerRadiusResult = $"{outerRadius}px;";
@@ -11,48 +13,47 @@
 <div class="d-flex justify-content-center align-items-center mb-3" style=" min-height: 84vh;">
     <div class="card text-center" style="width: 40rem; height: auto; border-radius: @outerRadiusResult">
         <div class="card-header">
-            <h1 class="display-5">Register</h1>
+            <h1 class="display-5">@Localizer["Register"]</h1>
         </div>
         <div class="card-body">
             <form method="post">
-
                 <div class="form-floating mb-3">
                     <input asp-for="FirstName" type="text" class="form-control form-control-lg" placeholder="Username" style="border-radius: @innerRadiusResult"/>
-                    <label asp-for="FirstName" class="form-label"></label>
+                    <label asp-for="FirstName" class="form-label">@Localizer["FirstName"]</label>
                 </div>
 
                 <div class="form-floating mb-3">
                     <input asp-for="LastName" type="text" class="form-control form-control-lg" placeholder="Password" style="border-radius: @innerRadiusResult"/>
-                    <label asp-for="LastName" class="form-label"></label>
+                    <label asp-for="LastName" class="form-label">@Localizer["LastName"]</label>
                 </div>
 
                 <div class="form-floating mb-3">
                     <input asp-for="UserName" type="text" class="form-control form-control-lg" placeholder="Username" style="border-radius: @innerRadiusResult"/>
-                    <label asp-for="UserName" class="form-label"></label>
+                    <label asp-for="UserName" class="form-label">@Localizer["UserName"]</label>
                 </div>
 
                 <div class="form-floating mb-3">
                     <input asp-for="Email" type="email" class="form-control form-control-lg" placeholder="Password" style="border-radius: @innerRadiusResult"/>
-                    <label asp-for="Email" class="form-label"></label>
+                    <label asp-for="Email" class="form-label">@Localizer["Email"]</label>
                 </div>
 
                 <div class="form-floating mb-3">
                     <input asp-for="Password" type="password" class="form-control form-control-lg" placeholder="Username" style="border-radius: @innerRadiusResult"/>
-                    <label asp-for="Password" class="form-label"></label>
+                    <label asp-for="Password" class="form-label">@Localizer["Password"]</label>
                 </div>
 
                 <div class="form-floating mb-3">
                     <input asp-for="ConfirmPassword" type="password" class="form-control form-control-lg" placeholder="Password" style="border-radius: @innerRadiusResult"/>
-                    <label asp-for="ConfirmPassword" class="form-label"></label>
+                    <label asp-for="ConfirmPassword" class="form-label">@Localizer["ConfirmPassword"]</label>
                 </div>
 
                 <div class="text-center">
-                    <button type="submit" class="btn btn-primary btn-lg btn-block" style="width: -webkit-fill-available; border-radius: @innerRadiusResult">Register</button>
+                    <button type="submit" class="btn btn-primary btn-lg btn-block" style="width: -webkit-fill-available; border-radius: @innerRadiusResult">@Localizer["RegisterButton"]</button>
                 </div>
 
                 <div class="col text-center">
-                    <span>Already have an account?</span>
-                    @Html.ActionLink("Login", "Login", "Account", null, new { @class = "text-decoration-none" })
+                    <span>@Localizer["AlreadyHaveAnAccount"]</span>
+                    @Html.ActionLink(@Localizer["Login"].Value, "Login", "Account", null, new { @class = "text-decoration-none" })
                 </div>
 
                 @if (!ViewData.ModelState.IsValid)
@@ -60,7 +61,7 @@
                     <br id="spaceBeforeErrorModal"/>
                     <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show" style="border-radius: @innerRadiusResult margin-bottom: 0">
                         <i class="bi-exclamation-octagon-fill" style="font-size: 1.5em; line-height: 1;"></i>
-                        <strong class="mx-2">Error!</strong> @string.Join(", ", ViewData.ModelState.SelectMany(ms => ms.Value.Errors).Select(e => e.ErrorMessage))
+                        <strong class="mx-2">@Localizer["Error"]</strong> @string.Join(", ", ViewData.ModelState.SelectMany(ms => ms.Value.Errors).Select(e => e.ErrorMessage))
                         <button id="closeErrorsButton" type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 }

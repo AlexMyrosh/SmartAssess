@@ -1,8 +1,10 @@
 ﻿@using System.Text.RegularExpressions
 @model Presentation_Layer.ViewModels.ExamAssessment.TakenExamDetailsViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = Localizer["PassedExamDetails"];
 }
 
 <div class="container-fluid" style="padding: 0;">
@@ -22,7 +24,7 @@
 
                 <div class="container" style="margin-top: 30px;">
                     <div class="text-center">
-                        <h1 class="display-4">Exam description</h1>
+                        <h1 class="display-4">@Localizer["ExamDescription"]</h1>
                     </div>
                     <pre>
                         @Model.ExamDescription
@@ -35,8 +37,8 @@
                                     <div class="col d-flex align-items-stretch mb-3">
                                         <div class="card bg-c-blue order-card flex-fill">
                                             <div class="card-body">
-                                                <h2 class="m-b-20 text-center">Exam grade</h2>
-                                                <h3 class="text-center"><span>@Model.TotalGrade of @Model.MaxPossibleExamGrade</span></h3>
+                                                <h2 class="m-b-20 text-center">@Localizer["ExamGrade"]</h2>
+                                                <h3 class="text-center"><span>@Model.TotalGrade @Localizer["Of"] @Model.MaxPossibleExamGrade</span></h3>
                                             </div>
                                         </div>
                                     </div>
@@ -46,7 +48,7 @@
                                     <div class="col d-flex align-items-stretch mb-3">
                                         <div class="card bg-c-blue order-card flex-fill">
                                             <div class="card-body">
-                                                <h2 class="m-b-20 text-center">Max possible grade</h2>
+                                                <h2 class="m-b-20 text-center">@Localizer["MaxPossibleGrade"]</h2>
                                                 <h3 class="text-center"><span>@Model.MaxPossibleExamGrade</span></h3>
                                             </div>
                                         </div>
@@ -56,7 +58,7 @@
                                 <div class="col d-flex align-items-stretch mb-3">
                                     <div class="card bg-c-teal order-card flex-fill">
                                         <div class="card-body">
-                                            <h2 class="m-b-20 text-center">Time to complete</h2>
+                                            <h2 class="m-b-20 text-center">@Localizer["TakenTimeToComplete"]</h2>
                                             <h3 class="text-center"><span>@Model.TakenTimeToComplete.ToString(@"hh\:mm\:ss")</span></h3>
                                         </div>
                                     </div>
@@ -65,7 +67,7 @@
                                 <div class="col d-flex align-items-stretch mb-3">
                                     <div class="card bg-c-indigo order-card flex-fill">
                                         <div class="card-body">
-                                            <h2 class="m-b-20 text-center">Threshold score</h2>
+                                            <h2 class="m-b-20 text-center">@Localizer["ThresholdGrade"]</h2>
                                             <h3 class="text-center"><span>@Model.MinExamPassGrade</span></h3>
                                         </div>
                                     </div>
@@ -78,7 +80,7 @@
                                         <div class="col d-flex align-items-stretch mb-3">
                                             <div class="card bg-c-green order-card flex-fill">
                                                 <div class="card-body">
-                                                    <h2 class="m-b-20 text-center">PASSED</h2>
+                                                    <h2 class="m-b-20 text-center">@Localizer["Passed"]</h2>
                                                 </div>
                                             </div>
                                         </div>
@@ -88,7 +90,7 @@
                                         <div class="col d-flex align-items-stretch mb-3">
                                             <div class="card bg-c-red order-card flex-fill">
                                                 <div class="card-body">
-                                                    <h2 class="text-center">FAILED</h2>
+                                                    <h2 class="text-center">@Localizer["Failed"]</h2>
                                                 </div>
                                             </div>
                                         </div>
@@ -99,12 +101,11 @@
                                     <div class="col d-flex align-items-stretch mb-3">
                                         <div class="card bg-c-yellow order-card flex-fill">
                                             <div class="card-body">
-                                                <h2 class="text-center">Exam is not assessed yet</h2>
+                                                <h2 class="text-center">@Localizer["NotAssessed"]</h2>
                                             </div>
                                         </div>
                                     </div>
                                 }
-
 
                                 @if (Model.IsExamAssessed)
                                 {
@@ -113,7 +114,7 @@
                                         <div class="col d-flex align-items-stretch mb-3">
                                             <div class="card bg-c-purple order-card flex-fill">
                                                 <div class="card-body">
-                                                    <h2 class="m-b-20 text-center">Assessed by AI</h2>
+                                                    <h2 class="m-b-20 text-center">@Localizer["AssessedByAI"]</h2>
                                                 </div>
                                             </div>
                                         </div>
@@ -123,7 +124,7 @@
                                         <div class="col d-flex align-items-stretch mb-3">
                                             <div class="card bg-c-cyan order-card flex-fill">
                                                 <div class="card-body">
-                                                    <h2 class="m-b-20 text-center">Assessed manually</h2>
+                                                    <h2 class="m-b-20 text-center">@Localizer["AssessedManually"]</h2>
                                                 </div>
                                             </div>
                                         </div>
@@ -137,7 +138,7 @@
                 {
                     <div class="container">
                         <div class="text-center">
-                            <h1 class="display-4">Overall exam feedback</h1>
+                            <h1 class="display-4">@Localizer["OverallExamFeedback"]</h1>
                         </div>
 
                         <pre>
@@ -146,20 +147,20 @@
                     </div>
                 }
 
-                <div class="container" style="=margin-bottom: 30px;">
+                <div class="container" style="margin-bottom: 30px;">
                     <div class="text-center">
-                        <h1 class="display-4">Questions & Answers</h1>
+                        <h1 class="display-4">@Localizer["QuestionsAndAnswers"]</h1>
                     </div>
                     @for (var i = 0; i < Model.QuestionAnswers.Count; i++)
                     {
                         <div class="card mb-3 question" style="background-color: #f2f2f2; border-radius: 15px;">
                             <div class="card-body">
-                                <h5 class="card-title text-center">Question @(i + 1)</h5>
+                                <h5 class="card-title text-center">@Localizer["Question"] @(i + 1)</h5>
                                 <p class="card-text text-center">@Model.QuestionAnswers[i].QuestionText</p>
-                                <h5 class="card-title text-center">Answer</h5>
+                                <h5 class="card-title text-center">@Localizer["Answer"]</h5>
                                 @if (string.IsNullOrWhiteSpace(Model.QuestionAnswers[i].AnswerText))
                                 {
-                                    <p class="card-text text-center"><em>No answer provided...</em></p>
+                                    <p class="card-text text-center"><em>@Localizer["NoAnswerProvided"]</em></p>
                                 }
                                 else
                                 {
@@ -168,16 +169,15 @@
                                 
                                 @if (Model.IsExamAssessed)
                                 {
-                                    <p><strong>Grade:</strong> @Model.QuestionAnswers[i].Grade of @Model.QuestionAnswers[i].QuestionMaxGrade</p>
+                                    <p><strong>@Localizer["Grade"]:</strong> @Model.QuestionAnswers[i].Grade/@Model.QuestionAnswers[i].QuestionMaxGrade</p>
                                 }
 
                                 @if (!string.IsNullOrWhiteSpace(Model.QuestionAnswers[i].QuestionAnswerFeedback))
                                 {
-                                    <h5 class="card-title">Feedback</h5>
+                                    <h5 class="card-title">@Localizer["Feedback"]</h5>
                                     <pre>
                                         @Html.Raw(Regex.Replace(Model.QuestionAnswers[i].QuestionAnswerFeedback, @"\*\*(.*?)\*\*", "<strong>$1</strong>"))
                                     </pre>
-
                                 }
                             </div>
                         </div>

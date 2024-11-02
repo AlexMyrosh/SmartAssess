@@ -1,7 +1,9 @@
 ﻿@model Presentation_Layer.ViewModels.ExamAssessment.ExamManualEvaluationViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = Localizer["ManualEvaluation"];
 }
 
 <div class="container-fluid" style="padding: 0;">
@@ -25,7 +27,7 @@
                             <div class="col d-flex align-items-stretch">
                                 <div class="card bg-c-indigo order-card flex-fill">
                                     <div class="card-body">
-                                        <h2 class="m-b-20 text-center">Student name</h2>
+                                        <h2 class="m-b-20 text-center">@Localizer["StudentName"]</h2>
                                         <h3 class="text-center"><span>@Model.UserFirstName @Model.UserLastName</span></h3>
                                     </div>
                                 </div>
@@ -34,7 +36,7 @@
                             <div class="col d-flex align-items-stretch">
                                 <div class="card bg-c-indigo order-card flex-fill">
                                     <div class="card-body">
-                                        <h2 class="m-b-20 text-center">Total grade</h2>
+                                        <h2 class="m-b-20 text-center">@Localizer["TotalGrade"]</h2>
                                         <h3 class="text-center"><span><span id="totalGrade"></span></span></h3>
                                     </div>
                                 </div>
@@ -43,7 +45,7 @@
                             <div class="col d-flex align-items-stretch">
                                 <div class="card bg-c-indigo order-card flex-fill">
                                     <div class="card-body">
-                                        <h2 class="m-b-20 text-center">Result</h2>
+                                        <h2 class="m-b-20 text-center">@Localizer["Result"]</h2>
                                         <h3 class="text-center"><span><span id="examResult"></span></span></h3>
                                     </div>
                                 </div>
@@ -55,18 +57,18 @@
                 <form method="post" asp-action="ManualEvaluation">
                     <div class="container" style="=margin-bottom: 30px;">
                         <div class="text-center">
-                            <h1 class="display-4">Questions & Answers</h1>
+                            <h1 class="display-4">@Localizer["QuestionsAndAnswers"]</h1>
                         </div>
                         @for (var i = 0; i < Model.UserAnswers.Count; i++)
                         {
                             <div class="card mb-3 question" id="question-@i" style="background-color: #f2f2f2; border-radius: 15px;">
                                 <div class="card-body">
-                                    <h5 class="card-title">Question @(i + 1) of @Model.UserAnswers.Count</h5>
+                                    <h5 class="card-title">@Localizer["Question"] @(i + 1)/@Model.UserAnswers.Count</h5>
                                     <p class="card-text">@Model.UserAnswers[i].QuestionText</p>
-                                    <h5 class="card-title">Student's answer</h5>
+                                    <h5 class="card-title">@Localizer["StudentAnswer"]</h5>
                                     @if (string.IsNullOrWhiteSpace(Model.UserAnswers[i].AnswerText))
                                     {
-                                        <p class="card-text"><em>No answer provided...</em></p>
+                                        <p class="card-text"><em>@Localizer["NoAnswerProvided"]</em></p>
                                     }
                                     else
                                     {
@@ -75,13 +77,13 @@
 
                                     <p>
                                         <strong>
-                                            Grade (max grade - @Model.UserAnswers[i].QuestionMaxGrade):
+                                            @Localizer["Grade"] (@Localizer["MaxGrade"] - @Model.UserAnswers[i].QuestionMaxGrade):
                                         </strong>
                                         <input min="0" max="@Model.UserAnswers[i].QuestionMaxGrade" type="number" asp-for="@Model.UserAnswers[i].Grade" class="form-control grade" style="width: 80px;" />
                                     </p>
 
-                                    <h5 class="card-title">Feedback</h5>
-                                    <textarea rows="5" asp-for="@Model.UserAnswers[i].QuestionAnswerFeedback" class="form-control" placeholder="Write something about the student's' answer"></textarea>
+                                    <h5 class="card-title">@Localizer["Feedback"]</h5>
+                                    <textarea rows="5" asp-for="@Model.UserAnswers[i].QuestionAnswerFeedback" class="form-control" placeholder=@Localizer["WriteFeedback"]></textarea>
                                     @Html.HiddenFor(model => Model.UserAnswers[i].QuestionAnswerId)
                                 </div>
                             </div>
@@ -104,16 +106,16 @@
 
                         <div>
                             <div class="text-center">
-                                <h1 class="display-4">Overall exam feedback</h1>
+                                <h1 class="display-4">@Localizer["OverallExamFeedback"]</h1>
                             </div>
-                            @Html.TextAreaFor(model => model.GeneralFeedback, 10, 50, new { @class = "form-control", placeholder = "Write something about pros and cons of student's answers" })
+                            @Html.TextAreaFor(model => model.GeneralFeedback, 10, 50, new { @class = "form-control", placeholder = @Localizer["WriteOverallFeedback"].Value })
                         </div>
                     </div>
 
                     <div class="text-center mb-3 mt-3">
                         @Html.HiddenFor(model => model.ExamAttemptId)
                         <input type="hidden" name="ExamId" value="@Model.ExamId" />
-                        <input type="submit" value="Save" class="btn btn-success" style="border-radius: 50px; font-size: 20px;"/>
+                        <input type="submit" value="@Localizer["Save"]" class="btn btn-success" style="border-radius: 50px; font-size: 20px;" />
                     </div>
                 </form>
             </div>
@@ -130,7 +132,7 @@
         // Function to adjust input values
         function adjustInputValue(input) {
             var min = parseInt(input.getAttribute('min')) || 0; // Default minimum to 0 if not set
-            var max = parseInt(input.getAttribute('max')) || 100; // Default maximum to 100 if not set, you can change this
+            var max = parseInt(input.getAttribute('max'));
 
             // Force value to be within the min and max
             if (parseInt(input.value) < min) {
@@ -138,10 +140,10 @@
             } else if (parseInt(input.value) > max) {
                 input.value = max;
             }
-            }
+        }
 
-            // Add event listeners to each input
-            inputs.forEach(function(input) {
+        // Add event listeners to each input
+        inputs.forEach(function(input) {
             input.addEventListener('input', function() {
                 adjustInputValue(input);
             });
@@ -181,14 +183,14 @@
     <script>
         function calculateTotalGrade() {
             let totalGrade = 0;
-            let examResult = 'Failed';
+            let examResult = '@Localizer["Failed"]';
             $('.grade').each(function() {
                 let grade = $(this).val();
                 totalGrade += parseInt(grade, 10) || 0;
             });
 
             if (totalGrade >= @Model.ExamMinimumPassGrade) {
-                examResult = 'Passed';
+                examResult = '@Localizer["Passed"]';
             }
 
             $('#totalGrade').text(totalGrade);

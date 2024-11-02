@@ -1,0 +1,264 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Actions" xml:space="preserve">
+    <value>Дії</value>
+  </data>
+  <data name="AIEvaluationCompleted" xml:space="preserve">
+    <value>Оцінку через ШІ завершено</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Всі</value>
+  </data>
+  <data name="AllLowerCase" xml:space="preserve">
+    <value>всі</value>
+  </data>
+  <data name="AssessByAI" xml:space="preserve">
+    <value>Оцінити через ШІ</value>
+  </data>
+  <data name="AssessingByAI" xml:space="preserve">
+    <value>Оцінюється через ШІ</value>
+  </data>
+  <data name="AssessManually" xml:space="preserve">
+    <value>Оцінити вручну</value>
+  </data>
+  <data name="Attempt" xml:space="preserve">
+    <value>Спроба</value>
+  </data>
+  <data name="Default" xml:space="preserve">
+    <value>За замовчуванням</value>
+  </data>
+  <data name="ExamResult" xml:space="preserve">
+    <value>Результат іспиту</value>
+  </data>
+  <data name="ExecutionStartedInBackground" xml:space="preserve">
+    <value>Виконання розпочато у фоновому режимі</value>
+  </data>
+  <data name="Failed" xml:space="preserve">
+    <value>Не склав</value>
+  </data>
+  <data name="FailedCap" xml:space="preserve">
+    <value>НЕ СКЛАВ</value>
+  </data>
+  <data name="FromMaxToMin" xml:space="preserve">
+    <value>Від максимальної до мінімальної</value>
+  </data>
+  <data name="FromMinToMax" xml:space="preserve">
+    <value>Від мінімальної до максимальної</value>
+  </data>
+  <data name="Grade" xml:space="preserve">
+    <value>Оцінка</value>
+  </data>
+  <data name="IsChecked" xml:space="preserve">
+    <value>Чи перевірено</value>
+  </data>
+  <data name="IsCheckedAll" xml:space="preserve">
+    <value>Перевірено - Всі</value>
+  </data>
+  <data name="IsCheckedByAI" xml:space="preserve">
+    <value>Чи перевірено через ШІ</value>
+  </data>
+  <data name="IsCheckedByAIAll" xml:space="preserve">
+    <value>Перевірено через ШІ - Всі</value>
+  </data>
+  <data name="IsCheckedByAIDash" xml:space="preserve">
+    <value>Перевірено через ШІ - </value>
+  </data>
+  <data name="IsCheckedByAINo" xml:space="preserve">
+    <value>Перевірено через ШІ - Ні</value>
+  </data>
+  <data name="IsCheckedByAIYes" xml:space="preserve">
+    <value>Перевірено через ШІ - Так</value>
+  </data>
+  <data name="IsCheckedDash" xml:space="preserve">
+    <value>Перевірено - </value>
+  </data>
+  <data name="IsCheckedNo" xml:space="preserve">
+    <value>Перевірено - Ні</value>
+  </data>
+  <data name="IsCheckedYes" xml:space="preserve">
+    <value>Перевірено - Так</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Ні</value>
+  </data>
+  <data name="NoOneHasPassedTheExamYet" xml:space="preserve">
+    <value>Іспит ще ніхто не склав</value>
+  </data>
+  <data name="NotAssessed" xml:space="preserve">
+    <value>Не оцінено</value>
+  </data>
+  <data name="NotAssessedCap" xml:space="preserve">
+    <value>НЕ ОЦІНЕНО</value>
+  </data>
+  <data name="NothingFoundTryUpdateTheFilters" xml:space="preserve">
+    <value>Нічого не знайдено, спробуйте оновити фільтри</value>
+  </data>
+  <data name="Passed" xml:space="preserve">
+    <value>Склав</value>
+  </data>
+  <data name="PassedCap" xml:space="preserve">
+    <value>СКЛАВ</value>
+  </data>
+  <data name="SearchByStudentName" xml:space="preserve">
+    <value>Пошук за іменем студента</value>
+  </data>
+  <data name="SortByGradeDash" xml:space="preserve">
+    <value>Сортувати за оцінкою - </value>
+  </data>
+  <data name="SortByGradeDefault" xml:space="preserve">
+    <value>Сортувати за оцінкою - За замовчуванням</value>
+  </data>
+  <data name="SortByGradeFromMaxToMin" xml:space="preserve">
+    <value>Сортувати за оцінкою - Від максимальної до мінімальної</value>
+  </data>
+  <data name="SortByGradeFromMinToMax" xml:space="preserve">
+    <value>Сортувати за оцінкою - Від мінімальної до максимальної</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Статус</value>
+  </data>
+  <data name="StatusAll" xml:space="preserve">
+    <value>Статус - Всі</value>
+  </data>
+  <data name="StatusDash" xml:space="preserve">
+    <value>Статус - </value>
+  </data>
+  <data name="StatusFailed" xml:space="preserve">
+    <value>Статус - Не склав</value>
+  </data>
+  <data name="StatusNotAssessed" xml:space="preserve">
+    <value>Статус - Не оцінено</value>
+  </data>
+  <data name="StatusPassed" xml:space="preserve">
+    <value>Статус - Склав</value>
+  </data>
+  <data name="TimeToComplete" xml:space="preserve">
+    <value>Витрачений час</value>
+  </data>
+  <data name="UsersAnswersForExam" xml:space="preserve">
+    <value>Відповіді студентів на іспит</value>
+  </data>
+  <data name="ViewAnswers" xml:space="preserve">
+    <value>Переглянути відповіді</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Так</value>
+  </data>
+</root>

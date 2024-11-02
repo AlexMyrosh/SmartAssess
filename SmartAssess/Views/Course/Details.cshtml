@@ -1,4 +1,6 @@
 ﻿@model Presentation_Layer.ViewModels.Course.CourseDetailsViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = Model.Name;
@@ -26,14 +28,14 @@
                             {
                                 <form asp-controller="Course" asp-action="LeaveCourse" method="post">
                                     <input type="hidden" name="courseId" value="@Model.Id" />
-                                    <button class=" btn btn-warning straddle-button">Leave</button>
+                                    <button class=" btn btn-warning straddle-button">@Localizer["Leave"]</button>
                                 </form>
                             }
                             else if (User.IsInRole(RoleNames.Teacher))
                             {
                                 <form asp-controller="Course" asp-action="LeaveCourseAsTeacher" method="post">
                                     <input type="hidden" name="courseId" value="@Model.Id" />
-                                    <button class=" btn btn-warning straddle-button">Leave as a teacher</button>
+                                    <button class=" btn btn-warning straddle-button">@Localizer["LeaveAsTeacher"]</button>
                                 </form>
                             }
                         }
@@ -43,14 +45,14 @@
                             {
                                 <form asp-controller="Course" asp-action="ApplyForCourse" method="post">
                                     <input type="hidden" name="courseId" value="@Model.Id" />
-                                    <button class="btn btn-success straddle-button">Apply</button>
+                                    <button class="btn btn-success straddle-button">@Localizer["Apply"]</button>
                                 </form>
                             }
                             else if (User.IsInRole(RoleNames.Teacher))
                             {
                                 <form asp-controller="Course" asp-action="ApplyForCoursesAsTeacher" method="post">
                                     <input type="hidden" name="courseId" value="@Model.Id" />
-                                    <button class="btn btn-success straddle-button">Apply as a teacher</button>
+                                    <button class="btn btn-success straddle-button">@Localizer["ApplyAsTeacher"]</button>
                                 </form>
                             }
                         }
@@ -63,14 +65,14 @@
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                     <div class="dropdown-item">
-                                        <a asp-action="Create" asp-controller="Exam" asp-route-courseId="@Model.Id" class="btn btn-link" style="text-decoration: none; color: inherit;">Add exam</a>
+                                        <a asp-action="Create" asp-controller="Exam" asp-route-courseId="@Model.Id" class="btn btn-link" style="text-decoration: none; color: inherit;">@Localizer["CreateExam"]</a>
                                     </div>
                                     <div class="dropdown-item">
-                                        <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#exampleModal" style="text-decoration: none; color: inherit;">List of students</button>
+                                        <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#exampleModal" style="text-decoration: none; color: inherit;">@Localizer["ListOfStudents"]</button>
                                         <span class="badge text-bg-primary rounded-pill" style="background-color: grey;">@Model.AppliedUsers.Count</span>
                                     </div>
                                     <div class="dropdown-item">
-                                        <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#RemoveCourse" style="text-decoration: none; color: inherit;">Remove this course</button>
+                                        <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#RemoveCourse" style="text-decoration: none; color: inherit;">@Localizer["RemoveThisCourse"]</button>
                                     </div>
                                 </div>
                             </div>
@@ -81,7 +83,7 @@
                 <div class="container" style="margin-top: 30px; margin-bottom: 30px;">
                     <div class="text-center">
                         <h1 class="display-4">
-                            Course description
+                            @Localizer["CourseDescription"]
                             @if ((Model.IsCurrentUserApplied && User.IsInRole(RoleNames.Teacher)) || User.IsInRole(RoleNames.Admin))
                             {
                                 <i id="editCourseDescriptionButton" class="fas fa-pencil-alt display-25 ms-3 me-3 clickable-icon" style="font-size:50%;"></i>
@@ -98,27 +100,33 @@
                     {
                         <pre id="courseLongDescriptionDisplay" style="white-space: pre-line; font-family: 'Montserrat'; font-size: 16px; text-align: center;">
                             <i>
-                                Description is absent
+                                @Localizer["DescriptionIsAbsent"]
                             </i>
                         </pre>
                     }
 
                     <textarea class="form-control mb-2" id="courseLongDescriptionEdit" rows="4" style="display:none;"></textarea>
-                    <button id="courseLongDescriptionSaveButton" style="display:none;" class="btn btn-success">Save</button>
-                    <button id="courseLongDescriptionCancelButton" style="display:none;" class="btn btn-warning">Cancel</button>
+                    <button id="courseLongDescriptionSaveButton" style="display:none;" class="btn btn-success">
+                        @Localizer["Save"]
+                    </button>
+                    <button id="courseLongDescriptionCancelButton" style="display:none;" class="btn btn-warning">
+                        @Localizer["Cancel"]
+                    </button>
                 </div>
 
                 @if (Model.IsCurrentUserApplied || User.IsInRole(RoleNames.Admin))
                 {
                     <div class="container" style="margin-top: 30px; margin-bottom: 30px;">
                         <div class="text-center">
-                            <h1 class="display-4">Opened exams</h1>
+                            <h1 class="display-4">
+                                @Localizer["OpenedExams"]
+                            </h1>
                         </div>
 
                         @if (!Model.Exams.Any())
                         {
                             <p class="text-center" style="margin-top: 22px;">
-                                No exams at the moment
+                                @Localizer["NoExamsAtTheMoment"]
                             </p>
                         }
                         
@@ -136,15 +144,15 @@
                                     {
                                         @if (currentDateTime > Model.Exams[i].ExamEndDateTime)
                                         {
-                                            <span>(the deadline has passed)</span>
+                                            <span>(@Localizer["TheDeadlineHasPassed"])</span>
                                         }
                                         else if (currentDateTime < Model.Exams[i].ExamStartDateTime)
                                         {
-                                            <span>(the start date has not yet arrived)</span>
+                                            <span>(@Localizer["TheStartDateHasNotYetArrived"])</span>
                                         }
                                         else
                                         {
-                                            <span>(available for passing)</span>
+                                            <span>(@Localizer["AvailableForPassing"])</span>
                                         }
                                     }
                                 </div>
@@ -157,7 +165,7 @@
                                             <div class="col d-flex align-items-stretch">
                                                 <div class="card bg-c-blue order-card flex-fill">
                                                     <div class="card-body" style="padding: 0">
-                                                        <h4 class="m-b-20 text-center"> Attempts</h4>
+                                                        <h4 class="m-b-20 text-center">@Localizer["Attempts"]</h4>
                                                         <h5 class="text-center"><span>@Model.Exams[i].UserAttemptCount/@Model.Exams[i].MaxAttemptsAllowed</span></h5>
                                                     </div>
                                                 </div>
@@ -167,7 +175,7 @@
                                         <div class="col d-flex align-items-stretch">
                                             <div class="card bg-c-blue order-card flex-fill">
                                                 <div class="card-body" style="padding: 0">
-                                                    <h4 class="m-b-20 text-center">Threshold score</h4>
+                                                    <h4 class="m-b-20 text-center">@Localizer["ThresholdScore"]</h4>
                                                     <h5 class="text-center"><span>@Model.Exams[i].MinimumPassGrade</span></h5>
                                                 </div>
                                             </div>
@@ -176,7 +184,7 @@
                                         <div class="col d-flex align-items-stretch">
                                             <div class="card bg-c-blue order-card flex-fill">
                                                 <div class="card-body" style="padding: 0">
-                                                    <h4 class="m-b-20 text-center">Duration</h4>
+                                                    <h4 class="m-b-20 text-center">@Localizer["Duration"]</h4>
                                                     <h5 class="text-center"><span>@Model.Exams[i].ExamDuration</span></h5>
                                                 </div>
                                             </div>
@@ -185,7 +193,7 @@
                                         <div class="col d-flex align-items-stretch">
                                             <div class="card bg-c-blue order-card flex-fill">
                                                 <div class="card-body" style="padding: 0">
-                                                    <h4 class="m-b-20 text-center">Questions</h4>
+                                                    <h4 class="m-b-20 text-center">@Localizer["Questions"]</h4>
                                                     <h5 class="text-center"><span>@Model.Exams[i].NumberOfQuestions</span></h5>
                                                 </div>
                                             </div>
@@ -194,7 +202,7 @@
                                         <div class="col d-flex align-items-stretch">
                                             <div class="card bg-c-blue order-card flex-fill">
                                                 <div class="card-body" style="padding: 0">
-                                                    <h4 class="m-b-20 text-center">Final grade method</h4>
+                                                    <h4 class="m-b-20 text-center">@Localizer["FinalGradeMethod"]</h4>
                                                     <h5 class="text-center"><span>@Model.Exams[i].FinalGradeCalculationMethod</span></h5>
                                                 </div>
                                             </div>
@@ -203,7 +211,7 @@
                                         <div class="col d-flex align-items-stretch">
                                             <div class="card bg-c-blue order-card flex-fill">
                                                 <div class="card-body" style="padding: 0">
-                                                    <h4 class="m-b-20 text-center">Start at</h4>
+                                                    <h4 class="m-b-20 text-center">@Localizer["StartAt"]</h4>
                                                     <h5 class="text-center"><span>@Model.Exams[i].ExamStartDateTime.DateTime</span></h5>
                                                 </div>
                                             </div>
@@ -212,7 +220,7 @@
                                         <div class="col d-flex align-items-stretch">
                                             <div class="card bg-c-blue order-card flex-fill">
                                                 <div class="card-body" style="padding: 0">
-                                                    <h4 class="m-b-20 text-center">End at</h4>
+                                                    <h4 class="m-b-20 text-center">@Localizer["EndAt"]</h4>
                                                     <h5 class="text-center"><span>@Model.Exams[i].ExamEndDateTime.DateTime</span></h5>
                                                 </div>
                                             </div>
@@ -224,7 +232,7 @@
                                     {
                                         @if (Model.Exams[i].StartedAttemptId != null)
                                         {
-                                            @Html.ActionLink("Continue attempt", "TakeExam", "ExamAssessment", new { examId = Model.Exams[i].Id }, new { @class = "btn btn-success" })
+                                            @Html.ActionLink(@Localizer["ContinueAttempt"].Value, "TakeExam", "ExamAssessment", new { examId = Model.Exams[i].Id }, new { @class = "btn btn-success" })
                                         }
                                         else if (Model.Exams[i].UserAttemptCount >= Model.Exams[i].MaxAttemptsAllowed)
                                         {
@@ -232,21 +240,21 @@
                                         }
                                         else
                                         {
-                                            @Html.ActionLink("Start attempt", "TakeExam", "ExamAssessment", new { examId = Model.Exams[i].Id }, new { @class = "btn btn-success" })
+                                            @Html.ActionLink(@Localizer["StartAttempt"].Value, "TakeExam", "ExamAssessment", new { examId = Model.Exams[i].Id }, new { @class = "btn btn-success" })
                                         }
                                     }
                                     else if ((Model.IsCurrentUserApplied && User.IsInRole(RoleNames.Teacher)) || User.IsInRole(RoleNames.Admin))
                                     {
                                         <div class="d-flex align-items-stretch justify-content-center">
-                                            @Html.ActionLink("Check answers", "Result", "Exam", new { id = Model.Exams[i].Id }, new { @class = "btn btn-success me-2 d-flex align-items-center justify-content-center" })
-                                            @Html.ActionLink("Statistics", "Statistic", "Exam", new { id = Model.Exams[i].Id }, new { @class = "btn btn-info me-2 d-flex align-items-center justify-content-center" })
-                                            @Html.ActionLink("Details", "Details", "Exam", new { id = Model.Exams[i].Id }, new { @class = "btn btn-secondary me-2 d-flex align-items-center justify-content-center" })
-                                            @Html.ActionLink("Update", "Update", "Exam", new { id = Model.Exams[i].Id }, new { @class = "btn btn-warning me-2 d-flex align-items-center justify-content-center" })
-                                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#RemoveExam-@Model.Exams[i].Id">Remove</button>
+                                            @Html.ActionLink(@Localizer["CheckAnswers"].Value, "Result", "Exam", new { id = Model.Exams[i].Id }, new { @class = "btn btn-success me-2 d-flex align-items-center justify-content-center" })
+                                            @Html.ActionLink(@Localizer["Statistics"].Value, "Statistic", "Exam", new { id = Model.Exams[i].Id }, new { @class = "btn btn-info me-2 d-flex align-items-center justify-content-center" })
+                                            @Html.ActionLink(@Localizer["Details"].Value, "Details", "Exam", new { id = Model.Exams[i].Id }, new { @class = "btn btn-secondary me-2 d-flex align-items-center justify-content-center" })
+                                            @Html.ActionLink(@Localizer["Update"].Value, "Update", "Exam", new { id = Model.Exams[i].Id }, new { @class = "btn btn-warning me-2 d-flex align-items-center justify-content-center" })
+                                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#RemoveExam-@Model.Exams[i].Id">@Localizer["Remove"]</button>
                                             <form asp-action="Delete" asp-controller="Exam" method="post">
                                                 <input type="hidden" name="examId" value="@Model.Exams[i].Id" />
                                                 <input type="hidden" name="courseId" value="@Model.Id"/>
-                                                @await Html.PartialAsync("_DeleteConfirmationModal", ($"RemoveExam-{Model.Exams[i].Id}", $"\"{Model.Exams[i].Name}\" exam"))
+                                                @await Html.PartialAsync("_DeleteConfirmationModal", ($"RemoveExam-{Model.Exams[i].Id}", $"\"{Model.Exams[i].Name}\" {@Localizer["Exam"].Value}"))
                                             </form>
                                         </div>
                                     }
@@ -265,7 +273,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Students</h1>
+                <h1 class="modal-title fs-5" id="exampleModalLabel">@Localizer["Students"]</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -280,7 +288,7 @@
                                         @student.FirstName @student.LastName
                                     </div>
                                     <div class="col-3">
-                                        <button data-user-id="@student.Id" class="btn btn-danger" onclick="removeStudent(this)">Remove</button>
+                                        <button data-user-id="@student.Id" class="btn btn-danger" onclick="removeStudent(this)">@Localizer["Remove"]</button>
                                     </div>
                                 </div>
                             </li>
@@ -289,7 +297,7 @@
                 }
                 else
                 {
-                    <p class="text-center">No students in this course</p>
+                    <p class="text-center">@Localizer["NoStudentsInThisCourse"]</p>
                 }
             </div>
         </div>
@@ -298,35 +306,30 @@
 
 <form asp-controller="Course" asp-action="Delete" method="post">
     <input type="hidden" name="id" value="@Model.Id" />
-    @await Html.PartialAsync("_DeleteConfirmationModal", ("RemoveCourse", $"\"{Model.Name}\" course"))
+    @await Html.PartialAsync("_DeleteConfirmationModal", ("RemoveCourse", $"\"{Model.Name}\" {@Localizer["Course"].Value}"))
 </form>
 
 @section Scripts {
     <script>
-    function removeStudent(button) {
-        const listItem = button.closest('li');
-        const userId = button.getAttribute('data-user-id');
+        function removeStudent(button) {
+            const listItem = button.closest('li');
+            const userId = button.getAttribute('data-user-id');
 
-        $.ajax({
-            url: '@Url.Action("RemoveUserFromCourse", "Course")',
-            type: 'POST',
-            data: { 
-                courseId: '@Model.Id', 
-                userId: userId
-            },
-            success: function (response) {
-                if (response.success) {
-                    listItem.remove();
-                } else {
-                    console.error('Error removing student:', response.statusText);
+            $.ajax({
+                url: '@Url.Action("RemoveUserFromCourse", "Course")',
+                type: 'POST',
+                data: { 
+                    courseId: '@Model.Id', 
+                    userId: userId
+                },
+                success: function (response) {
+                    if (response.success) {
+                        listItem.remove();
+                    }
                 }
-            },
-            error: function (error) {
-                console.error('Error:', error);
-            }
-        });
-    }
-</script>
+            });
+        }
+    </script>
 
     <script>
         $(function () {
@@ -353,8 +356,6 @@
                             $('#editCourseDescriptionButton').show();
                             $('#courseLongDescriptionSaveButton').hide();
                             $('#courseLongDescriptionCancelButton').hide();
-                        }else{
-                            alert("Error");
                         }
                     }
                 });

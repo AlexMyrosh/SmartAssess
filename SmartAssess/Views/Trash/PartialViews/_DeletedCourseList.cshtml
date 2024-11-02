@@ -1,13 +1,15 @@
 ﻿@model Presentation_Layer.ViewModels.Trash.DeletedCourseListWithPaginationViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 <table class="table">
     <thead>
     <tr>
         <th class="text-center" scope="col">#</th>
-        <th class="text-center" scope="col">Name</th>
-        <th class="text-center" scope="col">Deleted on</th>
-        <th class="text-center" scope="col">Deleted by</th>
-        <th class="text-center" scope="col">Actions</th>
+        <th class="text-center" scope="col">@Localizer["Name"]</th>
+        <th class="text-center" scope="col">@Localizer["DeletedOn"]</th>
+        <th class="text-center" scope="col">@Localizer["DeletedBy"]</th>
+        <th class="text-center" scope="col">@Localizer["Actions"]</th>
     </tr>
     </thead>
     <tbody>
@@ -27,12 +29,12 @@
                     @Model.Courses[i].DeletedBy
             </td>
             <td class="text-center align-middle">
-                    <a class="btn btn-primary" asp-controller="Course" asp-action="Details" asp-route-id="@Model.Courses[i].Id">Details</a>
-                    <form id="restoreCourseForm-@Model.Courses[i].Id" asp-action="RestoreCourse" method="post" asp-route-courseId="@Model.Courses[i].Id" class="d-inline-block">
-                        <button type="button" class="btn btn-success" data-course-id="@Model.Courses[i].Id" data-course-name="@Model.Courses[i].Name" onclick="openRestoreCourseModal(this)">Restore</button>
+                <a class="btn btn-primary" asp-controller="Course" asp-action="Details" asp-route-id="@Model.Courses[i].Id">@Localizer["Details"]</a>
+                <form id="restoreCourseForm-@Model.Courses[i].Id" asp-action="RestoreCourse" method="post" asp-route-courseId="@Model.Courses[i].Id" class="d-inline-block">
+                    <button type="button" class="btn btn-success" data-course-id="@Model.Courses[i].Id" data-course-name="@Model.Courses[i].Name" onclick="openRestoreCourseModal(this)">@Localizer["Restore"]</button>
                 </form>
-                    <form id="deleteCourseForm-@Model.Courses[i].Id" asp-action="DeleteCoursePermanently" method="post" asp-route-courseId="@Model.Courses[i].Id" class="d-inline-block">
-                        <button type="button" class="btn btn-danger" data-course-id="@Model.Courses[i].Id" data-course-name="@Model.Courses[i].Name" onclick="openDeleteCourseModal(this)">Delete permanently</button>
+                <form id="deleteCourseForm-@Model.Courses[i].Id" asp-action="DeleteCoursePermanently" method="post" asp-route-courseId="@Model.Courses[i].Id" class="d-inline-block">
+                    <button type="button" class="btn btn-danger" data-course-id="@Model.Courses[i].Id" data-course-name="@Model.Courses[i].Name" onclick="openDeleteCourseModal(this)">@Localizer["DeletePermanently"]</button>
                 </form>
             </td>
         </tr>
@@ -45,15 +47,15 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header d-flex justify-content-center">
-                <h1 class="modal-title fs-5 text-center" id="deleteCourseConfirmationLabel">Delete confirmation</h1>
+                <h1 class="modal-title fs-5 text-center" id="deleteCourseConfirmationLabel">@Localizer["DeleteConfirmation"]</h1>
                 <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body text-center">
-                You are going to delete course "<span id="courseNameInModalWindow"></span>". This action cannot be undone. Confirm deletion?
+                @Localizer["YouAreGoingToDeleteCourse"] "<span id="courseNameInModalWindow"></span>". @Localizer["ThisActionCannotBeUndoneConfirmDeletion"]
             </div>
             <div class="modal-footer d-flex justify-content-center">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" id="confirmCourseDeleteButton" class="btn btn-primary">Confirm</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Close"]</button>
+                <button type="button" id="confirmCourseDeleteButton" class="btn btn-primary">@Localizer["Confirm"]</button>
             </div>
         </div>
     </div>
@@ -64,15 +66,15 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header d-flex justify-content-center">
-                <h1 class="modal-title fs-5 text-center" id="restoreCourseConfirmationLabel">Restore confirmation</h1>
+                <h1 class="modal-title fs-5 text-center" id="restoreCourseConfirmationLabel">@Localizer["RestoreConfirmation"]</h1>
                 <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body text-center">
-                You are going to restore course "<span id="restoreCourseNameInModalWindow"></span>". Confirm restoring?
+                @Localizer["YouAreGoingToRestoreCourse"] "<span id="restoreCourseNameInModalWindow"></span>". @Localizer["ConfirmRestoring"]
             </div>
             <div class="modal-footer d-flex justify-content-center">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" id="confirmCourseRestoreButton" class="btn btn-primary">Confirm</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Close"]</button>
+                <button type="button" id="confirmCourseRestoreButton" class="btn btn-primary">@Localizer["Confirm"]</button>
             </div>
         </div>
     </div>

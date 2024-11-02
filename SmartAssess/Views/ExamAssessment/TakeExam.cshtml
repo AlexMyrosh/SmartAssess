@@ -1,4 +1,7 @@
 ﻿@model Presentation_Layer.ViewModels.ExamAssessment.TakeExamViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 @{
     ViewData["Title"] = Model.ExamName;
 }
@@ -10,15 +13,15 @@
             <div class="col-4">
                 <div class="card big-card">
                     <div class="card-body">
-                        <h4 class="card-title">Exam info</h4>
-                        <p><strong>Course:</strong> @Model.CourseName</p>
-                        <p><strong>Exam:</strong> @Model.ExamName</p>
-                        <p><strong>Description:</strong> @Model.ExamDescription</p>
-                        <p><strong>Attempt:</strong> @Model.UserAttemptCount of @Model.ExamMaxAttemptsAllowed</p>
-                        <p><strong>Threshold score:</strong> @Model.ExamMinPassGrade</p>
-                        <p><strong>Max score:</strong> @Model.MaxPossibleExamGrade</p>
-                        <p><strong>Time Remaining:</strong> <span id="countdown-timer"></span></p>
-                        <p><strong>Questions:</strong></p>
+                        <h4 class="card-title">@Localizer["ExamInfo"]</h4>
+                        <p><strong>@Localizer["Course"]:</strong> @Model.CourseName</p>
+                        <p><strong>@Localizer["Exam"]:</strong> @Model.ExamName</p>
+                        <p><strong>@Localizer["Description"]:</strong> @Model.ExamDescription</p>
+                        <p><strong>@Localizer["Attempt"]:</strong> @Model.UserAttemptCount of @Model.ExamMaxAttemptsAllowed</p>
+                        <p><strong>@Localizer["ThresholdScore"]:</strong> @Model.ExamMinPassGrade</p>
+                        <p><strong>@Localizer["MaxScore"]:</strong> @Model.MaxPossibleExamGrade</p>
+                        <p><strong>@Localizer["TimeRemaining"]:</strong> <span id="countdown-timer"></span></p>
+                        <p><strong>@Localizer["Questions"]:</strong></p>
                         <div class="container d-flex">
                             <nav aria-label="Page navigation example">
                                 <ul class="pagination" id="pagination-nav">
@@ -36,7 +39,7 @@
                         <div class="container d-flex align-items-center justify-content-center">
                             <div>
                                 @Html.HiddenFor(model => model.AttemptId)
-                                <button type="submit" id="submitExamButton" class="btn btn-success">Submit exam</button>
+                                <button type="submit" id="submitExamButton" class="btn btn-success">@Localizer["FinishExam"]</button>
                             </div>
                         </div>
                     </div>
@@ -49,10 +52,10 @@
                     @for (var i = 0; i < Model.QuestionAnswers.Count; i++)
                     {
                         <div class="card-body question" id="question-@i">
-                            <h5 class="card-title">Question @(i + 1)</h5>
+                            <h5 class="card-title">@Localizer["Question"] @(i + 1)</h5>
                             <p class="card-text">@Model.QuestionAnswers[i].QuestionText</p>
-                            <p><strong>Max grade for this question:</strong> @Model.QuestionAnswers[i].QuestionMaxGrade</p>
-                            <textarea asp-for="QuestionAnswers[i].AnswerText" class="form-control" style="flex-grow: 1; margin-top: 10px;" placeholder="Enter your answer here..."></textarea>
+                            <p><strong>@Localizer["MaxGradeForThisQuestion"]:</strong> @Model.QuestionAnswers[i].QuestionMaxGrade</p>
+                            <textarea asp-for="QuestionAnswers[i].AnswerText" class="form-control" style="flex-grow: 1; margin-top: 10px;" placeholder="@Localizer["EnterYourAnswerHere"]"></textarea>
                             @Html.HiddenFor(model => model.QuestionAnswers[i].QuestionAnswerId)
                         </div>
                     }

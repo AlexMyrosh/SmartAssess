@@ -1,12 +1,14 @@
 ﻿@model Presentation_Layer.ViewModels.UserManagement.AllUsersViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 <table class="table">
     <thead>
     <tr>
         <th class="text-center" scope="col">#</th>
-        <th class="text-center" scope="col">Name</th>
-        <th class="text-center" scope="col">Role</th>
-        <th class="text-center" scope="col">Actions</th>
+        <th class="text-center" scope="col">@Localizer["Name"]</th>
+        <th class="text-center" scope="col">@Localizer["Role"]</th>
+        <th class="text-center" scope="col">@Localizer["Actions"]</th>
     </tr>
     </thead>
     <tbody>
@@ -14,13 +16,13 @@
     {
         <tr>
             <td class="text-center align-middle">
-                    @(i + 1 + 10 * (Model.Pagination.PageNumber - 1))
+                @(i + 1 + 10 * (Model.Pagination.PageNumber - 1))
             </td>
             <td class="text-center align-middle">
-                    @Model.Users[i].FirstName @Model.Users[i].LastName
+                @Model.Users[i].FirstName @Model.Users[i].LastName
             </td>
             <td class="text-center align-middle">
-                    @Model.Users[i].Role
+                @Model.Users[i].Role
             </td>
             <td class="text-center align-middle">
                 <button type="button" class="btn btn-success d-inline-block"
@@ -28,15 +30,17 @@
                         data-bs-target="#roleUpdateModalWindow"
                         data-user-id="@Model.Users[i].Id"
                         data-user-role="@Model.Users[i].Role">
-                    Update role
+                        @Localizer["UpdateRole"]
                 </button>
 
-                    <a class="btn btn-primary d-inline-block" asp-controller="UserManagement" asp-action="UserDetails" asp-route-userId="@Model.Users[i].Id">
-                    Details
+                <a class="btn btn-primary d-inline-block" asp-controller="UserManagement" asp-action="UserDetails" asp-route-userId="@Model.Users[i].Id">
+                    @Localizer["Details"]
                 </a>
 
-                    <form id="deleteUserForm-@Model.Users[i].Id" asp-action="DeleteUser" method="post" asp-route-userId="@Model.Users[i].Id" class="d-inline-block">
-                        <button type="button" class="btn btn-danger" data-user-id="@Model.Users[i].Id" data-user-name="@Model.Users[i].FirstName @Model.Users[i].LastName" onclick="openDeleteUserModal(this)">Delete</button>
+                <form id="deleteUserForm-@Model.Users[i].Id" asp-action="DeleteUser" method="post" asp-route-userId="@Model.Users[i].Id" class="d-inline-block">
+                    <button type="button" class="btn btn-danger" data-user-id="@Model.Users[i].Id" data-user-name="@Model.Users[i].FirstName @Model.Users[i].LastName" onclick="openDeleteUserModal(this)">
+                        @Localizer["Delete"]
+                    </button>
                 </form>
             </td>
         </tr>
@@ -49,15 +53,15 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header d-flex justify-content-center">
-                <h1 class="modal-title fs-5 text-center" id="deleteUserConfirmationLabel">Delete confirmation</h1>
+                <h1 class="modal-title fs-5 text-center" id="deleteUserConfirmationLabel">@Localizer["DeleteConfirmation"]</h1>
                 <button type="button" class="btn-close position-absolute end-0 me-3" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body text-center">
-                You are going to delete user "<span id="userNameInModalWindow"></span>". Confirm deletion?
+                @Localizer["YouAreGoingToDeleteUser"] "<span id="userNameInModalWindow"></span>". @Localizer["ConfirmDeletion"]
             </div>
             <div class="modal-footer d-flex justify-content-center">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" id="confirmUserDeleteButton" class="btn btn-primary">Confirm</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Close"]</button>
+                <button type="button" id="confirmUserDeleteButton" class="btn btn-primary">@Localizer["Confirm"]</button>
             </div>
         </div>
     </div>

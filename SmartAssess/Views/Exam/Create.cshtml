@@ -1,11 +1,13 @@
 ﻿@model Presentation_Layer.ViewModels.Exam.ExamViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = Localizer["CreateExam"];
 }
 
 <div class="text-center">
-    <h1 class="display-4">Create exam for course "@Html.DisplayFor(model => model.CourseName)"</h1>
+    <h1 class="display-4">@Localizer["CreateExamForCourse"] "@Html.DisplayFor(model => model.CourseName)"</h1>
 </div>
 
 <div class="container">
@@ -16,7 +18,7 @@
             <div class="row">
                 <div class="col text-center">
                     @Html.HiddenFor(model => model.CourseId)
-                    <input type="submit" value="Create" class="btn btn-outline-success mb-3" />
+                    <input type="submit" value="@Localizer["Create"]" class="btn btn-outline-success mb-3" />
                 </div>
             </div>
         </div>
@@ -24,5 +26,55 @@
 </div>
 
 @section Scripts {
-    <script src="~/js/Exam.js"></script>
+    <script>
+        $(document).ready(function () {
+            var $questionsContainer = $("#questionsContainer");
+            var $addQuestion = $("#addQuestion");
+            var questionCounter = document.querySelectorAll(".examQuestionForm").length;
+
+            function UpdateQuestionAttributesIndexes() {
+                $(".examQuestionForm").each(function (index, question) {
+                    $(question).find("textarea").attr('id', function (_, idAttr) {
+                        return idAttr.replace(/Questions_\d+__/, 'Questions_' + index + '__');
+                    });
+
+                    $(question).find("textarea").attr('name', function (_, nameAttr) {
+                        return nameAttr.replace(/Questions\[\d+\]/, 'Questions[' + index + ']');
+                    });
+
+                    $(question).find("input").attr('name', function (_, nameAttr) {
+                        return nameAttr.replace(/Questions\[\d+\]/, 'Questions[' + index + ']');
+                    });
+
+                    $(question).find("span.question-title").text(`@Localizer["Question"] ${(index + 1)}`);
+                });
+            }
+
+            $addQuestion.click(function () {
+                var clone = $(".examQuestionForm:first").clone();
+
+                // Updates indexes to map fields to model properties
+                clone.html(
+                    clone.html().replace(/\[0\]/g, '[' + questionCounter + ']').replace(/_0__/g, '_' + questionCounter + '__')
+                );
+
+                // In case if first question has some text, then added question field should be empty
+                clone.find('textarea').val('');
+                clone.find('input').val(0);
+                clone.find('input[type=hidden]').val('');
+                clone.find('span.question-title').text(`@Localizer["Question"] ${questionCounter + 1}`)
+
+                $questionsContainer.append(clone);
+                questionCounter++;
+            });
+
+            $questionsContainer.on("click", ".delete-question", function () {
+                if (questionCounter > 1) {
+                    $(this).closest('.examQuestionForm').remove();
+                    UpdateQuestionAttributesIndexes();
+                    questionCounter--;
+                }
+            });
+        });
+    </script>
 }

@@ -1,7 +1,9 @@
 ﻿@model Presentation_Layer.ViewModels.Exam.ExamDetailsViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = Localizer["Details"];
 }
 
 <div class="container-fluid" style="padding: 0;">
@@ -26,18 +28,18 @@
             <div class="container" style="margin-top: 30px;">
                 <div class="container">
                     <div class="text-center">
-                        <h1 class="display-4">Exam description</h1>
+                        <h1 class="display-4">@Localizer["ExamDescription"]</h1>
                     </div>
                     <pre style="white-space: pre-line; font-family: 'Montserrat'; font-size: 16px;">
-                            @Model.Description
-                        </pre>
+                         @Model.Description
+                    </pre>
                 </div>
                 <div class="container-fluid mt-5 ">
                     <div class="row">
                         <div class="col d-flex align-items-stretch">
                             <div class="card bg-c-blue order-card flex-fill">
                                 <div class="card-body" style="padding: 5px;">
-                                    <h3 class="m-b-20 text-center">Max grade</h3>
+                                    <h3 class="m-b-20 text-center">@Localizer["MaxGrade"]</h3>
                                     <h5 class="text-center"><span>@Model.Questions.Sum(q => q.MaxGrade)</span></h5>
                                 </div>
                             </div>
@@ -46,7 +48,7 @@
                         <div class="col d-flex align-items-stretch">
                             <div class="card bg-c-green order-card flex-fill">
                                 <div class="card-body" style="padding: 5px;">
-                                    <h3 class="m-b-20 text-center">Threshold grade</h3>
+                                    <h3 class="m-b-20 text-center">@Localizer["ThresholdGrade"]</h3>
                                     <h5 class="text-center"><span>@Model.MinimumPassGrade</span></h5>
                                 </div>
                             </div>
@@ -55,7 +57,7 @@
                         <div class="col d-flex align-items-stretch">
                             <div class="card bg-c-yellow order-card flex-fill">
                                 <div class="card-body" style="padding: 5px;">
-                                    <h3 class="m-b-20 text-center">Allowed attempts</h3>
+                                    <h3 class="m-b-20 text-center">@Localizer["AllowedAttempts"]</h3>
                                     <h5 class="text-center"><span>@Model.MaxAttemptsAllowed</span></h5>
                                 </div>
                             </div>
@@ -64,7 +66,7 @@
                         <div class="col d-flex align-items-stretch">
                             <div class="card bg-c-gray order-card flex-fill">
                                 <div class="card-body" style="padding: 5px;">
-                                    <h3 class="m-b-20 text-center">Duration</h3>
+                                    <h3 class="m-b-20 text-center">@Localizer["Duration"]</h3>
                                     <h5 class="text-center"><span>@Model.ExamDuration</span></h5>
                                 </div>
                             </div>
@@ -73,7 +75,7 @@
                         <div class="col d-flex align-items-stretch">
                             <div class="card bg-c-purple order-card flex-fill">
                                 <div class="card-body" style="padding: 5px;">
-                                    <h3 class="m-b-20 text-center">Start date</h3>
+                                    <h3 class="m-b-20 text-center">@Localizer["StartDate"]</h3>
                                     <h5 class="text-center"><span>@Model.ExamStartDateTime.DateTime</span></h5>
                                 </div>
                             </div>
@@ -82,7 +84,7 @@
                         <div class="col d-flex align-items-stretch">
                             <div class="card bg-c-indigo order-card flex-fill">
                                 <div class="card-body" style="padding: 5px;">
-                                    <h3 class="m-b-20 text-center">End date</h3>
+                                    <h3 class="m-b-20 text-center">@Localizer["EndDate"]</h3>
                                     <h5 class="text-center"><span>@Model.ExamEndDateTime.DateTime</span></h5>
                                 </div>
                             </div>
@@ -92,17 +94,17 @@
             </div>
             <div class="container" style="=margin-bottom: 30px;">
                 <div class="text-center">
-                    <h1 class="display-4">Questions</h1>
+                    <h1 class="display-4">@Localizer["Questions"]</h1>
                 </div>
                 @for (var i = 0; i < Model.Questions.Count; i++)
                 {
                     <div class="card mb-3 question" style="background-color: #f2f2f2; border-radius: 15px;">
                         <div class="card-body">
                             <h5 class="card-title" style="display: flex; justify-content: center; align-items: center;">
-                                Question @(i + 1)
+                                @Localizer["Question"] @(i + 1)
                             </h5>
                             <p class="card-text">@Model.Questions[i].QuestionText</p>
-                            <p style="margin-bottom: 0;"><strong>Max grade:</strong> @Model.Questions[i].MaxGrade</p>
+                            <p style="margin-bottom: 0;"><strong>@Localizer["MaxGrade:"]</strong> @Model.Questions[i].MaxGrade</p>
                         </div>
                     </div>
                 }

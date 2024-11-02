@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34902.65
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Presentation Layer", "SmartAssess\Presentation Layer.csproj", "{3AB1A6FA-7C22-45FB-A2DD-8DB22892857C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartAssess", "SmartAssess\SmartAssess.csproj", "{3AB1A6FA-7C22-45FB-A2DD-8DB22892857C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Business Logic Layer", "Business Logic Layer\Business Logic Layer.csproj", "{1DF10A7D-7F0D-485C-9F3E-063BB826FD9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Business Logic Layer", "Business Logic Layer\Business Logic Layer.csproj", "{1DF10A7D-7F0D-485C-9F3E-063BB826FD9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data Access Layer", "Data Access Layer\Data Access Layer.csproj", "{39E3EB27-A72F-447D-B9D6-0DE3946F98CB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data Access Layer", "Data Access Layer\Data Access Layer.csproj", "{39E3EB27-A72F-447D-B9D6-0DE3946F98CB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,7 +1,9 @@
 ﻿@model Presentation_Layer.ViewModels.ExamAssessment.MyPassedExamsViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Passed exams";
+    ViewData["Title"] = Localizer["MyPassedExams"];
 }
 
 <div class="panel-group">
@@ -13,7 +15,7 @@
                         <img src="/images/banners/banner-1.jpg">
                         <div class="centered">
                             <h1 class="display-1" style="font-size: 6vw; font-weight: 400;">
-                                Course marks
+                                @Localizer["MyPassedExamsMarks"]
                             </h1>
                         </div>
                     </div>
@@ -24,7 +26,7 @@
                         @if (Model.TakenExamCourses.Count == 0)
                         {
                             <div class="text-center">
-                                <h1 class="display-4">No assessed exams</h1>
+                                <h1 class="display-4">@Localizer["NoAssessedExams"]</h1>
                             </div>
                         }
 
@@ -73,14 +75,14 @@
                                                                             <div class="table-responsive bg-white">
                                                                                 <table class="table mb-0">
                                                                                     <thead>
-                                                                                    <tr>
-                                                                                        <th class="text-center" scope="col">Attempt</th>
-                                                                                        <th class="text-center" scope="col">Grade</th>
-                                                                                        <th class="text-center" scope="col">Max Grade</th>
-                                                                                        <th class="text-center" scope="col">Min Pass Grade</th>
-                                                                                        <th class="text-center" scope="col">Result</th>
-                                                                                        <th class="text-center" scope="col"></th>
-                                                                                    </tr>
+                                                                                        <tr>
+                                                                                            <th class="text-center" scope="col">@Localizer["Attempt"]</th>
+                                                                                            <th class="text-center" scope="col">@Localizer["Grade"]</th>
+                                                                                            <th class="text-center" scope="col">@Localizer["MaxGrade"]</th>
+                                                                                            <th class="text-center" scope="col">@Localizer["MinPassGrade"]</th>
+                                                                                            <th class="text-center" scope="col">@Localizer["Result"]</th>
+                                                                                            <th class="text-center" scope="col"></th>
+                                                                                        </tr>
                                                                                     </thead>
                                                                                     <tbody>
                                                                                     @for (var i = 0; i < exam.ExamAttempts.Count; i++)
@@ -90,62 +92,73 @@
                                                                                             <td class="text-center align-middle">
                                                                                                 @if (exam.ExamAttempts[i].IsExamAssessed)
                                                                                                 {
-                                                                                                        @exam.ExamAttempts[i].TotalGrade
+                                                                                                     @exam.ExamAttempts[i].TotalGrade
                                                                                                 }
                                                                                                 else
                                                                                                 {
                                                                                                     <span>-</span>
                                                                                                 }
                                                                                             </td>
-                                                                                                <td class="text-center align-middle">@exam.ExamMaxPossibleExamGrade</td>
-                                                                                                <td class="text-center align-middle">@exam.ExamMinPassGrade</td>
+                                                                                            <td class="text-center align-middle">@exam.ExamMaxPossibleExamGrade</td>
+                                                                                            <td class="text-center align-middle">@exam.ExamMinPassGrade</td>
                                                                                             <td class="text-center align-middle">
-                                                                                                    @if (exam.ExamAttempts[i].IsExamAssessed)
+                                                                                                @if (exam.ExamAttempts[i].IsExamAssessed)
                                                                                                 {
-                                                                                                        @if (exam.ExamAttempts[i].TotalGrade >= exam.ExamMinPassGrade)
+                                                                                                    @if (exam.ExamAttempts[i].TotalGrade >= exam.ExamMinPassGrade)
                                                                                                     {
-                                                                                                        <span class="text-success">Passed</span>
+                                                                                                        <span class="text-success">@Localizer["Passed"]</span>
                                                                                                     }
                                                                                                     else
                                                                                                     {
-                                                                                                        <span class="text-danger">Failed</span>
+                                                                                                        <span class="text-danger">@Localizer["Failed"]</span>
                                                                                                     }
                                                                                                 }
                                                                                                 else
                                                                                                 {
-                                                                                                    <span class="text-warning">Not Assessed Yet</span>
+                                                                                                    <span class="text-warning">@Localizer["NotAssessedYet"]</span>
                                                                                                 }
                                                                                             </td>
                                                                                             <td class="text-center align-middle">
-                                                                                                    <a class="btn btn-outline-primary" asp-controller="ExamAssessment" asp-action="TakenExamDetails" asp-route-id="@exam.ExamAttempts[i].AttemptId">
-                                                                                                    Details
+                                                                                                <a class="btn btn-outline-primary" asp-controller="ExamAssessment" asp-action="TakenExamDetails" asp-route-id="@exam.ExamAttempts[i].AttemptId">
+                                                                                                    @Localizer["Details"]
                                                                                                 </a>
                                                                                             </td>
                                                                                         </tr>
                                                                                     }
-                                                                                        @if (exam.FinalAttemptGrade != null)
+                                                                                    @if (exam.FinalAttemptGrade != null)
                                                                                     {
-                                                                                        <tr style="background-color: #DAF7A6;">
-                                                                                            <td class="text-center align-middle">Final grade (@exam.FinalGradeCalculationMethod)</td>
-                                                                                            <td class="text-center align-middle">
+                                                                                        if (exam.FinalAttemptGrade >= exam.ExamMinPassGrade)
+                                                                                        {
+                                                                                            <tr style="background-color: #e6ffe6;">
+                                                                                                <td class="text-center align-middle">@Localizer["FinalGrade"] (@exam.FinalGradeCalculationMethod)</td>
+                                                                                                <td class="text-center align-middle">
                                                                                                     @exam.FinalAttemptGrade
-                                                                                            </td>
-                                                                                            <td class="text-center align-middle">@exam.ExamMaxPossibleExamGrade</td>
-                                                                                            <td class="text-center align-middle">@exam.ExamMinPassGrade</td>
-                                                                                            <td class="text-center align-middle">
-                                                                                                @if (exam.FinalAttemptGrade >= exam.ExamMinPassGrade)
-                                                                                                {
-                                                                                                    <span class="text-success">Passed</span>
-                                                                                                }
-                                                                                                else
-                                                                                                {
-                                                                                                    <span class="text-danger">Failed</span>
-                                                                                                }
-                                                                                            </td>
-                                                                                            <td class="text-center align-middle">
-                                                                                                
-                                                                                            </td>
-                                                                                        </tr>
+                                                                                                </td>
+                                                                                                <td class="text-center align-middle">@exam.ExamMaxPossibleExamGrade</td>
+                                                                                                <td class="text-center align-middle">@exam.ExamMinPassGrade</td>
+                                                                                                <td class="text-center align-middle">
+                                                                                                    <span class="text-success">@Localizer["Passed"]</span>
+                                                                                                </td>
+                                                                                                <td class="text-center align-middle">
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            <tr style="background-color: #FFCCCB;">
+                                                                                                <td class="text-center align-middle">@Localizer["FinalGrade"] (@exam.FinalGradeCalculationMethod)</td>
+                                                                                                <td class="text-center align-middle">
+                                                                                                    @exam.FinalAttemptGrade
+                                                                                                </td>
+                                                                                                <td class="text-center align-middle">@exam.ExamMaxPossibleExamGrade</td>
+                                                                                                <td class="text-center align-middle">@exam.ExamMinPassGrade</td>
+                                                                                                <td class="text-center align-middle">
+                                                                                                    <span class="text-danger">@Localizer["Failed"]</span>
+                                                                                                </td>
+                                                                                                <td class="text-center align-middle">
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                        }
                                                                                     }
                                                                                     </tbody>
                                                                                 </table>

@@ -1,14 +1,16 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
     ViewData["Title"] = "Home";
     var successNotification = TempData["SuccessNotification"] as string;
     var errorNotification = TempData["ErrorNotification"] as string;
 }
 
-<div class="text-center" style="margin-top: 16%">
-    <h1 style="font-size: 72px;">Welcome to SmartAssess!</h1>
+<div class="text-center" style="margin-top: 16%; background-image: url(/images/banners/home-background.jpg);background-size: cover;background-position: 50% 50%;">
+    <h1 class="display-1">@Localizer["WelcomeToSmartAssess"]</h1>
     @if (!User.Identity.IsAuthenticated)
     {
-        <h3>Sign up to gain access to full range of features.</h3>
+        <h3>@Localizer["SignUpToGainAccessToFullRangeOfFeatures"]</h3>
     }
 </div>
 
@@ -44,3 +46,11 @@
         </div>
     }
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.body.style.backgroundImage = "url('/images/banners/home-background.jpg')";
+        document.body.style.backgroundSize = "cover";
+        document.body.style.backgroundPosition = "50% 50%";
+    });
+</script>

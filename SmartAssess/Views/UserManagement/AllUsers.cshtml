@@ -1,17 +1,16 @@
 ﻿@model Presentation_Layer.ViewModels.UserManagement.AllUsersViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "AllUsers";
+    ViewData["Title"] = Localizer["UserManagement"];
 }
 <div class="container-fluid">
     @if (Model.Users.Any())
     {
-        <div class="text-center">
-            <h1 class="display-4">All users</h1>
-        </div>
         <div class="form-floating mb-3">
-            <input type="text" id="searchUsersInput" name="searchQuery" class="form-control" placeholder="Search users..." aria-label="Search users" onkeyup="filterUsers()">
-            <label for="searchUsersInput" class="form-label">Search for users</label>
+            <input type="text" id="searchUsersInput" name="searchQuery" class="form-control" placeholder="@Localizer["SearchForUsers"]" aria-label="Search users" onkeyup="filterUsers()">
+            <label for="searchUsersInput" class="form-label">@Localizer["SearchForUsers"]</label>
         </div>
 
         <div id="courseListAndPagination">
@@ -21,7 +20,7 @@
     else
     {
         <div class="text-center" style="margin-top: 16%;">
-            <h1 class="display-4">There is no other users</h1>
+            <h1 class="display-4">@Localizer["ThereIsNoOtherUsers"]</h1>
         </div>
     }
 </div>
@@ -33,7 +32,7 @@
             <form id="roleUpdateForm" asp-action="UpdateUserRole" method="post">
                 <input type="hidden" name="UserId" />
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="roleUpdateModalWindowLabel">Update user role</h1>
+                    <h1 class="modal-title fs-5" id="roleUpdateModalWindowLabel">@Localizer["UpdateUserRole"]</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -46,8 +45,8 @@
                     }
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-success">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Close"]</button>
+                    <button type="submit" class="btn btn-success">@Localizer["Save"]</button>
                 </div>
             </form>
         </div>
@@ -70,7 +69,7 @@
                     if (userListHtml !== undefined && !isEmptyRow(userListHtml)) {
                         $('#userList').html(userListHtml);
                     } else {
-                        $('#userList').html('<div class="text-center mt-5 mb-5"><h1>Nothing found</h1></div>');
+                        $('#userList').html('<div class="text-center mt-5 mb-5"><h1>@Localizer["NothingFound"]</h1></div>');
                     }
 
                     if (paginationHtml !== undefined) {

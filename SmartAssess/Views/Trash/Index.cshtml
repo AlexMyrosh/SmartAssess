@@ -1,18 +1,20 @@
 ﻿@model Presentation_Layer.ViewModels.Trash.TrashViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = Localizer["Trash"];
 }
 <div class="container-fluid">
     <ul class="nav nav-tabs nav-justified" role="tablist">
         <li class="nav-item" role="presentation">
-            <a class="nav-link active" id="justified-tab-0" data-bs-toggle="tab" href="#deleted-courses" role="tab" aria-controls="deleted-courses" aria-selected="true">Deleted courses</a>
+            <a class="nav-link active" id="justified-tab-0" data-bs-toggle="tab" href="#deleted-courses" role="tab" aria-controls="deleted-courses" aria-selected="true">@Localizer["DeletedCourses"]</a>
         </li>
         <li class="nav-item" role="presentation">
-            <a class="nav-link" id="justified-tab-1" data-bs-toggle="tab" href="#deleted-exams" role="tab" aria-controls="deleted-exams" aria-selected="false">Deleted exams</a>
+            <a class="nav-link" id="justified-tab-1" data-bs-toggle="tab" href="#deleted-exams" role="tab" aria-controls="deleted-exams" aria-selected="false">@Localizer["DeletedExams"]</a>
         </li>
         <li class="nav-item" role="presentation">
-            <a class="nav-link" id="justified-tab-2" data-bs-toggle="tab" href="#deleted-users" role="tab" aria-controls="deleted-users" aria-selected="false">Deleted users</a>
+            <a class="nav-link" id="justified-tab-2" data-bs-toggle="tab" href="#deleted-users" role="tab" aria-controls="deleted-users" aria-selected="false">@Localizer["DeletedUsers"]</a>
         </li>
     </ul>
     <div class="tab-content pt-5" id="tab-content">
@@ -20,11 +22,11 @@
             @if (Model.DeletedCoursesWithPagination.Courses.Any())
             {
                 <div class="text-center">
-                    <h1 class="display-4">Deleted courses</h1>
+                    <h1 class="display-4">@Localizer["DeletedCourses"]</h1>
                 </div>
                 <div class="form-floating mb-3">
-                    <input type="text" id="searchDeletedCoursesInput" name="searchQuery" class="form-control" placeholder="Search courses..." aria-label="Search courses" onkeyup="filterDeletedCourses()">
-                    <label for="searchDeletedCoursesInput" class="form-label">Search for courses</label>
+                    <input type="text" id="searchDeletedCoursesInput" name="searchQuery" class="form-control" placeholder="@Localizer["SearchForCourses"]" aria-label="Search courses" onkeyup="filterDeletedCourses()">
+                    <label for="searchDeletedCoursesInput" class="form-label">@Localizer["SearchForCourses"]</label>
                 </div>
 
                 <div id="courseListAndPagination">
@@ -34,7 +36,7 @@
             else
             {
                 <div class="text-center" style="margin-top: 13%;">
-                    <h1 class="display-4">There is no deleted courses</h1>
+                    <h1 class="display-4">@Localizer["ThereIsNoDeletedCourses"]</h1>
                 </div>
             }
         </div>
@@ -43,11 +45,11 @@
             @if (Model.DeletedExamsWithPagination.Exams.Any())
             {
                 <div class="text-center">
-                    <h1 class="display-4">Deleted exams</h1>
+                    <h1 class="display-4">@Localizer["DeletedExams"]</h1>
                 </div>
                 <div class="form-floating mb-3">
-                    <input type="text" id="searchDeletedExamsInput" name="searchQuery" class="form-control" placeholder="Search exams..." aria-label="Search exams" onkeyup="filterDeletedExams()">
-                    <label for="searchDeletedExamsInput" class="form-label">Search for exams</label>
+                    <input type="text" id="searchDeletedExamsInput" name="searchQuery" class="form-control" placeholder="@Localizer["SearchForExams"]" aria-label="Search exams" onkeyup="filterDeletedExams()">
+                    <label for="searchDeletedExamsInput" class="form-label">@Localizer["SearchForExams"]</label>
                 </div>
 
                 <div id="examListAndPagination">
@@ -57,7 +59,7 @@
             else
             {
                 <div class="text-center" style="margin-top: 13%;">
-                    <h1 class="display-4">There is no deleted exams</h1>
+                    <h1 class="display-4">@Localizer["ThereIsNoDeletedExams"]</h1>
                 </div>
             }
         </div>
@@ -66,11 +68,11 @@
             @if (Model.DeletedUsersWithPagination.Users.Any())
             {
                 <div class="text-center">
-                    <h1 class="display-4">Deleted users</h1>
+                    <h1 class="display-4">@Localizer["DeletedUsers"]</h1>
                 </div>
                 <div class="form-floating mb-3">
-                    <input type="text" id="searchDeletedUsersInput" name="searchQuery" class="form-control" placeholder="Search users..." aria-label="Search users" onkeyup="filterDeletedUsers()">
-                    <label for="searchDeletedUsersInput" class="form-label">Search for users</label>
+                    <input type="text" id="searchDeletedUsersInput" name="searchQuery" class="form-control" placeholder="@Localizer["SearchForUsers"]" aria-label="Search users" onkeyup="filterDeletedUsers()">
+                    <label for="searchDeletedUsersInput" class="form-label">@Localizer["SearchForUsers"]</label>
                 </div>
 
                 <div id="userListAndPagination">
@@ -80,7 +82,7 @@
             else
             {
                 <div class="text-center" style="margin-top: 13%;">
-                    <h1 class="display-4">There is no deleted users</h1>
+                    <h1 class="display-4">@Localizer["ThereIsNoDeletedUsers"]</h1>
                 </div>
             }
         </div>
@@ -90,7 +92,6 @@
 @section Scripts
 {
     <script>
-
         document.addEventListener("DOMContentLoaded", function(){
             let tabElementToOpen;
             if ('@Model.TabToOpen' === 'Deleted courses') {
@@ -120,7 +121,7 @@
                     if (courseListHtml !== undefined && !isEmptyRow(courseListHtml)) {
                         $('#deletedCourseList').html(courseListHtml);
                     } else {
-                        $('#deletedCourseList').html('<div class="text-center mt-5 mb-5"><h1>Nothing found</h1></div>');
+                        $('#deletedCourseList').html('<div class="text-center mt-5 mb-5"><h1>@Localizer["NothingFound"]</h1></div>');
                     }
 
                     if (paginationHtml !== undefined) {
@@ -144,7 +145,7 @@
                     if (examListHtml !== undefined && !isEmptyRow(examListHtml)) {
                         $('#deletedExamList').html(examListHtml);
                     } else {
-                        $('#deletedExamList').html('<div class="text-center mt-5 mb-5"><h1>Nothing found</h1></div>');
+                        $('#deletedExamList').html('<div class="text-center mt-5 mb-5"><h1>@Localizer["NothingFound"]</h1></div>');
                     }
 
                     if (paginationHtml !== undefined) {
@@ -168,7 +169,7 @@
                     if (userListHtml !== undefined && !isEmptyRow(userListHtml)) {
                         $('#deletedUserList').html(userListHtml);
                     } else {
-                        $('#deletedUserList').html('<div class="text-center mt-5 mb-5"><h1>Nothing found</h1></div>');
+                        $('#deletedUserList').html('<div class="text-center mt-5 mb-5"><h1>@Localizer["NothingFound"]</h1></div>');
                     }
 
                     if (paginationHtml !== undefined) {

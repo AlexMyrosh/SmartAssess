@@ -1,2 +1,5 @@
-﻿<h1 class="text-center">404 Not Found</h1>
-<h3 class="text-center">The server can not find the requested resource</h3>
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<h1 class="text-center">404 Not Found</h1>
+<h3 class="text-center">@Localizer["ErrorDescription"]</h3>

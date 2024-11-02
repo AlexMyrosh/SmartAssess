@@ -1,62 +1,64 @@
 ﻿@using Presentation_Layer.ViewModels.Enums
 @model Presentation_Layer.ViewModels.Exam.ExamResultViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "UsersAnswers";
+    ViewData["Title"] = Localizer["ExamResult"];
 }
 
 <div class="d-flex justify-content-between align-items-center">
     <h1 class="display-1 mx-auto text-center">
-        Users answers for exam "@Model.ExamName"
+        @Localizer["UsersAnswersForExam"] "@Model.ExamName"
     </h1>
 </div>
 
 @* Filters *@
 <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;" class="mb-3">
     <div class="form-floating flex-grow-1">
-        <input type="text" id="searchInput" name="searchQuery" class="form-control" placeholder="Search by student's name">
-        <label for="searchInput">Search by student's name</label>
+        <input type="text" id="searchInput" name="searchQuery" class="form-control" placeholder="@Localizer["SearchByStudentName"]">
+        <label for="searchInput">@Localizer["SearchByStudentName"]</label>
     </div>
     <div style="display: flex; flex-shrink: 0; gap: 10px;">
         <div class="dropdown ">
             <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="statusButton">
-                Status - All
+                @Localizer["StatusAll"]
             </button>
             <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#" onclick="updateButtonText('statusButton', 'Status - All'); filterData();">All</a></li>
-                <li><a class="dropdown-item" href="#" onclick="updateButtonText('statusButton', 'Status - Passed'); filterData();">Passed</a></li>
-                <li><a class="dropdown-item" href="#" onclick="updateButtonText('statusButton', 'Status - Failed'); filterData();">Failed</a></li>
-                <li><a class="dropdown-item" href="#" onclick="updateButtonText('statusButton', 'Status - Not assessed'); filterData();">Not assessed</a></li>
+                <li><a class="dropdown-item" href="#" onclick="updateButtonText('statusButton', '@Localizer["StatusAll"]'); filterData();">@Localizer["All"]</a></li>
+                <li><a class="dropdown-item" href="#" onclick="updateButtonText('statusButton', '@Localizer["StatusPassed"]'); filterData();">@Localizer["Passed"]</a></li>
+                <li><a class="dropdown-item" href="#" onclick="updateButtonText('statusButton', '@Localizer["StatusFailed"]'); filterData();">@Localizer["Failed"]</a></li>
+                <li><a class="dropdown-item" href="#" onclick="updateButtonText('statusButton', '@Localizer["StatusNotAssessed"]'); filterData();">@Localizer["NotAssessed"]</a></li>
             </ul>
         </div>
         <div class="dropdown ">
             <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="sortByGradeButton">
-                Sort by grade - Default
+                @Localizer["SortByGradeDefault"]
             </button>
             <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#" onclick="updateButtonText('sortByGradeButton', 'Sort by grade - Default'); filterData();">Default</a></li>
-                <li><a class="dropdown-item" href="#" onclick="updateButtonText('sortByGradeButton', 'Sort by grade - From min to max'); filterData();">From min to max</a></li>
-                <li><a class="dropdown-item" href="#" onclick="updateButtonText('sortByGradeButton', 'Sort by grade - From max to min'); filterData();">From max to min</a></li>
+                <li><a class="dropdown-item" href="#" onclick="updateButtonText('sortByGradeButton', '@Localizer["SortByGradeDefault"]'); filterData();">@Localizer["Default"]</a></li>
+                <li><a class="dropdown-item" href="#" onclick="updateButtonText('sortByGradeButton', '@Localizer["SortByGradeFromMinToMax"]'); filterData();">@Localizer["FromMinToMax"]</a></li>
+                <li><a class="dropdown-item" href="#" onclick="updateButtonText('sortByGradeButton', '@Localizer["SortByGradeFromMaxToMin"]'); filterData();">@Localizer["FromMaxToMin"]</a></li>
             </ul>
         </div>
         <div class="dropdown ">
             <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="isCheckedButton">
-                Is checked - All
+                @Localizer["IsCheckedAll"]
             </button>
             <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#" onclick="updateButtonText('isCheckedButton', 'Is checked - All'); filterData();">All</a></li>
-                <li><a class="dropdown-item" href="#" onclick="updateButtonText('isCheckedButton', 'Is checked - Yes'); filterData();">Yes</a></li>
-                <li><a class="dropdown-item" href="#" onclick="updateButtonText('isCheckedButton', 'Is checked - No'); filterData();">No</a></li>
+                <li><a class="dropdown-item" href="#" onclick="updateButtonText('isCheckedButton', '@Localizer["IsCheckedAll"]'); filterData();">@Localizer["All"]</a></li>
+                <li><a class="dropdown-item" href="#" onclick="updateButtonText('isCheckedButton', '@Localizer["IsCheckedYes"]'); filterData();">@Localizer["Yes"]</a></li>
+                <li><a class="dropdown-item" href="#" onclick="updateButtonText('isCheckedButton', '@Localizer["IsCheckedNo"]'); filterData();">@Localizer["No"]</a></li>
             </ul>
         </div>
         <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="isCheckedByAIBtn">
-                Is checked by AI - All
+                @Localizer["IsCheckedByAIAll"]
             </button>
             <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#" onclick="updateButtonText('isCheckedByAIBtn', 'Is checked by AI - All'); filterData();">All</a></li>
-                <li><a class="dropdown-item" href="#" onclick="updateButtonText('isCheckedByAIBtn', 'Is checked by AI - Yes'); filterData();">Yes</a></li>
-                <li><a class="dropdown-item" href="#" onclick="updateButtonText('isCheckedByAIBtn', 'Is checked by AI - No'); filterData();">No</a></li>
+                <li><a class="dropdown-item" href="#" onclick="updateButtonText('isCheckedByAIBtn', '@Localizer["IsCheckedByAIAll"]'); filterData();">@Localizer["All"]</a></li>
+                <li><a class="dropdown-item" href="#" onclick="updateButtonText('isCheckedByAIBtn', '@Localizer["IsCheckedByAIYes"]'); filterData();">@Localizer["Yes"]</a></li>
+                <li><a class="dropdown-item" href="#" onclick="updateButtonText('isCheckedByAIBtn', '@Localizer["IsCheckedByAINo"]'); filterData();">@Localizer["No"]</a></li>
             </ul>
         </div>
     </div>
@@ -88,15 +90,15 @@
                     <span style="position: absolute; right: 58px;">
                         @if (userAttempts.Value.FinalGrade != null && userAttempts.Value.FinalGrade >= Model.MinimumPassGrade)
                         {
-                            <span class="finalUserExamStatus passed">PASSED</span>
+                            <span class="finalUserExamStatus passed">@Localizer["PassedCap"]</span>
                         }
                         else if (userAttempts.Value.FinalGrade != null && userAttempts.Value.FinalGrade < Model.MinimumPassGrade)
                         {
-                            <span class="finalUserExamStatus failed">FAILED</span>
+                            <span class="finalUserExamStatus failed">@Localizer["FailedCap"]</span>
                         }
                         else if (userAttempts.Value.FinalGrade is null)
                         {
-                            <span class="finalUserExamStatus not-assessed">NOT ASSESSED</span>
+                            <span class="finalUserExamStatus not-assessed">@Localizer["NotAssessedCap"]</span>
                         }
                     </span>
                 </button>
@@ -108,13 +110,13 @@
                         <table class="table mb-0">
                             <thead>
                             <tr>
-                                <th class="text-center" scope="col">Attempt</th>
-                                <th class="text-center" scope="col">Grade</th>
-                                <th class="text-center" scope="col">Time to complete</th>
-                                <th class="text-center" scope="col">Is checked</th>
-                                <th class="text-center" scope="col">Is checked by AI</th>
-                                <th class="text-center" scope="col">Status</th>
-                                <th class="text-center" scope="col">Actions</th>
+                                <th class="text-center" scope="col">@Localizer["Attempt"]</th>
+                                <th class="text-center" scope="col">@Localizer["Grade"]</th>
+                                <th class="text-center" scope="col">@Localizer["TimeToComplete"]</th>
+                                <th class="text-center" scope="col">@Localizer["IsChecked"]</th>
+                                <th class="text-center" scope="col">@Localizer["IsCheckedByAI"]</th>
+                                <th class="text-center" scope="col">@Localizer["Status"]</th>
+                                <th class="text-center" scope="col">@Localizer["Actions"]</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -122,18 +124,18 @@
                                 <tr>
                                     <td class="text-center align-middle">@(i + 1)</td>
                                     <td class="text-center align-middle">
-                                            @if (userAttempts.Value.UserAttempts[i].IsExamAssessed)
-                                            {
-                                                @userAttempts.Value.UserAttempts[i].TotalGrade
+                                        @if (userAttempts.Value.UserAttempts[i].IsExamAssessed)
+                                        {
+                                            @userAttempts.Value.UserAttempts[i].TotalGrade
                                         }
                                         else
                                         {
                                             <span>-</span>
                                         }
                                     </td>
-                                        <td class="text-center align-middle">@userAttempts.Value.UserAttempts[i].TakenTimeToComplete.ToString(@"hh\:mm\:ss")</td>
+                                     <td class="text-center align-middle">@userAttempts.Value.UserAttempts[i].TakenTimeToComplete.ToString(@"hh\:mm\:ss")</td>
                                     <td class="text-center align-middle">
-                                            @if (userAttempts.Value.UserAttempts[i].IsExamAssessed)
+                                        @if (userAttempts.Value.UserAttempts[i].IsExamAssessed)
                                         {
                                             <i class="fas fa-check" style="color: green; font-size: 25px;"></i>
                                         }
@@ -143,9 +145,9 @@
                                         }
                                     </td>
                                     <td class="text-center align-middle">
-                                            @if (userAttempts.Value.UserAttempts[i].IsExamAssessed)
-                                            {
-                                                @if (userAttempts.Value.UserAttempts[i].IsExamAssessedByAi)
+                                        @if (userAttempts.Value.UserAttempts[i].IsExamAssessed)
+                                        {
+                                            @if (userAttempts.Value.UserAttempts[i].IsExamAssessedByAi)
                                             {
                                                 <i class="fas fa-check" style="color: green; font-size: 25px;"></i>
                                             }
@@ -158,30 +160,30 @@
                                     <td class="text-center align-middle">
                                             @if (!userAttempts.Value.UserAttempts[i].IsExamAssessed)
                                         {
-                                            <span class="not-assessed">Not assessed</span>
+                                            <span class="not-assessed">@Localizer["NotAssessed"]</span>
                                         }
                                             else if (userAttempts.Value.UserAttempts[i].TotalGrade >= Model.MinimumPassGrade)
                                         {
-                                            <span class="passed">Passed</span>
+                                            <span class="passed">@Localizer["Passed"]</span>
                                         }
                                         else
                                         {
-                                            <span class="failed">Failed</span>
+                                            <span class="failed">@Localizer["Failed"]</span>
                                         }
                                     </td>
                                     <td class="text-center align-middle">
                                         <div class="d-flex justify-content-center align-items-center">
                                             @if (userAttempts.Value.UserAttempts[i].Status == ExamAttemptStatusViewModel.AssessingByAI)
                                             {
-                                                <button class="btn btn-outline-info me-2" disabled="disabled">Assessing by AI</button>
+                                                <button class="btn btn-outline-info me-2" disabled="disabled">@Localizer["AssessingByAI"]</button>
                                             }
                                             else
                                             {
-                                                    <button type="submit" class="btn btn-outline-info me-2 assessByAiButton" data-userExamAttemptId="@userAttempts.Value.UserAttempts[i].AttemptId">Assess by AI</button>
+                                                    <button type="submit" class="btn btn-outline-info me-2 assessByAiButton" data-userExamAttemptId="@userAttempts.Value.UserAttempts[i].AttemptId">@Localizer["AssessByAI"]</button>
                                             }
 
-                                            @Html.ActionLink("Assess manually", "ManualEvaluation", "ExamAssessment", new { examId = userAttempts.Value.UserAttempts[i].AttemptId }, new { @class = "btn btn-outline-info me-2" })
-                                            @Html.ActionLink("View answers", "TakenExamDetails", "ExamAssessment", new { id = userAttempts.Value.UserAttempts[i].AttemptId }, new { @class = "btn btn-outline-info" })
+                                            @Html.ActionLink(@Localizer["AssessManually"].Value, "ManualEvaluation", "ExamAssessment", new { examId = userAttempts.Value.UserAttempts[i].AttemptId }, new { @class = "btn btn-outline-info me-2" })
+                                            @Html.ActionLink(@Localizer["ViewAnswers"].Value, "TakenExamDetails", "ExamAssessment", new { id = userAttempts.Value.UserAttempts[i].AttemptId }, new { @class = "btn btn-outline-info" })
                                         </div>
                                     </td>
                                 </tr>
@@ -198,14 +200,14 @@
 {
     <div class="text-center mb-5 mt-5">
         <h1 class="display-4">
-            No one has passed the exam yet
+            @Localizer["NoOneHasPassedTheExamYet"]
         </h1>
     </div>
 }
 
 <div id="noResultsContainer" class="text-center mb-5 mt-5" style="display:none;">
     <h1 class="display-4">
-        Nothing found, try update the filters
+        @Localizer["NothingFoundTryUpdateTheFilters"]
     </h1>
 </div>
 
@@ -238,7 +240,7 @@
                 success: function (response) {
                     var toastEl = $('#testToast');
                     var toastMessage = $('#testToastMessage');
-                    toastMessage.text(`AI evaluation completed`);
+                    toastMessage.text(`@Localizer["AIEvaluationCompleted"]</h1>`);
                     var toast = new bootstrap.Toast(toastEl);
                     toast.show();
                 }
@@ -249,35 +251,13 @@
 
             var toastEl = $('#testToast');
             var toastMessage = $('#testToastMessage');
-            toastMessage.text(`Execution started in background`);
+            toastMessage.text(`@Localizer["ExecutionStartedInBackground"]`);
             var toast = new bootstrap.Toast(toastEl);
             toast.show();
 
             $(this).addClass('disabled');
-            $(this).text('Assessing by AI');
+            $(this).text('@Localizer["AssessingByAI"]');
         });
-
-        function formatTime(seconds) {
-            // Calculate hours, minutes, and remaining seconds
-            const hours = Math.floor(seconds / 3600);
-            const minutes = Math.floor((seconds % 3600) / 60);
-            const remainingSeconds = seconds % 60;
-
-            // Construct the time string
-            let timeString = '';
-
-            if (hours > 0) {
-                timeString += `${hours} hour${hours > 1 ? 's' : ''}`;
-            }
-            if (minutes > 0) {
-                timeString += (timeString ? ' and ' : '') + `${minutes} minute${minutes > 1 ? 's' : ''}`;
-            }
-            if (remainingSeconds > 0 || timeString === '') {
-                timeString += (timeString ? ' and ' : '') + `${remainingSeconds} second${remainingSeconds !== 1 ? 's' : ''}`;
-            }
-
-            return timeString;
-        }
     </script>
 
     <script>
@@ -290,10 +270,10 @@
 
     <script>
         function filterData() {
-            var statusValue = document.getElementById('statusButton').innerText.replace('Status - ', '');
-            var isCheckedValue = document.getElementById('isCheckedButton').innerText.replace('Is checked - ', '');
-            var isCheckedByAIValue = document.getElementById('isCheckedByAIBtn').innerText.replace('Is checked by AI - ', '');
-            const sortByGrade = document.getElementById('sortByGradeButton').innerText.replace('Sort by grade - ', '');
+            var statusValue = document.getElementById('statusButton').innerText.replace('@Localizer["StatusDash"]', '');
+            var isCheckedValue = document.getElementById('isCheckedButton').innerText.replace('@Localizer["IsCheckedDash"]', '');
+            var isCheckedByAIValue = document.getElementById('isCheckedByAIBtn').innerText.replace('@Localizer["IsCheckedByAIDash"]', '');
+            const sortByGrade = document.getElementById('sortByGradeButton').innerText.replace('@Localizer["SortByGradeDash"]', '');
             let searchQuery = document.getElementById('searchInput').value.toLowerCase();
 
             const userAttemptRows = document.querySelectorAll('.accordion-item');
@@ -307,19 +287,19 @@
 
                     var shouldDisplay = true;
 
-                    if (isCheckedValue === 'Yes' && !isChecked) {
+                    if (isCheckedValue === '@Localizer["Yes"]' && !isChecked) {
                         shouldDisplay = false;
                     }
 
-                    if (isCheckedValue === 'No' && isChecked) {
+                    if (isCheckedValue === '@Localizer["No"]' && isChecked) {
                         shouldDisplay = false;
                     }
 
-                    if (isCheckedByAIValue === 'Yes' && !isCheckedByAI) {
+                    if (isCheckedByAIValue === '@Localizer["Yes"]' && !isCheckedByAI) {
                         shouldDisplay = false;
                     }
 
-                    if (isCheckedByAIValue === 'No' && (isCheckedByAI || !isChecked)) {
+                    if (isCheckedByAIValue === '@Localizer["No"]' && (isCheckedByAI || !isChecked)) {
                         shouldDisplay = false;
                     }
 
@@ -337,7 +317,7 @@
                 }
 
                 const finalStatus = userAttemptRows[i].querySelector(".finalUserExamStatus").innerText;
-                if (statusValue.toLowerCase().trim() !== 'all') {
+                if (statusValue.toLowerCase().trim() !== '@Localizer["AllLowerCase"]') {
                     if (statusValue.toLowerCase() === finalStatus.toLowerCase()) {
                         userAttemptRows[i].style.removeProperty('display');
                     } else {
@@ -371,9 +351,9 @@
                     const gradeA = parseFloat(finaGradeA.textContent);
                     const gradeB = parseFloat(finaGradeB.textContent);
 
-                    if (sortByGrade === 'From min to max') {
+                    if (sortByGrade === '@Localizer["FromMinToMax"]') {
                         return gradeA - gradeB; // Ascending order
-                    } else if (sortByGrade === 'From max to min') {
+                    } else if (sortByGrade === '@Localizer["FromMaxToMin"]') {
                         return gradeB - gradeA; // Descending order
                     }
                 });

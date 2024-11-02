@@ -1,16 +1,18 @@
 ﻿@model Presentation_Layer.ViewModels.Course.AppliedCoursesViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "My courses";
+    ViewData["Title"] = Localizer["MyCourses"];
 }
 
 <div class="container-fluid custom-container" style="width: 90%;">
     <div class="d-flex justify-content-between align-items-center">
-        <h1 class="mx-auto text-center">My courses</h1>
+        <h1 class="mx-auto text-center">@Localizer["MyCourses"]</h1>
         @if (User.IsInRole(RoleNames.Teacher))
         {
             <button type="button" class="btn btn-primary" style="border-radius: 25px;" data-bs-toggle="modal" data-bs-target="#newCourseCreationModal">
-                Create new course
+                @Localizer["CreateNewCourse"]
             </button>
         }
     </div>
@@ -19,7 +21,7 @@
     {
         <div class="form-floating mb-3">
             <input type="text" id="searchInput" name="searchQuery" class="form-control" placeholder="Search courses..." aria-label="Search courses" onkeyup="filterCourses()">
-            <label for="searchInput" class="form-label">Search for courses</label>
+            <label for="searchInput" class="form-label">@Localizer["SearchForCourses"]</label>
         </div>
 
         <div id="courseListAndPagination">
@@ -30,7 +32,9 @@
     {
         <div class="d-flex justify-content-center align-items-center" style="min-height: calc(100vh - 185px);">
             <div class="text-center">
-                <h3>It looks like you’re not enrolled in any courses right now</h3>
+                <h3>
+                    @Localizer["NotEnrolledInAnyCoursesRightNow"]
+                </h3>
             </div>
         </div>
     }
@@ -42,25 +46,24 @@
         <div class="modal-content">
             <form id="createCourseForm" asp-action="Create" method="post">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="newCourseCreationModalLabel">Create new course</h1>
+                    <h1 class="modal-title fs-5" id="newCourseCreationModalLabel">@Localizer["CreateNewCourse"]</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="form-floating mb-3">
                         <input asp-for="CreatedCourse.Name" class="form-control" id="courseNameFloatingInput" />
-                        <label for="courseNameFloatingInput">Course Name</label>
+                        <label for="courseNameFloatingInput">@Localizer["CourseName"]</label>
                     </div>
                     <div class="form-floating">
                         <textarea asp-for="CreatedCourse.LongDescription" class="form-control" style="max-height: 50vh; min-height: 20vh;" id="courseLongDescriptionfloatingTextarea"></textarea>
-                        <label for="courseLongDescriptionfloatingTextarea">Course Description</label>
+                        <label for="courseLongDescriptionfloatingTextarea">@Localizer["CourseDescription"]</label>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-success">Create</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Close"]</button>
+                    <button type="submit" class="btn btn-success">@Localizer["Create"]</button>
                 </div>
             </form>
-
         </div>
     </div>
 </div>
@@ -81,12 +84,7 @@
                 if (response.success) {
                     console.log(response);
                     window.location.href = `/Course/Details/${response.courseId}`;
-                } else {
-                    console.error('Form submission failed:', response.errors);
                 }
-            },
-            error: function () {
-                console.error('Error submitting the form.');
             }
         });
     });
@@ -99,7 +97,7 @@
         $.ajax({
             url: url,
             type: 'GET',
-            data: { searchQuery: searchQuery, pageNumber: 1 }, // Reset to first page on search
+            data: { searchQuery: searchQuery, pageNumber: 1 },
             success: function (data) {
                 var parsedData = $.parseHTML(data);
 
@@ -108,7 +106,7 @@
                 if (courseListHtml !== undefined && !isEmptyRow(courseListHtml)) {
                     $('#courseList').html(courseListHtml);
                 } else {
-                    $('#courseList').html('<div class="text-center mt-5 mb-5"><h1>Nothing found</h1></div>');
+                    $('#courseList').html('<div class="text-center mt-5 mb-5"><h1>@Localizer["NothingFound"]</h1></div>');
                 }
 
                 if (paginationHtml !== undefined) {

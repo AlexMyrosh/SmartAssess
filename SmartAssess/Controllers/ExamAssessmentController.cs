@@ -30,7 +30,7 @@ namespace Presentation_Layer.Controllers
         {
             var examPassModel = await userExamPassService.GetByIdWithDetailsAsync(id);
             var viewModel = mapper.Map<TakenExamDetailsViewModel>(examPassModel);
-            viewModel.GeneralFeedback = viewModel.GeneralFeedback.Trim();
+            viewModel.GeneralFeedback = viewModel.GeneralFeedback?.Trim();
             return View(viewModel);
         }
 

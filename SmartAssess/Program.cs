@@ -27,6 +27,9 @@ using Presentation_Layer.ViewModels.Course.Shared;
 using Presentation_Layer.FluentValidator.ExamAssessment;
 using Presentation_Layer.ViewModels.ExamAssessment;
 using Presentation_Layer.ViewModels.ExamAssessment.Shared;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
+using Microsoft.AspNetCore.Mvc.Razor;
 
 namespace Presentation_Layer
 {
@@ -45,9 +48,10 @@ namespace Presentation_Layer
             //app.UseHsts();
             //app.UseStatusCodePagesWithReExecute("/Error/{0}");
             app.UseDeveloperExceptionPage();
+            app.UseRequestLocalization();
+            app.UseRouting();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllerRoute(
@@ -108,6 +112,21 @@ namespace Presentation_Layer
                 mc.AddProfile(new DataAccessAndBusinessLogicModesMapper());
             }).CreateMapper());
 
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var supportedCultures = new[]
+                {
+                    new CultureInfo("en-us"),
+                    new CultureInfo("uk-ua")
+                };
+
+                options.DefaultRequestCulture = new RequestCulture("uk-ua");
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+            });
+
+
             services.Configure<OpenAiConfig>(configuration.GetSection("OpenAiConfig"));
             services.Configure<EmailConfig>(configuration.GetSection("EmailSettings"));
 
@@ -145,7 +164,9 @@ namespace Presentation_Layer
                     options.ModelValidatorProviders.Clear();
                 })
                 .AddMvcOptions(option => option.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true)
-                .AddFluentValidation();
+                .AddFluentValidation()
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+                .AddDataAnnotationsLocalization();
 
 
             services.AddRazorPages();
