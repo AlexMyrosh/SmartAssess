@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Presentation_Layer.ViewModels.Account;
 using Presentation_Layer.ViewModels.UserManagement;
 
-namespace Presentation_Layer.Controllers
+namespace Controllers
 {
     public class UserManagementController(
         IAccountService accountService,

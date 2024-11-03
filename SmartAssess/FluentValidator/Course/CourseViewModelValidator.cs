@@ -1,14 +1,16 @@
 ﻿using FluentValidation;
+using FluentValidator.Account;
+using Microsoft.Extensions.Localization;
 using Presentation_Layer.ViewModels.Course.Shared;
 
-namespace Presentation_Layer.FluentValidator.Course
+namespace FluentValidator.Course
 {
     public class CourseViewModelValidator : AbstractValidator<CourseViewModel>
     {
-        public CourseViewModelValidator()
+        public CourseViewModelValidator(IStringLocalizer<CourseViewModelValidator> localizer)
         {
-            RuleFor(x => x.Name).NotEmpty().WithMessage("Name is required");
-            RuleFor(x => x.LongDescription).NotEmpty().WithMessage("Description is required");
+            RuleFor(x => x.Name).NotEmpty().WithMessage(localizer["NameRequired"]);
+            RuleFor(x => x.LongDescription).NotEmpty().WithMessage(localizer["DescriptionRequired"]);
         }
     }
 }

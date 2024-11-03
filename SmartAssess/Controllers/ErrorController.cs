@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Presentation_Layer.Controllers
+namespace Controllers
 {
     public class ErrorController : Controller
     {

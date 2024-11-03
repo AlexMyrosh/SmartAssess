@@ -1,17 +1,10 @@
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Localization;
 
-namespace Presentation_Layer.Controllers
+namespace Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IStringLocalizer<HomeController> _localizer;
-        public HomeController(IStringLocalizer<HomeController> localizer)
-        {
-            _localizer = localizer;
-        }
-
         [HttpGet]
         public IActionResult Index()
         {
@@ -32,7 +25,7 @@ namespace Presentation_Layer.Controllers
                 new CookieOptions
                 {
                     Expires = DateTimeOffset.UtcNow.AddYears(1),
-                    IsEssential = true // Ensures the cookie is set even if user consent isn't given
+                    IsEssential = true
                 }
             );
 

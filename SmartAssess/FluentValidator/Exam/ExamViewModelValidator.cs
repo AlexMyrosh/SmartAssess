@@ -1,22 +1,24 @@
 ﻿using FluentValidation;
+using FluentValidator.Course;
+using Microsoft.Extensions.Localization;
 using Presentation_Layer.ViewModels.Exam;
 
-namespace Presentation_Layer.FluentValidator.Exam
+namespace FluentValidator.Exam
 {
     public class ExamViewModelValidator : AbstractValidator<ExamViewModel>
     {
-        public ExamViewModelValidator()
+        public ExamViewModelValidator(IStringLocalizer<ExamViewModelValidator> localizer)
         {
-            RuleFor(x => x.Name).NotEmpty().WithMessage("Name is required");
-            RuleFor(x => x.Description).NotEmpty().WithMessage("Description is required");
-            RuleFor(x => x.MaxAttemptsAllowed).NotEmpty().WithMessage("Max attempts number is required");
-            RuleFor(x => x.ExamStartDateTime).NotEmpty().WithMessage("Start date is required");
-            RuleFor(x => x.ExamEndDateTime).NotEmpty().WithMessage("End date is required");
-            RuleFor(x => x.ExamDuration).NotEmpty().WithMessage("Exam duration value is required");
-            RuleFor(x => x.FinalGradeCalculationMethod).NotEmpty().WithMessage("Final grade calculation method is required");
-            RuleFor(x => x.CourseId).NotEmpty().WithMessage("Course Id is required");
-            RuleFor(x => x.Questions).Must(x=>x.Count > 0).WithMessage("At least one question is required");
-            RuleFor(x => x.MinimumPassGrade).LessThanOrEqualTo(x => x.Questions.Sum(q => q.MaxGrade)).WithMessage("Min pass grade should be less than max possible grade for all questions");
+            RuleFor(x => x.Name).NotEmpty().WithMessage(localizer["NameRequired"]);
+            RuleFor(x => x.Description).NotEmpty().WithMessage(localizer["DescriptionRequired"]);
+            RuleFor(x => x.MaxAttemptsAllowed).NotEmpty().WithMessage(localizer["MaxAttemptsNumberRequired"]);
+            RuleFor(x => x.ExamStartDateTime).NotEmpty().WithMessage(localizer["StartDateRequired"]);
+            RuleFor(x => x.ExamEndDateTime).NotEmpty().WithMessage(localizer["EndDateRequired"]);
+            RuleFor(x => x.ExamDuration).NotEmpty().WithMessage(localizer["ExamDurationValueRequired"]);
+            RuleFor(x => x.FinalGradeCalculationMethod).NotEmpty().WithMessage(localizer["FinalGradeCalculationMethodRequired"]);
+            RuleFor(x => x.CourseId).NotEmpty().WithMessage(localizer["CourseIdRequired"]);
+            RuleFor(x => x.Questions).Must(x=>x.Count > 0).WithMessage(localizer["AtLeastOneQuestionRequired"]);
+            RuleFor(x => x.MinimumPassGrade).LessThanOrEqualTo(x => x.Questions.Sum(q => q.MaxGrade)).WithMessage(localizer["MinPassGradeShouldBeLessThanTotalQuestionsGrade"]);
         }
     }
 }

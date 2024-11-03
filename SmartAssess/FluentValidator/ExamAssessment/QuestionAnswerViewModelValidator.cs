@@ -1,13 +1,14 @@
 ﻿using FluentValidation;
+using Microsoft.Extensions.Localization;
 using Presentation_Layer.ViewModels.ExamAssessment.Shared;
 
-namespace Presentation_Layer.FluentValidator.ExamAssessment
+namespace FluentValidator.ExamAssessment
 {
     public class QuestionAnswerViewModelValidator : AbstractValidator<QuestionAnswerViewModel>
     {
-        public QuestionAnswerViewModelValidator()
+        public QuestionAnswerViewModelValidator(IStringLocalizer<QuestionAnswerViewModelValidator> localizer)
         {
-            RuleFor(x => x.QuestionAnswerId).NotEmpty().WithMessage("Question answer Id is required");
+            RuleFor(x => x.QuestionAnswerId).NotEmpty().WithMessage(localizer["QuestionAnswerIdRequired"]);
         }
     }
 }

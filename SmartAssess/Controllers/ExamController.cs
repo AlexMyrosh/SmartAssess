@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Presentation_Layer.ViewModels.Exam;
 using Presentation_Layer.ViewModels.Exam.Shared;
 
-namespace Presentation_Layer.Controllers
+namespace Controllers
 {
     [Authorize]
     public class ExamController(IExamService examService, ICourseService courseService, IMapper mapper)

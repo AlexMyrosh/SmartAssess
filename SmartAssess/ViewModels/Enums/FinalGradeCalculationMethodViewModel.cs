@@ -1,4 +1,4 @@
-﻿namespace Presentation_Layer.ViewModels.Enums
+﻿namespace ViewModels.Enums
 {
     public enum FinalGradeCalculationMethodViewModel
     {

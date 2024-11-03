@@ -1,14 +1,16 @@
 ﻿using FluentValidation;
+using FluentValidator.Exam;
+using Microsoft.Extensions.Localization;
 using Presentation_Layer.ViewModels.ExamAssessment;
 
-namespace Presentation_Layer.FluentValidator.ExamAssessment
+namespace FluentValidator.ExamAssessment
 {
     public class ExamManualEvaluationViewModelValidator : AbstractValidator<ExamManualEvaluationViewModel>
     {
-        public ExamManualEvaluationViewModelValidator()
+        public ExamManualEvaluationViewModelValidator(IStringLocalizer<ExamManualEvaluationViewModelValidator> localizer)
         {
-            RuleFor(x => x.ExamId).NotEmpty().WithMessage("Exam id is null");
-            RuleFor(x => x.ExamAttemptId).NotEmpty().WithMessage("Exam attempt id is null");
+            RuleFor(x => x.ExamId).NotEmpty().WithMessage(localizer["ExamIdNull"]);
+            RuleFor(x => x.ExamAttemptId).NotEmpty().WithMessage(localizer["ExamAttemptIdNull"]);
         }
     }
 }

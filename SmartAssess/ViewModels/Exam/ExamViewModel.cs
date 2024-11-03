@@ -1,4 +1,4 @@
-﻿using Presentation_Layer.ViewModels.Enums;
+﻿using ViewModels.Enums;
 using Presentation_Layer.ViewModels.Exam.Shared;
 
 namespace Presentation_Layer.ViewModels.Exam

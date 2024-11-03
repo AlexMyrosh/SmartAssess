@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Presentation_Layer.ViewModels.Course;
 using Presentation_Layer.ViewModels.Course.Shared;
 
-namespace Presentation_Layer.Controllers
+namespace Controllers
 {
     [Authorize]
     public class CourseController(

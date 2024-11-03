@@ -1,15 +1,16 @@
 ﻿using FluentValidation;
+using Microsoft.Extensions.Localization;
 using Presentation_Layer.ViewModels.Account;
 
-namespace Presentation_Layer.FluentValidator.Account
+namespace FluentValidator.Account
 {
     public class ChangePasswordViewModelValidator : AbstractValidator<ChangePasswordViewModel>
     {
-        public ChangePasswordViewModelValidator()
+        public ChangePasswordViewModelValidator(IStringLocalizer<ChangePasswordViewModelValidator> localizer)
         {
-            RuleFor(x => x.CurrentPassword).NotEmpty().WithMessage("Current password is required");
-            RuleFor(x => x.NewPassword).NotEmpty().WithMessage("New password is required");
-            RuleFor(x => x.ConfirmNewPassword).Equal(x => x.NewPassword).WithMessage("Passwords don't match").NotEmpty().WithMessage("Please confirm new password");
+            RuleFor(x => x.CurrentPassword).NotEmpty().WithMessage(localizer["CurrentPasswordIsRequired"]);
+            RuleFor(x => x.NewPassword).NotEmpty().WithMessage(localizer["NewPasswordIsRequired"]);
+            RuleFor(x => x.ConfirmNewPassword).Equal(x => x.NewPassword).WithMessage(localizer["PasswordsDontMatch"]).NotEmpty().WithMessage(localizer["PleaseConfirmNewPassword"]);
         }
     }
 }

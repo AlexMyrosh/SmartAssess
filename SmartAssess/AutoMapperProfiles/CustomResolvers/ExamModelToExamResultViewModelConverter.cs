@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Business_Logic_Layer.Models;
-using Presentation_Layer.ViewModels.Enums;
+using ViewModels.Enums;
 using Presentation_Layer.ViewModels.Exam;
 using Presentation_Layer.ViewModels.Exam.Shared;
 

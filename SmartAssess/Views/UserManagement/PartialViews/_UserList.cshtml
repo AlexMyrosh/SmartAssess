@@ -22,13 +22,14 @@
                 @Model.Users[i].FirstName @Model.Users[i].LastName
             </td>
             <td class="text-center align-middle">
-                @Model.Users[i].Role
+                @Localizer[Model.Users[i].Role]
             </td>
             <td class="text-center align-middle">
                 <button type="button" class="btn btn-success d-inline-block"
                         data-bs-toggle="modal" 
                         data-bs-target="#roleUpdateModalWindow"
                         data-user-id="@Model.Users[i].Id"
+                        data-user-role-localized="@Localizer[Model.Users[i].Role]"
                         data-user-role="@Model.Users[i].Role">
                         @Localizer["UpdateRole"]
                 </button>

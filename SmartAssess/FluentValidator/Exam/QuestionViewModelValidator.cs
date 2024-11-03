@@ -1,14 +1,15 @@
 ﻿using FluentValidation;
+using Microsoft.Extensions.Localization;
 using Presentation_Layer.ViewModels.Exam.Shared;
 
-namespace Presentation_Layer.FluentValidator.Exam
+namespace FluentValidator.Exam
 {
     public class QuestionViewModelValidator : AbstractValidator<QuestionViewModel>
     {
-        public QuestionViewModelValidator()
+        public QuestionViewModelValidator(IStringLocalizer<QuestionViewModelValidator> localizer)
         {
-            RuleFor(x => x.MaxGrade).NotEmpty().WithMessage("Max grade is required");
-            RuleFor(x => x.QuestionText).NotEmpty().WithMessage("Question text is required");
+            RuleFor(x => x.MaxGrade).NotEmpty().WithMessage(localizer["MaxGradeRequired"]);
+            RuleFor(x => x.QuestionText).NotEmpty().WithMessage(localizer["QuestionTextRequired"]);
         }
     }
 }

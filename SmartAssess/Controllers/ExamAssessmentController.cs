@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Presentation_Layer.ViewModels.ExamAssessment;
 
-namespace Presentation_Layer.Controllers
+namespace Controllers
 {
     public class ExamAssessmentController(
         ICourseService courseService,

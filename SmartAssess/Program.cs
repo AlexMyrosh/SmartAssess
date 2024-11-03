@@ -16,20 +16,20 @@ using Presentation_Layer.Extensions;
 using FluentValidation.AspNetCore;
 using Business_Logic_Layer.Models;
 using Presentation_Layer.Filters;
-using Presentation_Layer.FluentValidator.Account;
 using Serilog.Sinks.MSSqlServer;
 using Serilog;
 using Presentation_Layer.ViewModels.Account;
-using Presentation_Layer.FluentValidator.Exam;
 using Presentation_Layer.ViewModels.Exam.Shared;
-using Presentation_Layer.FluentValidator.Course;
 using Presentation_Layer.ViewModels.Course.Shared;
-using Presentation_Layer.FluentValidator.ExamAssessment;
 using Presentation_Layer.ViewModels.ExamAssessment;
 using Presentation_Layer.ViewModels.ExamAssessment.Shared;
 using Microsoft.AspNetCore.Localization;
 using System.Globalization;
 using Microsoft.AspNetCore.Mvc.Razor;
+using FluentValidator.Account;
+using FluentValidator.Exam;
+using FluentValidator.Course;
+using FluentValidator.ExamAssessment;
 
 namespace Presentation_Layer
 {

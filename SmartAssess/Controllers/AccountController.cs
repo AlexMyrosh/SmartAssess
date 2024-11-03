@@ -5,14 +5,16 @@ using Data_Access_Layer.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using Presentation_Layer.ViewModels.Account;
 
-namespace Presentation_Layer.Controllers
+namespace Controllers
 {
     public class AccountController(
         IAccountService accountService,
         SignInManager<UserEntity> signInManager,
-        IMapper mapper)
+        IMapper mapper,
+        IStringLocalizer<AccountController> localizer)
         : Controller
     {
         [HttpGet]
@@ -65,14 +67,14 @@ namespace Presentation_Layer.Controllers
                     var userEntity = await accountService.GetUserByUsernameAsync(model.UserName);
                     if (userEntity == null)
                     {
-                        ModelState.AddModelError("", "User is not available");
+                        ModelState.AddModelError("", localizer["UserIsNotAvailable"]);
                         return View(model);
                     }
 
                     return RedirectToAction("Index", "Home");
                 }
 
-                ModelState.AddModelError("", "Invalid login attempt");
+                ModelState.AddModelError("", localizer["InvalidLoginAttempt"]);
             }
 
             return View(model);
@@ -238,7 +240,7 @@ namespace Presentation_Layer.Controllers
                     Thread.Sleep(5000);
                 }
 
-                TempData["Notification"] = "If the email address is found in the system - a recovery email has been sent";
+                TempData["Notification"] = localizer["IfEmailIsFoundEmailHasBeenSent"];
                 return RedirectToAction("Login");
             }
 
@@ -273,7 +275,7 @@ namespace Presentation_Layer.Controllers
             var result = await accountService.ResetPasswordAsync(model.Email, model.Code, model.NewPassword);
             if (result.Succeeded)
             {
-                TempData["Notification"] = "Password updated";
+                TempData["Notification"] = localizer["PasswordUpdated"];
                 return RedirectToAction("Login");
             }
 
@@ -292,7 +294,7 @@ namespace Presentation_Layer.Controllers
             var isUserSignedIn = signInManager.IsSignedIn(User);
             if (result.Succeeded)
             {
-                TempData["SuccessNotification"] = "Email confirmed successfully";
+                TempData["SuccessNotification"] = localizer["EmailConfirmedSuccessfully"];
                 if (isUserSignedIn)
                 {
                     return RedirectToAction("Details");
@@ -301,7 +303,7 @@ namespace Presentation_Layer.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            TempData["ErrorNotification"] = "Email confirmation failed";
+            TempData["ErrorNotification"] = localizer["EmailConfirmationFailed"];
             if (isUserSignedIn)
             {
                 return RedirectToAction("Details");
@@ -322,7 +324,7 @@ namespace Presentation_Layer.Controllers
             var result = await accountService.ChangePasswordAsync(model.UserId, model.CurrentPassword, model.NewPassword);
             if (result.Succeeded)
             {
-                return Json(new { success = true, message = "Password successfully updated" });
+                return Json(new { success = true, message = localizer["PasswordSuccessfullyUpdated"] });
             }
 
             List<string> errorList = new();
@@ -347,7 +349,7 @@ namespace Presentation_Layer.Controllers
             var confirmationToken = await accountService.GenerateChangeEmailTokenAsync(userId, newEmail);
             var callbackUrl = Url.Action("ConfirmEmailChange", "Account", new { userId, email = newEmail, token = confirmationToken }, protocol: Request.Scheme);
             await accountService.ResetEmailAsync(newEmail, callbackUrl);
-            return Json(new { success = true, message = "Confirmation email was sent" });
+            return Json(new { success = true, message = localizer["ConfirmationEmailWasSent"] });
         }
 
         [HttpPost]
@@ -362,17 +364,17 @@ namespace Presentation_Layer.Controllers
             var isEmailTaken = await accountService.IsUserExistByEmailAsync(model.NewEmail);
             if (isEmailTaken)
             {
-                return Json(new { success = false, message = "Email is taken" });
+                return Json(new { success = false, message = localizer["EmailIsTaken"] });
             }
 
-            return Json(new { success = true, message = "If email exist - confirmation message was sent" });
+            return Json(new { success = true, message = localizer["IfEmailExistConfirmationMessageWasSent"] });
         }
 
         public async Task<IActionResult> ConfirmEmailChange(string? token, string? email, string? userId)
         {
             if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(token))
             {
-                TempData["ErrorNotification"] = "Invalid link, please try again later";
+                TempData["ErrorNotification"] = localizer["InvalidLinkPleaseTryAgainLater"];
                 return RedirectToAction("Details");
             }
 
@@ -384,11 +386,11 @@ namespace Presentation_Layer.Controllers
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
 
-                TempData["ErrorNotification"] = "Something went wrong, please try again later";
+                TempData["ErrorNotification"] = localizer["SomethingWentWrongPleaseTryAgainLater"];
                 return RedirectToAction("Details");
             }
 
-            TempData["SuccessNotification"] = $"Email confirmed and updated to {email}";
+            TempData["SuccessNotification"] = $"{localizer["EmailConfirmedAndUpdatedTo"]} {email}";
             return RedirectToAction("Details");
         }
 

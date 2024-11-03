@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Presentation_Layer.ViewModels.Trash;
 
-namespace Presentation_Layer.Controllers
+namespace Controllers
 {
     public class TrashController(
         IAccountService _accountService,

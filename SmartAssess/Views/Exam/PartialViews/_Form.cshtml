@@ -1,8 +1,13 @@
-﻿@using Presentation_Layer.ViewModels.Enums
+﻿@using Microsoft.Extensions.Localization
+@using ViewModels.Enums
 @using Microsoft.AspNetCore.Mvc.ModelBinding
 @model Presentation_Layer.ViewModels.Exam.ExamViewModel
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
+@inject IStringLocalizer<FinalGradeCalculationMethodViewModel> EnumLocalizer
+@{
+    var test = EnumLocalizer["Average"];
+}
 
 <div class="container">
     <div class="form-floating mb-3">
@@ -55,13 +60,13 @@
         <div class="col">
             <div class="form-floating">
                 @Html.DropDownListFor(model => model.FinalGradeCalculationMethod,
-                    Enum.GetValues(typeof(FinalGradeCalculationMethodViewModel)).Cast<FinalGradeCalculationMethodViewModel>()
-                        .Select(e => new SelectListItem
-                        {
-                            Value = e.ToString(),
-                            Text = e.ToString()
-                        }),
-                    new { @class = "form-select", id = "finalGradeCalculationMethodForm" })
+                         Enum.GetValues(typeof(FinalGradeCalculationMethodViewModel)).Cast<FinalGradeCalculationMethodViewModel>()
+                         .Select(e => new SelectListItem
+                {
+                    Value = e.ToString(),
+                    Text = EnumLocalizer[e.ToString()] // Get the localized text here
+                }),
+                         new { @class = "form-select", id = "finalGradeCalculationMethodForm" })
                 <label for="finalGradeCalculationMethodForm" asp-for="FinalGradeCalculationMethod">@Localizer["FinalGradeCalculationMethod"]</label>
             </div>
         </div>

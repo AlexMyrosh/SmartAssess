@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="SignUpToGainAccessToFullRangeOfFeatures" xml:space="preserve">
-    <value>Зареєструйтеся, щоб отримати доступ до повного спектру функцій</value>
+    <value>Увійдіть в аккаунт, щоб отримати доступ до повного спектру функцій</value>
   </data>
   <data name="WelcomeToSmartAssess" xml:space="preserve">
     <value>Вітаємо вас у SmartAssess!</value>

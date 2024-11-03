@@ -1,13 +1,14 @@
 ﻿using FluentValidation;
+using Microsoft.Extensions.Localization;
 using Presentation_Layer.ViewModels.Account;
 
-namespace Presentation_Layer.FluentValidator.Account
+namespace FluentValidator.Account
 {
     public class ForgotPasswordViewModelValidator : AbstractValidator<ForgotPasswordViewModel>
     {
-        public ForgotPasswordViewModelValidator()
+        public ForgotPasswordViewModelValidator(IStringLocalizer<ForgotPasswordViewModelValidator> localizer)
         {
-            RuleFor(x => x.Email).EmailAddress().WithMessage("Please provide correct email").NotEmpty().WithMessage("Email is required");
+            RuleFor(x => x.Email).EmailAddress().WithMessage(localizer["PleaseProvideCorrectEmail"]).NotEmpty().WithMessage(localizer["EmailIsRequired"]);
         }
     }
 }

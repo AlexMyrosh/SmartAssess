@@ -120,6 +120,9 @@
   <data name="Actions" xml:space="preserve">
     <value>Дії</value>
   </data>
+  <data name="Admin" xml:space="preserve">
+    <value>Адміністратор</value>
+  </data>
   <data name="Close" xml:space="preserve">
     <value>Скачувати</value>
   </data>
@@ -143,6 +146,12 @@
   </data>
   <data name="Role" xml:space="preserve">
     <value>Роль</value>
+  </data>
+  <data name="Student" xml:space="preserve">
+    <value>Студент</value>
+  </data>
+  <data name="Teacher" xml:space="preserve">
+    <value>Викладач</value>
   </data>
   <data name="UpdateRole" xml:space="preserve">
     <value>Змінити роль</value>
