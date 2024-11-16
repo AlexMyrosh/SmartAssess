@@ -66,7 +66,7 @@ namespace Presentation_Layer
         private static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
             // Configure connection to sql server
-            var sqlConnectionString = configuration.GetConnectionString("LocalDb");
+            var sqlConnectionString = configuration.GetConnectionString("SmartAssessConnection");
             services.AddDbContext<SqlContext>(options => options.UseSqlServer(sqlConnectionString));
 
             // Configure Logger
