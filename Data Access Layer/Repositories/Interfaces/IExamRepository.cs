@@ -11,7 +11,7 @@ namespace Data_Access_Layer.Repositories.Interfaces
 
         Task<ExamEntity?> GetByIdAsync(Guid id, bool canBeDeleted = false);
 
-        Task<ExamEntity?> GetByIdWithDetailsAsync(Guid id);
+        Task<ExamEntity?> GetByIdWithDetailsAsync(Guid id, bool canBeDeleted = false);
 
         Task<Guid> CreateAsync(ExamEntity entity);
 

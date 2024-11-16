@@ -12,7 +12,7 @@
 
 <div class="d-flex justify-content-center align-items-center mb-3" style=" min-height: 84vh;">
     <div class="card text-center" style="width: 40rem; height: auto; border-radius: @outerRadiusResult">
-        <div class="card-header">
+        <div class="card-header" style="border-top-right-radius: 20px; border-top-left-radius: 20px;">
             <h1 class="display-5">@Localizer["Register"]</h1>
         </div>
         <div class="card-body">
@@ -61,7 +61,8 @@
                     <br id="spaceBeforeErrorModal"/>
                     <div class="alert alert-danger alert-dismissible d-flex align-items-center fade show" style="border-radius: @innerRadiusResult margin-bottom: 0">
                         <i class="bi-exclamation-octagon-fill" style="font-size: 1.5em; line-height: 1;"></i>
-                        <strong class="mx-2">@Localizer["Error"]</strong> @string.Join(", ", ViewData.ModelState.SelectMany(ms => ms.Value.Errors).Select(e => e.ErrorMessage))
+                        <strong class="mx-2">@Localizer["Error"]</strong>
+                        <pre style="text-align: left;margin-bottom: 0;">@string.Join("\n", ViewData.ModelState.SelectMany(ms => ms.Value.Errors).Select(e => e.ErrorMessage))</pre>
                         <button id="closeErrorsButton" type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 }

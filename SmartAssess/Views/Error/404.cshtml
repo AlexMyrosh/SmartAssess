@@ -1,5 +1,15 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 
-<h1 class="text-center">404 Not Found</h1>
-<h3 class="text-center">@Localizer["ErrorDescription"]</h3>
+<div class="text-center" style="margin-top: 16%;">
+    <h1 class="display-1">404 Not Found</h1>
+    <h5 class="display-5" style="font-size: 2rem;">@Localizer["ErrorDescription"]</h5>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.body.style.backgroundImage = "url('/images/banners/home-background.jpg')";
+        document.body.style.backgroundSize = "cover";
+        document.body.style.backgroundPosition = "50% 50%";
+    });
+</script>

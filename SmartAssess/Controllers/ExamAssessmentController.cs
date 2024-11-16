@@ -55,6 +55,8 @@ namespace Controllers
                 return RedirectToAction("Result", "Exam", new { id = viewModel.ExamId });
             }
 
+            var examPassModel = await userExamPassService.GetByIdWithDetailsAsync(viewModel.ExamAttemptId);
+            viewModel = mapper.Map<ExamManualEvaluationViewModel>(examPassModel);
             return View(viewModel);
         }
 

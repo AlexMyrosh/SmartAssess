@@ -196,6 +196,7 @@ namespace Business_Logic_Layer.Services.Implementations
 
             userAttemptEntityFromDb.IsExamAssessed = true;
             userAttemptEntityFromDb.Status = ExamAttemptStatusEntity.Completed;
+            userAttemptEntityFromDb.IsAssessedByAi = model.IsAssessedByAi;
 
             await _unitOfWork.SaveAsync();
             return model.Id.Value;

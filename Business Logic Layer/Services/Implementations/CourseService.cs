@@ -103,7 +103,7 @@ namespace Business_Logic_Layer.Services.Implementations
 
         public async Task<CourseModel?> GetByIdWithDetailsAsync(Guid id, ClaimsPrincipal currentUserPrincipal)
         {
-            var courseEntity = await unitOfWork.CourseRepository.GetByIdWithDetailsAsync(id);
+            var courseEntity = await unitOfWork.CourseRepository.GetByIdWithDetailsAsync(id, true);
             foreach (var user in courseEntity.Users)
             {
                 var roles = await userManager.GetRolesAsync(user);

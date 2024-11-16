@@ -129,6 +129,9 @@
   <data name="AvailableForPassing" xml:space="preserve">
     <value>available for passing</value>
   </data>
+  <data name="Average" xml:space="preserve">
+    <value>Average grade</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
@@ -165,6 +168,9 @@
   <data name="FinalGradeMethod" xml:space="preserve">
     <value>Final grade method</value>
   </data>
+  <data name="LastAttempt" xml:space="preserve">
+    <value>Grade of last attempt</value>
+  </data>
   <data name="Leave" xml:space="preserve">
     <value>Leave</value>
   </data>
@@ -173,6 +179,9 @@
   </data>
   <data name="ListOfStudents" xml:space="preserve">
     <value>List of students</value>
+  </data>
+  <data name="Max" xml:space="preserve">
+    <value>Max grade</value>
   </data>
   <data name="NoExamsAtTheMoment" xml:space="preserve">
     <value>No exams at the moment</value>

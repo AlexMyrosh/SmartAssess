@@ -9,7 +9,9 @@ namespace FluentValidator.Exam
         public QuestionViewModelValidator(IStringLocalizer<QuestionViewModelValidator> localizer)
         {
             RuleFor(x => x.MaxGrade).NotEmpty().WithMessage(localizer["MaxGradeRequired"]);
+            RuleFor(x => x.MaxGrade).GreaterThan(0).WithMessage(localizer["MaxGradeRequired"]);
             RuleFor(x => x.QuestionText).NotEmpty().WithMessage(localizer["QuestionTextRequired"]);
+            RuleFor(x => x.QuestionText).NotNull().WithMessage(localizer["QuestionTextRequired"]);
         }
     }
 }

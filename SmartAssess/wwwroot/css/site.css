@@ -264,6 +264,17 @@ html {
     -o-border-radius: 2px;
 }
 
+.yellow-plank {
+    color: goldenrod;
+    background-color: rgba(255, 255, 153, 0.25);
+    padding: 6px;
+    border-radius: 2px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -ms-border-radius: 2px;
+    -o-border-radius: 2px;
+}
+
 .question {
     display: none;
     flex-direction: column;
@@ -321,4 +332,18 @@ pre {
     white-space: pre-line;
     font-family: Montserrat;
     font-size: 16px;
+}
+
+.assessByAiButton {
+    background: linear-gradient(135deg, #4b8df8, #34d2eb);
+    color: white;
+}
+
+.assessByAiButton:hover {
+    background: linear-gradient(135deg, #3a7bd9, #2ab8d1);
+    color: white;
+}
+
+.btn-outline-info.disabled {
+    color: white;
 }

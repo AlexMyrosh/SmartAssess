@@ -43,7 +43,7 @@ namespace Controllers
 
                 foreach (var error in result.Errors)
                 {
-                    ModelState.AddModelError("", error.Description);
+                    ModelState.AddModelError("", $"\n{error.Description}");
                 }
             }
 
@@ -240,7 +240,7 @@ namespace Controllers
                     Thread.Sleep(5000);
                 }
 
-                TempData["Notification"] = localizer["IfEmailIsFoundEmailHasBeenSent"];
+                TempData["Notification"] = localizer["IfEmailIsFoundEmailHasBeenSent"].ToString();
                 return RedirectToAction("Login");
             }
 
@@ -275,7 +275,7 @@ namespace Controllers
             var result = await accountService.ResetPasswordAsync(model.Email, model.Code, model.NewPassword);
             if (result.Succeeded)
             {
-                TempData["Notification"] = localizer["PasswordUpdated"];
+                TempData["Notification"] = localizer["PasswordUpdated"].ToString();
                 return RedirectToAction("Login");
             }
 
@@ -294,7 +294,7 @@ namespace Controllers
             var isUserSignedIn = signInManager.IsSignedIn(User);
             if (result.Succeeded)
             {
-                TempData["SuccessNotification"] = localizer["EmailConfirmedSuccessfully"];
+                TempData["SuccessNotification"] = localizer["EmailConfirmedSuccessfully"].ToString();
                 if (isUserSignedIn)
                 {
                     return RedirectToAction("Details");
@@ -303,7 +303,7 @@ namespace Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            TempData["ErrorNotification"] = localizer["EmailConfirmationFailed"];
+            TempData["ErrorNotification"] = localizer["EmailConfirmationFailed"].ToString();
             if (isUserSignedIn)
             {
                 return RedirectToAction("Details");
@@ -374,7 +374,7 @@ namespace Controllers
         {
             if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(token))
             {
-                TempData["ErrorNotification"] = localizer["InvalidLinkPleaseTryAgainLater"];
+                TempData["ErrorNotification"] = localizer["InvalidLinkPleaseTryAgainLater"].ToString();
                 return RedirectToAction("Details");
             }
 
@@ -386,7 +386,7 @@ namespace Controllers
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
 
-                TempData["ErrorNotification"] = localizer["SomethingWentWrongPleaseTryAgainLater"];
+                TempData["ErrorNotification"] = localizer["SomethingWentWrongPleaseTryAgainLater"].ToString();
                 return RedirectToAction("Details");
             }
 

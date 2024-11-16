@@ -31,6 +31,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Resources\ViewModels\Enums\FinalGradeCalculationMethodViewModel.en-us.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\ViewModels\Enums\FinalGradeCalculationMethodViewModel.uk-ua.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Home\Index.en-us.resx">
       <CustomToolNamespace></CustomToolNamespace>
     </EmbeddedResource>

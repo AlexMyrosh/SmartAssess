@@ -14,9 +14,6 @@ namespace Data_Access_Layer.Models
         [Required]
         public int MaxGrade { get; set; }
 
-        [MaxLength(500)]
-        public string? TeacherNoteForAssessment { get; set; }
-
         [Required]
         public Guid ExamId { get; set; }
         public virtual ExamEntity Exam { get; set; }

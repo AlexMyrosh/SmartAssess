@@ -76,7 +76,7 @@ namespace Business_Logic_Layer.Services.Implementations
 
         public async Task<ExamModel?> GetByIdWithDetailsAsync(Guid id)
         {
-            var examEntity = await unitOfWork.ExamRepository.GetByIdWithDetailsAsync(id);
+            var examEntity = await unitOfWork.ExamRepository.GetByIdWithDetailsAsync(id, true);
             var examModel = mapper.Map<ExamModel>(examEntity);
             return examModel;
         }

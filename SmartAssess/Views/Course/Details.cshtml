@@ -144,15 +144,15 @@
                                     {
                                         @if (currentDateTime > Model.Exams[i].ExamEndDateTime)
                                         {
-                                            <span>(@Localizer["TheDeadlineHasPassed"])</span>
+                                            <span class="finalUserExamStatus not-assessed">@Localizer["TheDeadlineHasPassed"]</span>
                                         }
                                         else if (currentDateTime < Model.Exams[i].ExamStartDateTime)
                                         {
-                                            <span>(@Localizer["TheStartDateHasNotYetArrived"])</span>
+                                            <span class="finalUserExamStatus yellow-plank">@Localizer["TheStartDateHasNotYetArrived"]</span>
                                         }
                                         else
                                         {
-                                            <span>(@Localizer["AvailableForPassing"])</span>
+                                            <span class="finalUserExamStatus passed">@Localizer["AvailableForPassing"]</span>
                                         }
                                     }
                                 </div>
@@ -203,7 +203,7 @@
                                             <div class="card bg-c-blue order-card flex-fill">
                                                 <div class="card-body" style="padding: 0">
                                                     <h4 class="m-b-20 text-center">@Localizer["FinalGradeMethod"]</h4>
-                                                    <h5 class="text-center"><span>@Model.Exams[i].FinalGradeCalculationMethod</span></h5>
+                                                    <h5 class="text-center"><span>@Localizer[Model.Exams[i].FinalGradeCalculationMethod.ToString()]</span></h5>
                                                 </div>
                                             </div>
                                         </div>

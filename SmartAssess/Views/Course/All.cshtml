@@ -8,7 +8,7 @@
 
 <div class="container-fluid custom-container" style="width: 90%;">
     <div class="d-flex justify-content-between align-items-center">
-        <h1 class="mx-auto text-center">@Localizer["AllCourses"]</h1>
+        <h1 class="display-4" style="margin-left: 43%;">@Localizer["AllCourses"]</h1>
         @if (User.IsInRole(RoleNames.Admin))
         {
             <button type="button" class="btn btn-primary" style="border-radius: 25px;" data-bs-toggle="modal" data-bs-target="#newCourseCreationModal">
@@ -63,7 +63,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <button id="createCourseSunmitButton" type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                         @Localizer["Close"]
                     </button>
                     <button type="submit" class="btn btn-success">
@@ -71,6 +71,20 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1055;">
+    <div id="courseCreationToast" class="toast bg-danger text-white show" role="alert" aria-live="assertive" aria-atomic="true" style="display: none;">
+        <div class="toast-body">
+            <div class="d-flex gap-4">
+                <span><i class="fa fa-exclamation-circle fa-lg"></i></span>
+                <div class="d-flex flex-grow-1 align-items-center">
+                    <span id="courseCreationToastMessage" class="fw-semibold"></span>
+                    <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -89,6 +103,14 @@
                 if (response.success) {
                     console.log(response);
                     window.location.href = `/Course/Details/${response.courseId}`;
+                } else {
+                    debugger;
+                    var toastEl = $('#courseCreationToast');
+                    toastEl.css('display', 'block');
+                    var toastMessage = $('#courseCreationToastMessage');
+                    toastMessage.html(response.errors.map(error => error.errorMessage).join('<br>'));
+                    var toast = new bootstrap.Toast(toastEl);
+                    toast.show();
                 }
             }
         });

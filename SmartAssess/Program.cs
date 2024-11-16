@@ -30,6 +30,7 @@ using FluentValidator.Account;
 using FluentValidator.Exam;
 using FluentValidator.Course;
 using FluentValidator.ExamAssessment;
+using SmartAssess.Extensions;
 
 namespace Presentation_Layer
 {
@@ -45,8 +46,8 @@ namespace Presentation_Layer
 
             await app.InitializeWebApplicationAsync();
 
-            //app.UseHsts();
-            //app.UseStatusCodePagesWithReExecute("/Error/{0}");
+            app.UseHsts();
+            app.UseStatusCodePagesWithReExecute("/Error/{0}");
             app.UseDeveloperExceptionPage();
             app.UseRequestLocalization();
             app.UseRouting();
@@ -65,7 +66,7 @@ namespace Presentation_Layer
         private static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
             // Configure connection to sql server
-            var sqlConnectionString = configuration.GetConnectionString("SmartAssessConnection");
+            var sqlConnectionString = configuration.GetConnectionString("LocalDb");
             services.AddDbContext<SqlContext>(options => options.UseSqlServer(sqlConnectionString));
 
             // Configure Logger
@@ -83,7 +84,6 @@ namespace Presentation_Layer
 
             services.AddIdentity<UserEntity, IdentityRole>(options =>
             {
-                // Password settings (if not already configured)
                 options.Password.RequireDigit = true;
                 options.Password.RequiredLength = 6;
                 options.Password.RequireNonAlphanumeric = false;
@@ -101,7 +101,8 @@ namespace Presentation_Layer
                 options.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultProvider;
             })
                 .AddEntityFrameworkStores<SqlContext>()
-                .AddDefaultTokenProviders();
+                .AddDefaultTokenProviders()
+                .AddErrorDescriber<CustomIdentityErrorDescriber>();
 
             services.Configure<DataProtectionTokenProviderOptions>(opt =>
                 opt.TokenLifespan = TimeSpan.FromMinutes(15));

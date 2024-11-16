@@ -4,6 +4,7 @@ using Data_Access_Layer.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data_Access_Layer.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    partial class SqlContextModelSnapshot : ModelSnapshot
+    [Migration("20241116182533_AddCascadeDeleteToUserExamAttempts")]
+    partial class AddCascadeDeleteToUserExamAttempts
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -522,13 +525,13 @@ namespace Data_Access_Layer.Migrations
                     b.HasOne("Data_Access_Layer.Models.CourseEntity", "Course")
                         .WithMany("Exams")
                         .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Data_Access_Layer.Models.UserEntity", "DeletedBy")
                         .WithMany("DeletedExams")
                         .HasForeignKey("DeletedById")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Course");
 
@@ -540,7 +543,7 @@ namespace Data_Access_Layer.Migrations
                     b.HasOne("Data_Access_Layer.Models.ExamEntity", "Exam")
                         .WithMany("Questions")
                         .HasForeignKey("ExamId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Exam");
@@ -551,7 +554,7 @@ namespace Data_Access_Layer.Migrations
                     b.HasOne("Data_Access_Layer.Models.ExamQuestionEntity", "Question")
                         .WithMany("UserAnswers")
                         .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Data_Access_Layer.Models.UserExamAttemptEntity", "UserExamAttempt")
@@ -570,7 +573,7 @@ namespace Data_Access_Layer.Migrations
                     b.HasOne("Data_Access_Layer.Models.UserEntity", "DeletedBy")
                         .WithMany("DeletedUsers")
                         .HasForeignKey("DeletedById")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("DeletedBy");
                 });
@@ -580,7 +583,7 @@ namespace Data_Access_Layer.Migrations
                     b.HasOne("Data_Access_Layer.Models.ExamEntity", "Exam")
                         .WithMany("UserExamAttempts")
                         .HasForeignKey("ExamId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Data_Access_Layer.Models.UserEntity", "User")

@@ -43,10 +43,10 @@ namespace Data_Access_Layer.Repositories.Implementations
             return examEntity;
         }
 
-        public async Task<ExamEntity?> GetByIdWithDetailsAsync(Guid id)
+        public async Task<ExamEntity?> GetByIdWithDetailsAsync(Guid id, bool canBeDeleted = false)
         {
             var examEntity = await sqlContext.Exams
-                .Where(x => !x.IsDeleted && x.Id == id)
+                .Where(x => (x.IsDeleted == false || x.IsDeleted == canBeDeleted) && x.Id == id)
                 .Include(exam => exam.Questions)
                 .Include(exam => exam.Course)
                 .Include(exam => exam.UserExamAttempts)

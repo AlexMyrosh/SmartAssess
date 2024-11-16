@@ -63,9 +63,14 @@ namespace Business_Logic_Layer.Services.Implementations
                 throw new ArgumentException("Unable to get user by id", nameof(user.Id));
             }
 
-            user.EducationalInstitution = user.EducationalInstitution is null ? string.Empty : user.EducationalInstitution;
-            mapper.Map(user, userFromDb);
-            userFromDb.AboutUser = user.AboutUser;
+            userFromDb.FirstName = user.FirstName ?? userFromDb.FirstName;
+            userFromDb.LastName = user.LastName ?? userFromDb.LastName;
+            userFromDb.Country = user.Country ?? userFromDb.Country;
+            userFromDb.City = user.City ?? userFromDb.City;
+            userFromDb.EducationalInstitution = user.EducationalInstitution ?? userFromDb.EducationalInstitution;
+            userFromDb.ImagePath = user.ImagePath ?? userFromDb.ImagePath;
+            userFromDb.AboutUser = user.AboutUser ?? userFromDb.AboutUser;
+
             var identityResult = await userManager.UpdateAsync(userFromDb);
             return identityResult;
         }

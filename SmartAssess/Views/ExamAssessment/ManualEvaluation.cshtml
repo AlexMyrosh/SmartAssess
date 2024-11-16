@@ -79,7 +79,7 @@
                                         <strong>
                                             @Localizer["Grade"] (@Localizer["MaxGrade"] - @Model.UserAnswers[i].QuestionMaxGrade):
                                         </strong>
-                                        <input min="0" max="@Model.UserAnswers[i].QuestionMaxGrade" type="number" asp-for="@Model.UserAnswers[i].Grade" class="form-control grade" style="width: 80px;" />
+                                        <input min="0" max="@Model.UserAnswers[i].QuestionMaxGrade" type="number" asp-for="@Model.UserAnswers[i].Grade" class="form-control grade" style="width: 80px;" required/>
                                     </p>
 
                                     <h5 class="card-title">@Localizer["Feedback"]</h5>

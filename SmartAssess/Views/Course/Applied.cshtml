@@ -8,7 +8,7 @@
 
 <div class="container-fluid custom-container" style="width: 90%;">
     <div class="d-flex justify-content-between align-items-center">
-        <h1 class="mx-auto text-center">@Localizer["MyCourses"]</h1>
+        <h1 class="display-4" style="margin-left: 43%;">@Localizer["MyCourses"]</h1>
         @if (User.IsInRole(RoleNames.Teacher))
         {
             <button type="button" class="btn btn-primary" style="border-radius: 25px;" data-bs-toggle="modal" data-bs-target="#newCourseCreationModal">

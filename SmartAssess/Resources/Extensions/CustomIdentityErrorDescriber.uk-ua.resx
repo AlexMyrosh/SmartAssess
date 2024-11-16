@@ -117,115 +117,49 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Apply" xml:space="preserve">
-    <value>Приєднатися</value>
+  <data name="DuplicateEmailPart1" xml:space="preserve">
+    <value>Електронна пошта</value>
   </data>
-  <data name="ApplyAsTeacher" xml:space="preserve">
-    <value>Приєднатися як вчитель</value>
+  <data name="DuplicateEmailPart2" xml:space="preserve">
+    <value>вже використовується</value>
   </data>
-  <data name="Attempts" xml:space="preserve">
-    <value>Спроби</value>
+  <data name="DuplicateUserNamePart1" xml:space="preserve">
+    <value>Ім'я користувача</value>
   </data>
-  <data name="AvailableForPassing" xml:space="preserve">
-    <value>доступний для проходження</value>
+  <data name="DuplicateUserNamePart2" xml:space="preserve">
+    <value>вже зайнято</value>
   </data>
-  <data name="Average" xml:space="preserve">
-    <value>Середня оцінка</value>
+  <data name="InvalidEmailPart1" xml:space="preserve">
+    <value>Електронна пошта</value>
   </data>
-  <data name="Cancel" xml:space="preserve">
-    <value>Скасувати</value>
+  <data name="InvalidEmailPart2" xml:space="preserve">
+    <value>є недійсна</value>
   </data>
-  <data name="CheckAnswers" xml:space="preserve">
-    <value>Перевірити відповіді</value>
+  <data name="InvalidToken" xml:space="preserve">
+    <value>Токен недійсний</value>
   </data>
-  <data name="ContinueAttempt" xml:space="preserve">
-    <value>Продовжити спробу</value>
+  <data name="InvalidUserNamePart1" xml:space="preserve">
+    <value>Ім'я користувача</value>
   </data>
-  <data name="Course" xml:space="preserve">
-    <value>курс</value>
+  <data name="InvalidUserNamePart2" xml:space="preserve">
+    <value>є недійсним, дозволені лише буквено-цифрові символи</value>
   </data>
-  <data name="CourseDescription" xml:space="preserve">
-    <value>Опис курсу</value>
+  <data name="PasswordRequiresDigit" xml:space="preserve">
+    <value>Пароль повинен містити принаймні одну цифру ('0'-'9')</value>
   </data>
-  <data name="CreateExam" xml:space="preserve">
-    <value>Створити екзамен</value>
+  <data name="PasswordRequiresLower" xml:space="preserve">
+    <value>Ваш пароль має містити принаймні одну малу літеру ('А'-'Я')</value>
   </data>
-  <data name="DescriptionIsAbsent" xml:space="preserve">
-    <value>Опис відсутній</value>
+  <data name="PasswordRequiresNonAlphanumeric" xml:space="preserve">
+    <value>Ваш пароль має містити принаймні один небуквено-цифровий символ</value>
   </data>
-  <data name="Details" xml:space="preserve">
-    <value>Деталі</value>
+  <data name="PasswordRequiresUpper" xml:space="preserve">
+    <value>Ваш пароль має містити принаймні одну велику літеру ('А'-'Я')</value>
   </data>
-  <data name="Duration" xml:space="preserve">
-    <value>Тривалість</value>
+  <data name="PasswordTooShortPart1" xml:space="preserve">
+    <value>Ваш пароль має мати принаймні</value>
   </data>
-  <data name="EndAt" xml:space="preserve">
-    <value>Кінець о</value>
-  </data>
-  <data name="Exam" xml:space="preserve">
-    <value>екзамен</value>
-  </data>
-  <data name="FinalGradeMethod" xml:space="preserve">
-    <value>Метод підсумкової оцінки</value>
-  </data>
-  <data name="LastAttempt" xml:space="preserve">
-    <value>Оцінка за останню спробу</value>
-  </data>
-  <data name="Leave" xml:space="preserve">
-    <value>Покинути</value>
-  </data>
-  <data name="LeaveAsTeacher" xml:space="preserve">
-    <value>Покинути як вчитель</value>
-  </data>
-  <data name="ListOfStudents" xml:space="preserve">
-    <value>Список студентів</value>
-  </data>
-  <data name="Max" xml:space="preserve">
-    <value>Максимальна оцінка</value>
-  </data>
-  <data name="NoExamsAtTheMoment" xml:space="preserve">
-    <value>На даний момент іспитів немає</value>
-  </data>
-  <data name="NoStudentsInThisCourse" xml:space="preserve">
-    <value>На цьому курсі немає студентів</value>
-  </data>
-  <data name="OpenedExams" xml:space="preserve">
-    <value>Відкриті іспити</value>
-  </data>
-  <data name="Questions" xml:space="preserve">
-    <value>Питання</value>
-  </data>
-  <data name="Remove" xml:space="preserve">
-    <value>Видалити</value>
-  </data>
-  <data name="RemoveThisCourse" xml:space="preserve">
-    <value>Видалити цей курс</value>
-  </data>
-  <data name="Save" xml:space="preserve">
-    <value>Зберегти</value>
-  </data>
-  <data name="StartAt" xml:space="preserve">
-    <value>Початок о</value>
-  </data>
-  <data name="StartAttempt" xml:space="preserve">
-    <value>Почати спробу</value>
-  </data>
-  <data name="Statistics" xml:space="preserve">
-    <value>Статистика</value>
-  </data>
-  <data name="Students" xml:space="preserve">
-    <value>Студенти</value>
-  </data>
-  <data name="TheDeadlineHasPassed" xml:space="preserve">
-    <value>термін минув</value>
-  </data>
-  <data name="TheStartDateHasNotYetArrived" xml:space="preserve">
-    <value>дата початку ще не настала</value>
-  </data>
-  <data name="ThresholdScore" xml:space="preserve">
-    <value>Пороговий бал</value>
-  </data>
-  <data name="Update" xml:space="preserve">
-    <value>Оновити</value>
+  <data name="PasswordTooShortPart2" xml:space="preserve">
+    <value>символів</value>
   </data>
 </root>

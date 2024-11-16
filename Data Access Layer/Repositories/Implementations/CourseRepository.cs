@@ -125,10 +125,10 @@ namespace Data_Access_Layer.Repositories.Implementations
             return courseEntity;
         }
 
-        public async Task<CourseEntity?> GetByIdWithDetailsAsync(Guid id)
+        public async Task<CourseEntity?> GetByIdWithDetailsAsync(Guid id, bool canBeDeleted = false)
         {
             var courseEntity = await sqlContext.Courses
-                .Where(x => !x.IsDeleted && x.Id == id)
+                .Where(x => (x.IsDeleted == false || x.IsDeleted == canBeDeleted) && x.Id == id)
                 .Include(course => course.Exams.Where(exam => !exam.IsDeleted))
                 .ThenInclude(exam => exam.UserExamAttempts)
                 .ThenInclude(attempt => attempt.User)

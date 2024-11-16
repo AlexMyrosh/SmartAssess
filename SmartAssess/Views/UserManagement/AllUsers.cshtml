@@ -6,6 +6,9 @@
     ViewData["Title"] = Localizer["UserManagement"];
 }
 <div class="container-fluid">
+    <div class="text-center">
+        <h1 class="display-4">@Localizer["UserManagement"]</h1>
+    </div>
     @if (Model.Users.Any())
     {
         <div class="form-floating mb-3">

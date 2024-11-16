@@ -40,6 +40,7 @@
                 <label id="examDurationForm" asp-for="ExamDuration" class="form-label">@Localizer["Duration"]</label>
             </div>
         </div>
+
     </div>
 
     <div class="row">
@@ -122,7 +123,7 @@
                 <div class="d-flex gap-4">
                     <span><i class="fa fa-exclamation-circle fa-lg"></i></span>
                     <div class="d-flex flex-grow-1 align-items-center">
-                        <span class="fw-semibold">@TempData["Notification"]</span>
+                        <pre style="text-align: left;margin-bottom: 0;font-size: 14px;">@TempData["Notification"]</pre>
                         <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
                 </div>

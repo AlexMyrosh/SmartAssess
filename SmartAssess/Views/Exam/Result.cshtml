@@ -179,7 +179,7 @@
                                             }
                                             else
                                             {
-                                                    <button type="submit" class="btn btn-outline-info me-2 assessByAiButton" data-userExamAttemptId="@userAttempts.Value.UserAttempts[i].AttemptId">@Localizer["AssessByAI"]</button>
+                                                <button type="submit" class="btn btn-outline-info me-2 assessByAiButton" data-userExamAttemptId="@userAttempts.Value.UserAttempts[i].AttemptId">@Localizer["AssessByAI"]</button>
                                             }
 
                                             @Html.ActionLink(@Localizer["AssessManually"].Value, "ManualEvaluation", "ExamAssessment", new { examId = userAttempts.Value.UserAttempts[i].AttemptId }, new { @class = "btn btn-outline-info me-2" })
@@ -240,7 +240,7 @@
                 success: function (response) {
                     var toastEl = $('#testToast');
                     var toastMessage = $('#testToastMessage');
-                    toastMessage.text(`@Localizer["AIEvaluationCompleted"]</h1>`);
+                    toastMessage.text(`@Localizer["AIEvaluationCompleted"]`);
                     var toast = new bootstrap.Toast(toastEl);
                     toast.show();
                 }
